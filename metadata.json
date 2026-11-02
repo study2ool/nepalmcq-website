@@ -1,0 +1,6 @@
+{
+  "name": "Nepal MCQ - Science Exam Platform",
+  "description": "Interactive NEB Grade 11 & 12 Science MCQ practice and computer-based examination platform for Physics, Chemistry, and Biology.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

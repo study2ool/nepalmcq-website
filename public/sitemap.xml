@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://nepalmcq.edu.np/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://nepalmcq.edu.np/practice</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://nepalmcq.edu.np/subjects</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://nepalmcq.edu.np/dashboard</loc>
+    <changefreq>always</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nepalmcq.edu.np/leaderboard</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://nepalmcq.edu.np/history</loc>
+    <changefreq>always</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
