@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, Menu, X, Play, ArrowRight, LogIn } from 'lucide-react';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { openAuthModal } from '../../store/slices/authSlice';
+import { openAuthModal } from '../../store/api/authApi';
 import { UserDropdown } from '../auth/UserDropdown';
 import { GoogleIcon } from '../auth/GoogleIcon';
 
@@ -14,6 +14,10 @@ export const Navbar: React.FC = () => {
   const session = useAppSelector((state) => state.quiz.session);
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const hasActiveExam = session && !session.isSubmitted;
+  const isAdmin =
+    isAuthenticated &&
+    user &&
+    (user.role === 'admin' || user.email.toLowerCase() === 'study2ool.nepal@gmail.com');
 
   const navLinks = [
     { label: 'Practice', path: '/practice' },
@@ -21,6 +25,7 @@ export const Navbar: React.FC = () => {
     { label: 'Leaderboard', path: '/leaderboard' },
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'History', path: '/history' },
+    ...(isAdmin ? [{ label: 'Admin', path: '/admin' }] : []),
   ];
 
   const isActive = (path: string) => location.pathname === path;

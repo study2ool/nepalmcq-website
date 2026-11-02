@@ -16,6 +16,8 @@ const History = lazy(() => import('./pages/History'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+import { AdminRoute } from './components/auth/AdminRoute';
 
 export default function App() {
   return (
@@ -35,6 +37,14 @@ export default function App() {
                 <Route path="leaderboard" element={<Leaderboard />} />
                 <Route path="history" element={<History />} />
                 <Route path="auth/callback" element={<AuthCallback />} />
+                <Route
+                  path="admin"
+                  element={
+                    <AdminRoute>
+                      <AdminPage />
+                    </AdminRoute>
+                  }
+                />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

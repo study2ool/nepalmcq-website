@@ -9,10 +9,12 @@ import {
   updateTimers,
   autoAdvanceQuestion,
   submitQuiz,
-} from '../store/slices/quizSlice';
-import { toggleBookmarkAction } from '../store/slices/questionBankSlice';
-import { setLatestResult } from '../store/slices/resultsSlice';
+} from '../store/api/quizApi';
+import { toggleBookmarkThunk } from '../store/api/questionBankApi';
+import { setLatestResult } from '../store/api/resultsApi';
+import { openAuthModal } from '../store/api/authApi';
 import { calculateQuizResult } from '../utils/scoring';
+import { useSubmitAttemptMutation } from '../store/api/apiSlice';
 import ExamHeader from '../components/quiz/ExamHeader';
 import QuestionCard from '../components/quiz/QuestionCard';
 import QuestionPalette from '../components/quiz/QuestionPalette';
@@ -31,7 +33,9 @@ export const ExamPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.quiz.session);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const bookmarks = useAppSelector((state) => state.questionBank.bookmarks);
+  const [submitAttemptMutation] = useSubmitAttemptMutation();
 
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isPaletteDrawerOpen, setIsPaletteDrawerOpen] = useState(false);
@@ -41,12 +45,18 @@ export const ExamPage: React.FC = () => {
   const lastTickTimeRef = useRef<number>(Date.now());
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // If no active session or already submitted, navigate back to practice
+  // If student is not logged in, block exam access and open auth modal
   useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal());
+      navigate('/practice', { replace: true });
+      return;
+    }
+
     if (!session || session.isSubmitted) {
       navigate('/practice', { replace: true });
     }
-  }, [session, navigate]);
+  }, [isAuthenticated, session, navigate, dispatch]);
 
   // Window beforeunload confirmation while active exam
   useEffect(() => {
@@ -73,8 +83,14 @@ export const ExamPage: React.FC = () => {
     const calculatedResult = calculateQuizResult(session);
     dispatch(setLatestResult(calculatedResult));
     dispatch(submitQuiz());
+
+    // Asynchronously sync attempt to backend database and update user stats & leaderboard via RTK Query
+    submitAttemptMutation(calculatedResult).unwrap().catch((err) => {
+      console.warn('Syncing attempt to backend failed:', err);
+    });
+
     navigate(`/result/${session.quizId}`, { replace: true });
-  }, [session, dispatch, navigate]);
+  }, [session, dispatch, navigate, submitAttemptMutation]);
 
   // Unified anti-drift Timer loop
   useEffect(() => {
@@ -226,7 +242,7 @@ export const ExamPage: React.FC = () => {
               }
               onClearOption={() => dispatch(clearAnswer(activeQuestion.id))}
               onToggleReview={() => dispatch(toggleMarkForReview(activeQuestion.id))}
-              onToggleBookmark={() => dispatch(toggleBookmarkAction(activeQuestion.id))}
+              onToggleBookmark={() => dispatch(toggleBookmarkThunk(activeQuestion.id))}
               onNext={() => dispatch(setCurrentQuestionIndex(currentIndex + 1))}
               onPrev={() => dispatch(setCurrentQuestionIndex(currentIndex - 1))}
               hasPrev={currentIndex > 0}

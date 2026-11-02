@@ -43,7 +43,26 @@ export const SchoolLeaderboardTable: React.FC<SchoolLeaderboardTableProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {schools.map((school, idx) => {
+              {schools.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 px-4 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-500">
+                        <School className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-semibold text-slate-800 dark:text-slate-200">
+                          No college standings logged yet
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+                          Complete quiz attempts to score the first XP points and put your institution on the national leaderboard!
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                schools.map((school, idx) => {
                 const rank = idx + 1;
                 const isUserSchool =
                   userSchoolName &&
@@ -130,7 +149,7 @@ export const SchoolLeaderboardTable: React.FC<SchoolLeaderboardTableProps> = ({
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>

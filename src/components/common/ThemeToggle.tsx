@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { toggleTheme } from '../../store/slices/themeSlice';
+import { toggleTheme } from '../../store/api/themeApi';
 
 export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }) => {
   const dispatch = useAppDispatch();

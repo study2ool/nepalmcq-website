@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '../store';
-import { setToken, fetchCurrentUser } from '../store/slices/authSlice';
+import { setToken, fetchCurrentUser } from '../store/api/authApi';
 import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 
 export const AuthCallback: React.FC = () => {

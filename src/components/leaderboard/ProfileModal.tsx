@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, User, School, MapPin, Check, GraduationCap } from 'lucide-react';
 import { StudentProfile } from '../../types/leaderboard';
 import { GradeLevel } from '../../types/question';
-import { NEPAL_POPULAR_SCHOOLS } from '../../data/mockLeaderboard';
+import { useGetCollegesQuery, CollegeItem } from '../../store/api/apiSlice';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -32,22 +32,23 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const [city, setCity] = useState(profile.city);
   const [grade, setGrade] = useState<GradeLevel>(profile.grade);
   const [avatarBg, setAvatarBg] = useState(profile.avatarBg);
+  const { data: colleges = [] } = useGetCollegesQuery(undefined, { skip: !isOpen });
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
-      name: name.trim() || 'You (Student)',
-      school: school.trim() || "St. Xavier's College",
-      city: city.trim() || 'Kathmandu',
+      name: name.trim() || 'Student',
+      school: school.trim() || "College",
+      city: city.trim() || 'Nepal',
       grade,
       avatarBg,
     });
     onClose();
   };
 
-  const handleSelectPopularSchool = (item: { name: string; city: string }) => {
+  const handleSelectPopularSchool = (item: CollegeItem) => {
     setSchool(item.name);
     setCity(item.city);
   };
@@ -171,9 +172,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 Quick Select Popular NEB Colleges:
               </span>
               <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
-                {NEPAL_POPULAR_SCHOOLS.map((item) => (
+                {colleges.slice(0, 15).map((item) => (
                   <button
-                    key={item.name}
+                    key={item.id}
                     type="button"
                     onClick={() => handleSelectPopularSchool(item)}
                     className="px-2 py-1 text-[11px] rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"

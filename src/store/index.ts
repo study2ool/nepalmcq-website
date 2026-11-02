@@ -1,16 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import themeReducer from './slices/themeSlice';
-import quizConfigReducer from './slices/quizConfigSlice';
-import quizReducer from './slices/quizSlice';
-import questionBankReducer from './slices/questionBankSlice';
-import resultsReducer from './slices/resultsSlice';
-import leaderboardReducer from './slices/leaderboardSlice';
-import authReducer from './slices/authSlice';
-import syllabusReducer from './slices/syllabusSlice';
+import {
+  apiSlice,
+  authReducer,
+  syllabusReducer,
+  themeReducer,
+  quizConfigReducer,
+  quizReducer,
+  questionBankReducer,
+  resultsReducer,
+  leaderboardReducer,
+} from './api';
 
 export const store = configureStore({
   reducer: {
+    [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
     syllabus: syllabusReducer,
     theme: themeReducer,
@@ -23,8 +28,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(apiSlice.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

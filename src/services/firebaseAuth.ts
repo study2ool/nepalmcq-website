@@ -1,5 +1,6 @@
 import {
   signInWithPopup,
+  signInWithCustomToken,
   signOut as fbSignOut,
   onAuthStateChanged,
   type User as FirebaseUser,
@@ -29,6 +30,22 @@ export const firebaseAuthService = {
       firebaseUser: credential.user,
       idToken,
     };
+  },
+
+  /**
+   * Signs in user with a Firebase custom token returned by the backend.
+   * Firebase Client SDK automatically persists this session across page refreshes.
+   */
+  async signInWithCustomToken(customToken: string): Promise<FirebaseUser | null> {
+    if (isFirebaseClientConfigured() && auth) {
+      try {
+        const credential = await signInWithCustomToken(auth, customToken);
+        return credential.user;
+      } catch (error) {
+        console.warn('Firebase signInWithCustomToken notice:', error);
+      }
+    }
+    return null;
   },
 
   /**

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GoogleIcon } from './GoogleIcon';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { loginWithGoogle } from '../../store/slices/authSlice';
+import { loginWithGoogle } from '../../store/api/authApi';
 import { authApi } from '../../services/authApi';
 import { isFirebaseClientConfigured } from '../../config/firebase';
 import { firebaseAuthService } from '../../services/firebaseAuth';
@@ -103,17 +103,55 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       return;
     }
 
-    // 2. Google Identity Services Flow
+    // 2. Google OAuth2 Token Client Popup (Instant browser popup, no redirect URI issues)
+    if (window.google?.accounts?.oauth2 && googleClientId) {
+      try {
+        setLocalLoading(true);
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: googleClientId,
+          scope: 'openid email profile',
+          callback: async (tokenResponse: any) => {
+            if (tokenResponse.error) {
+              setLocalLoading(false);
+              return;
+            }
+            if (tokenResponse.access_token) {
+              const res = await dispatch(
+                loginWithGoogle({ accessToken: tokenResponse.access_token }),
+              );
+              if (loginWithGoogle.fulfilled.match(res)) {
+                onSuccess?.();
+              }
+            }
+            setLocalLoading(false);
+          },
+          error_callback: () => {
+            setLocalLoading(false);
+          },
+        });
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
+        return;
+      } catch (err) {
+        console.warn('Google OAuth tokenClient error:', err);
+      }
+    }
+
+    // 3. Google Identity Services Flow (In-browser button)
     if (gisLoaded && window.google?.accounts?.id) {
-      window.google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          window.location.href = authApi.getGoogleRedirectUrl();
-        }
-      });
+      const googleBtn = hiddenBtnRef.current?.querySelector(
+        'div[role="button"], button',
+      ) as HTMLElement | null;
+
+      if (googleBtn) {
+        googleBtn.click();
+        return;
+      }
+
+      window.google.accounts.id.prompt();
       return;
     }
 
-    // 3. Fallback: Backend OAuth consent redirect
+    // 4. Fallback: Backend OAuth consent redirect
     window.location.href = authApi.getGoogleRedirectUrl();
   };
 

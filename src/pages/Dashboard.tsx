@@ -1,6 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Trophy, ArrowRight, TrendingUp, AlertTriangle } from "lucide-react";
+import {
+  Trophy,
+  ArrowRight,
+  TrendingUp,
+  AlertTriangle,
+  Database,
+  School,
+  GraduationCap,
+} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -11,9 +19,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useAppDispatch, useAppSelector } from "../store";
-import { setSubject, setTopic } from "../store/slices/quizConfigSlice";
+import { setSubject, setTopic } from "../store/api/quizConfigApi";
 import { SubjectName } from "../types/question";
 import { useSEO } from "../hooks/useSEO";
+import {
+  useGetQuizSubjectsQuery,
+  useGetLeaderboardQuery,
+  useGetDashboardSummaryQuery,
+} from "../store/api/apiSlice";
 import {
   buildCurrentUserLeaderboardEntry,
   getRankedStudents,
@@ -30,9 +43,67 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.results.history);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  // Compute aggregate statistics
+  // RTK Query Hooks with automatic caching and invalidation
+  const { data: bankStats = [] } = useGetQuizSubjectsQuery();
+  const { data: serverLeaderboardData } = useGetLeaderboardQuery({ timeframe: "all-time" });
+  const { data: backendStats } = useGetDashboardSummaryQuery(undefined, { skip: !isAuthenticated });
+
+  const serverLeaderboard = useMemo(() => {
+    if (!serverLeaderboardData) return null;
+    return {
+      totalStudents: serverLeaderboardData.students.length,
+      currentUserRank: serverLeaderboardData.currentUserRank,
+    };
+  }, [serverLeaderboardData]);
+
+  // Compute aggregate statistics (prioritizes persistent backend stats when available)
   const stats = useMemo(() => {
+    if (backendStats && backendStats.lifetime.totalExams > 0) {
+      const subAccs: Record<SubjectName, number> = {
+        Physics: backendStats.subjectMastery["Physics"]?.accuracy || 0,
+        Chemistry: backendStats.subjectMastery["Chemistry"]?.accuracy || 0,
+        Biology: backendStats.subjectMastery["Biology"]?.accuracy || 0,
+        Mathematics: backendStats.subjectMastery["Mathematics"]?.accuracy || 0,
+        English: backendStats.subjectMastery["English"]?.accuracy || 0,
+        Nepali: backendStats.subjectMastery["Nepali"]?.accuracy || 0,
+        "Computer Science": backendStats.subjectMastery["Computer Science"]?.accuracy || 0,
+      };
+
+      const progressData = backendStats.recentTrend.map((t, idx) => ({
+        examNumber: t.examNumber || `Test ${idx + 1}`,
+        accuracy: t.accuracy,
+        score: t.score,
+      }));
+
+      const weakTopics = backendStats.weakTopics.map((wt) => ({
+        topic: wt.topic,
+        subject: wt.subject as SubjectName,
+        accuracy: wt.accuracy,
+        total: wt.total,
+      }));
+
+      const avgScore =
+        backendStats.lifetime.totalExams > 0
+          ? Math.round(
+              (backendStats.lifetime.totalCorrect / backendStats.lifetime.totalExams) * 10
+            ) / 10
+          : 0;
+
+      return {
+        totalExams: backendStats.lifetime.totalExams,
+        totalQuestionsAttempted: backendStats.lifetime.totalQuestionsAttempted,
+        overallAccuracy: backendStats.lifetime.overallAccuracy,
+        averageScore: avgScore,
+        bestScore: backendStats.lifetime.bestScore,
+        bestAccuracy: backendStats.lifetime.bestAccuracy,
+        weakTopics,
+        subjectAccuracies: subAccs,
+        progressData,
+      };
+    }
+
     if (history.length === 0) {
       return {
         totalExams: 0,
@@ -190,19 +261,33 @@ export const Dashboard: React.FC = () => {
     navigate("/practice");
   };
 
+  const authUser = useAppSelector((state) => state.auth.user);
   const profile = useAppSelector((state) => state.leaderboard.profile);
 
   // Compute live leaderboard rank
-  const { currentUser, userRank, totalStudents } = useMemo(() => {
-    const user = buildCurrentUserLeaderboardEntry(profile, history);
+  const { currentUser, userRank, totalStudents, isRanked } = useMemo(() => {
+    const activeProfile = {
+      ...profile,
+      school: authUser?.collegeName || profile.school,
+      city: authUser?.collegeCity || profile.city,
+      grade: authUser?.grade || profile.grade,
+      name: authUser?.name || profile.name,
+    };
+    const user = buildCurrentUserLeaderboardEntry(activeProfile, history);
     const ranked = getRankedStudents(user, "All", "All", "all-time");
     const idx = ranked.findIndex((s) => s.isCurrentUser);
+
+    const total = serverLeaderboard ? serverLeaderboard.totalStudents : ranked.length;
+    const rank = serverLeaderboard?.currentUserRank || (idx !== -1 ? idx + 1 : 1);
+    const hasAttempted = stats.totalExams > 0 || history.length > 0 || user.totalTests > 0;
+
     return {
       currentUser: user,
-      userRank: idx !== -1 ? idx + 1 : ranked.length,
-      totalStudents: ranked.length,
+      userRank: rank,
+      totalStudents: total,
+      isRanked: hasAttempted && total > 0,
     };
-  }, [profile, history]);
+  }, [profile, history, authUser, serverLeaderboard, stats.totalExams]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -225,7 +310,7 @@ export const Dashboard: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors shadow-xs"
           >
             <Trophy className="w-4 h-4 text-amber-500" />
-            <span>Leaderboard (#{userRank})</span>
+            <span>Leaderboard {isRanked ? `(#${userRank})` : ''}</span>
           </Link>
 
           <Link
@@ -245,7 +330,7 @@ export const Dashboard: React.FC = () => {
             <Trophy className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs uppercase font-bold text-amber-400 tracking-wider">
                 National Standing
               </span>
@@ -253,14 +338,32 @@ export const Dashboard: React.FC = () => {
               <span className="text-xs text-slate-300 font-mono">
                 Class {currentUser.grade}
               </span>
+              {authUser?.gender && authUser.gender !== 'prefer_not_to_say' && (
+                <>
+                  <span className="text-slate-400">·</span>
+                  <span className="text-xs text-indigo-300 capitalize">
+                    {authUser.gender}
+                  </span>
+                </>
+              )}
             </div>
             <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5">
-              Rank #{userRank} of {totalStudents} Students Nationwide
+              {isRanked ? (
+                <>Rank #{userRank} of {totalStudents} Students Nationwide</>
+              ) : (
+                <>Unranked · Complete your first exam to appear on the leaderboard!</>
+              )}
             </h4>
-            <p className="text-xs text-slate-400 truncate max-w-sm sm:max-w-md">
-              Representing{" "}
-              <strong className="text-slate-200">{currentUser.school}</strong> ·{" "}
-              {currentUser.totalXp.toLocaleString()} XP earned
+            <p className="text-xs text-slate-400 truncate max-w-sm sm:max-w-md flex items-center gap-1.5 mt-0.5">
+              <School className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <span className="truncate">
+                Representing{" "}
+                <strong className="text-slate-200">
+                  {authUser?.collegeName || currentUser.school}
+                </strong>
+                {authUser?.collegeCity ? ` (${authUser.collegeCity})` : ""} ·{" "}
+                {currentUser.totalXp.toLocaleString()} XP earned
+              </span>
             </p>
           </div>
         </div>
@@ -471,6 +574,11 @@ export const Dashboard: React.FC = () => {
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">
                       {subItem.name}
+                      {bankStats.find((s) => s.name === subItem.name)?.existingQuestionsCount ? (
+                        <span className="ml-1.5 text-[10px] font-normal text-slate-400">
+                          ({bankStats.find((s) => s.name === subItem.name)?.existingQuestionsCount} questions)
+                        </span>
+                      ) : null}
                     </span>
                     <span className={`font-mono font-bold ${subItem.text}`}>
                       {acc}%

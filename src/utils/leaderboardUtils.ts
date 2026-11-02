@@ -7,15 +7,14 @@ import {
   StudentProfile,
   TimeframeFilter,
 } from '../types/leaderboard';
-import { MOCK_STUDENTS } from '../data/mockLeaderboard';
 
 const PROFILE_STORAGE_KEY = 'nepalmcq_user_profile';
 
 export const DEFAULT_USER_PROFILE: StudentProfile = {
   id: 'current_user',
-  name: 'You (Student)',
-  school: "St. Xavier's College",
-  city: 'Kathmandu',
+  name: 'Student',
+  school: 'Secondary School',
+  city: 'Nepal',
   grade: 12,
   avatarBg: 'bg-indigo-600',
   joinDate: new Date().toISOString(),
@@ -326,16 +325,19 @@ export const buildCurrentUserLeaderboardEntry = (
 };
 
 /**
- * Merges current user with mock peers, filters according to criteria, and computes ranks
+ * Compiles and sorts genuine student rankings based on exam attempts
  */
 export const getRankedStudents = (
   currentUser: LeaderboardStudent,
   gradeFilter: 'All' | GradeLevel,
   subjectFilter: 'All' | SubjectName,
   timeframe: TimeframeFilter,
-  schoolFilter?: string
+  schoolFilter?: string,
+  peerStudents: LeaderboardStudent[] = []
 ): LeaderboardStudent[] => {
-  let list = [...MOCK_STUDENTS, currentUser];
+  let list = currentUser.examsCompleted > 0
+    ? [currentUser, ...peerStudents.filter((s) => s.id !== currentUser.id)]
+    : [...peerStudents];
 
   // Grade filter
   if (gradeFilter !== 'All') {

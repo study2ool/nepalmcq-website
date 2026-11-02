@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { SubjectName, GradeLevel } from '../../types/question';
 import {
   StudentProfile,
@@ -10,8 +10,30 @@ import {
   saveStoredUserProfile,
   DEFAULT_USER_PROFILE,
 } from '../../utils/leaderboardUtils';
+import { authApi } from '../../services/authApi';
+import { fetchCurrentUser } from './authApi';
 
-interface LeaderboardState {
+export const saveUserProfile = createAsyncThunk(
+  'leaderboard/saveUserProfile',
+  async (
+    updates: Partial<Omit<StudentProfile, 'id' | 'joinDate'>>,
+    { dispatch }
+  ) => {
+    dispatch(updateProfile(updates));
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    if (token) {
+      try {
+        await authApi.updateProfile(updates);
+        dispatch(fetchCurrentUser());
+      } catch (err) {
+        console.warn('Backend profile update failed:', err);
+      }
+    }
+    return updates;
+  }
+);
+
+export interface LeaderboardState {
   profile: StudentProfile;
   scope: LeaderboardScope;
   gradeFilter: 'All' | GradeLevel;
@@ -90,4 +112,6 @@ export const {
   setBadgesModalOpen,
 } = leaderboardSlice.actions;
 
-export default leaderboardSlice.reducer;
+export const leaderboardReducer = leaderboardSlice.reducer;
+export default leaderboardReducer;
+

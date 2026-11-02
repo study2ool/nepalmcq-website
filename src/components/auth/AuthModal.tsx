@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { closeAuthModal } from '../../store/slices/authSlice';
+import { closeAuthModal } from '../../store/api/authApi';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { BookOpen, X, CheckCircle, ShieldCheck } from 'lucide-react';
 

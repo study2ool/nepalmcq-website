@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   History as HistoryIcon,
@@ -12,9 +12,10 @@ import {
   X,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
-import { clearHistory } from '../store/slices/resultsSlice';
-import { startQuiz } from '../store/slices/quizSlice';
-import { loadConfig } from '../store/slices/quizConfigSlice';
+import { clearHistory, fetchResultsHistory } from '../store/api/resultsApi';
+import { openAuthModal } from '../store/api/authApi';
+import { startQuiz } from '../store/api/quizApi';
+import { loadConfig } from '../store/api/quizConfigApi';
 import { formatTimeMMSS } from '../utils/timer';
 import { QuizConfig } from '../types/quiz';
 import { useSEO } from '../hooks/useSEO';
@@ -29,9 +30,20 @@ export const History: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.results.history);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchResultsHistory());
+    }
+  }, [dispatch, isAuthenticated]);
+
   const handleRetakeExam = (config: QuizConfig) => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal());
+      return;
+    }
     dispatch(loadConfig(config));
     dispatch(startQuiz(config));
     navigate('/exam/active');

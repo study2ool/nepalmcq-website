@@ -1,4 +1,6 @@
-import type { User } from '../store/slices/authSlice';
+import { store } from '../store';
+import { apiSlice, AuthResponseData } from '../store/api/apiSlice';
+import type { User } from '../store/api/authApi';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -8,71 +10,99 @@ export interface ApiResponse<T = any> {
   timestamp: string;
 }
 
-export interface AuthResponseData {
-  user: User;
-  token: string;
-}
+export type { AuthResponseData };
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
 export const authApi = {
   /**
-   * Sends Google ID Token or OAuth code to backend
+   * Sends Google ID Token or OAuth code to backend via RTK Query
    */
   async continueWithGoogle(payload: {
     credential?: string;
     code?: string;
     accessToken?: string;
   }): Promise<ApiResponse<AuthResponseData>> {
-    const res = await fetch(`${API_BASE}/auth/google`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to authenticate with Google');
+    try {
+      const data = await store.dispatch(apiSlice.endpoints.continueWithGoogle.initiate(payload)).unwrap();
+      return {
+        success: true,
+        data,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.data?.error || err?.message || 'Google authentication failed',
+        timestamp: new Date().toISOString(),
+      };
     }
-    return data;
   },
 
   /**
-   * Fetches current authenticated user profile
+   * Fetches current authenticated user profile via RTK Query
    */
   async getMe(): Promise<ApiResponse<{ user: User }>> {
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      throw new Error('No auth token found in localStorage');
+    try {
+      const data = await store.dispatch(apiSlice.endpoints.getMe.initiate()).unwrap();
+      return {
+        success: true,
+        data,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.data?.error || err?.message || 'Failed to fetch user profile',
+        timestamp: new Date().toISOString(),
+      };
     }
-
-    const res = await fetch(`${API_BASE}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Session expired or invalid');
-    }
-    return data;
   },
 
   /**
-   * Logs out from backend
+   * Updates student profile details via RTK Query
    */
-  async logout(): Promise<ApiResponse<{ loggedOut: boolean }>> {
-    const token = localStorage.getItem('auth_token');
-    const res = await fetch(`${API_BASE}/auth/logout`, {
-      method: 'POST',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-    return res.json();
+  async updateProfile(updates: {
+    name?: string;
+    school?: string;
+    city?: string;
+    grade?: number;
+    avatarBg?: string;
+  }): Promise<ApiResponse<{ user: User; profile: any }>> {
+    try {
+      const data = await store.dispatch(apiSlice.endpoints.updateProfile.initiate(updates)).unwrap();
+      return {
+        success: true,
+        data,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.data?.error || err?.message || 'Failed to update student profile',
+        timestamp: new Date().toISOString(),
+      };
+    }
+  },
+
+  /**
+   * Logs out from backend and expires active token via RTK Query
+   */
+  async logout(tokenParam?: string): Promise<ApiResponse<{ loggedOut: boolean }>> {
+    try {
+      const data = await store.dispatch(apiSlice.endpoints.logout.initiate(tokenParam)).unwrap();
+      return {
+        success: true,
+        data,
+        timestamp: new Date().toISOString(),
+      };
+    } catch {
+      return {
+        success: true,
+        data: { loggedOut: true },
+        timestamp: new Date().toISOString(),
+      };
+    }
   },
 
   /**
@@ -82,4 +112,3 @@ export const authApi = {
     return `${API_BASE}/auth/google`;
   },
 };
-

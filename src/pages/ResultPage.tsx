@@ -11,9 +11,10 @@ import {
   Trophy,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
-import { loadResultById } from '../store/slices/resultsSlice';
-import { startQuiz } from '../store/slices/quizSlice';
-import { loadConfig } from '../store/slices/quizConfigSlice';
+import { loadResultById } from '../store/api/resultsApi';
+import { openAuthModal } from '../store/api/authApi';
+import { startQuiz } from '../store/api/quizApi';
+import { loadConfig } from '../store/api/quizConfigApi';
 import ResultSummaryCards from '../components/results/ResultSummaryCards';
 import PerformanceCharts from '../components/results/PerformanceCharts';
 import QuestionReviewList from '../components/results/QuestionReviewList';
@@ -32,6 +33,7 @@ export const ResultPage: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const currentResult = useAppSelector((state) => state.results.currentResult);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [activeTab, setActiveTab] = useState<'overview' | 'review'>('overview');
 
   useEffect(() => {
@@ -82,6 +84,10 @@ export const ResultPage: React.FC = () => {
 
   // Action: Retake Quiz with exact same config
   const handleRetake = () => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal());
+      return;
+    }
     dispatch(loadConfig(currentResult.config));
     dispatch(startQuiz(currentResult.config));
     navigate('/exam/active');
@@ -89,6 +95,10 @@ export const ResultPage: React.FC = () => {
 
   // Action: Practice Incorrect Questions
   const handlePracticeIncorrect = () => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal());
+      return;
+    }
     const incorrectQs = currentResult.questionResults
       .filter((qr) => qr.status === 'incorrect')
       .map((qr) => qr.question);
@@ -112,6 +122,10 @@ export const ResultPage: React.FC = () => {
 
   // Action: Practice Unattempted Questions
   const handlePracticeUnattempted = () => {
+    if (!isAuthenticated) {
+      dispatch(openAuthModal());
+      return;
+    }
     const unattemptedQs = currentResult.questionResults
       .filter((qr) => qr.status === 'unattempted')
       .map((qr) => qr.question);

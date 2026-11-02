@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 import { GradeLevel, SubjectName } from '../types/question';
 import { useAppDispatch, useAppSelector } from '../store';
-import { setGrade, setSubject, setTopic } from '../store/slices/quizConfigSlice';
-import { fetchSubjectDetails } from '../store/slices/syllabusSlice';
+import { setGrade, setSubject, setTopic } from '../store/api/quizConfigApi';
+import { fetchSubjectDetails } from '../store/api/syllabusApi';
 import { useSEO } from '../hooks/useSEO';
 
 export const Subjects: React.FC = () => {

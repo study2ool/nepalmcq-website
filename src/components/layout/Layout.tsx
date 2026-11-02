@@ -4,9 +4,11 @@ import { Navbar } from './Navbar';
 import Footer from './Footer';
 import ScrollToTop from '../common/ScrollToTop';
 import { AuthModal } from '../auth/AuthModal';
+import { OnboardingModal } from '../auth/OnboardingModal';
 import { useAppDispatch } from '../../store';
-import { fetchCurrentUser } from '../../store/slices/authSlice';
-import { fetchSyllabusOverview } from '../../store/slices/syllabusSlice';
+import { fetchCurrentUser } from '../../store/api/authApi';
+import { fetchSyllabusOverview } from '../../store/api/syllabusApi';
+import { fetchBookmarks } from '../../store/api/questionBankApi';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
@@ -14,10 +16,11 @@ export const Layout: React.FC = () => {
   const isExamPage = location.pathname.startsWith('/exam/');
 
   useEffect(() => {
-    // 1. Fetch user if token present
+    // 1. Fetch user and bookmarks if token present
     const token = localStorage.getItem('auth_token');
     if (token) {
       dispatch(fetchCurrentUser());
+      dispatch(fetchBookmarks());
     }
 
     // 2. Load subjects & syllabus curriculum dynamically from backend
@@ -36,6 +39,7 @@ export const Layout: React.FC = () => {
       </main>
       {!isExamPage && <Footer />}
       <AuthModal />
+      <OnboardingModal />
     </div>
   );
 };

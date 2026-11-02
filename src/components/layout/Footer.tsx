@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, GraduationCap, ShieldCheck, Mail, MapPin } from 'lucide-react';
+import { BookOpen, GraduationCap, ShieldCheck, Mail, MapPin, Activity } from 'lucide-react';
+import { useGetHealthQuery } from '../../store/api/apiSlice';
 
 export const Footer: React.FC = () => {
+  const { data: health, isLoading: isChecking } = useGetHealthQuery();
+
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -101,7 +104,28 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© {new Date().getFullYear()} Nepal MCQ. All educational materials designed for student learning.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p>© {new Date().getFullYear()} Nepal MCQ. All educational materials designed for student learning.</p>
+            <span className="hidden sm:inline text-slate-300 dark:text-slate-700">·</span>
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  health
+                    ? 'bg-emerald-500 animate-pulse'
+                    : isChecking
+                    ? 'bg-amber-400'
+                    : 'bg-rose-400'
+                }`}
+              />
+              <span className="text-slate-600 dark:text-slate-300">
+                {health
+                  ? `API Online (v${health.version})`
+                  : isChecking
+                  ? 'Connecting to API...'
+                  : 'Offline Mode'}
+              </span>
+            </div>
+          </div>
           <div className="flex items-center gap-6">
             <span className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">Privacy Policy</span>
             <span className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">Terms of Service</span>

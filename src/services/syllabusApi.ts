@@ -80,6 +80,18 @@ export const syllabusApi = {
   },
 
   /**
+   * Fetches all complete syllabus trees from backend
+   */
+  async getAllSyllabi(): Promise<Record<string, SyllabusFile>> {
+    const res = await fetch(`${API_BASE}/syllabus`);
+    const json = await res.json();
+    if (!res.ok || !json.success) {
+      throw new Error(json.error || 'Failed to fetch all syllabi');
+    }
+    return json.data;
+  },
+
+  /**
    * Fetches complete syllabus tree for a subject from backend
    */
   async getSyllabus(subject: string): Promise<SyllabusFile> {

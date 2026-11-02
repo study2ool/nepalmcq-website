@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Users, School, Search } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
@@ -11,15 +11,20 @@ import {
   setProfileModalOpen,
   setBadgesModalOpen,
   updateProfile,
-} from "../store/slices/leaderboardSlice";
+  saveUserProfile,
+} from "../store/api/leaderboardApi";
+import { updateUserLocal } from "../store/api/authApi";
 import { SubjectName, GradeLevel } from "../types/question";
+import {
+  useGetCollegesQuery,
+  useGetLeaderboardQuery,
+} from "../store/api/apiSlice";
 import {
   buildCurrentUserLeaderboardEntry,
   getRankedStudents,
   getRankedSchools,
   evaluateUserBadges,
 } from "../utils/leaderboardUtils";
-import { NEPAL_POPULAR_SCHOOLS } from "../data/mockLeaderboard";
 import LeaderboardPodium from "../components/leaderboard/LeaderboardPodium";
 import LeaderboardTable from "../components/leaderboard/LeaderboardTable";
 import SchoolLeaderboardTable from "../components/leaderboard/SchoolLeaderboardTable";
@@ -49,6 +54,7 @@ export const Leaderboard: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.results.history);
+  const authUser = useAppSelector((state) => state.auth.user);
   const {
     profile,
     scope,
@@ -61,20 +67,42 @@ export const Leaderboard: React.FC = () => {
     isBadgesModalOpen,
   } = useAppSelector((state) => state.leaderboard);
 
+  const { data: colleges = [] } = useGetCollegesQuery();
+  const { data: backendData = null } = useGetLeaderboardQuery({
+    timeframe,
+    grade: gradeFilter,
+    subject: subjectFilter,
+  });
+
   // Build current user's live performance entry
   const currentUser = useMemo(() => {
-    return buildCurrentUserLeaderboardEntry(profile, history);
-  }, [profile, history]);
+    const activeProfile = {
+      ...profile,
+      school: authUser?.collegeName || profile.school,
+      city: authUser?.collegeCity || profile.city,
+      grade: authUser?.grade || profile.grade,
+      name: authUser?.name || profile.name,
+    };
+    return buildCurrentUserLeaderboardEntry(activeProfile, history);
+  }, [profile, history, authUser]);
 
   // Compute ranked students list
   const rankedStudents = useMemo(() => {
-    const list = getRankedStudents(
-      currentUser,
-      gradeFilter,
-      subjectFilter,
-      timeframe,
-      schoolFilter,
-    );
+    let list: LeaderboardStudent[] = [];
+    if (backendData && backendData.students.length > 0) {
+      list = backendData.students;
+    } else if (currentUser.examsCompleted > 0) {
+      list = [currentUser];
+    }
+
+    if (gradeFilter !== "All") {
+      list = list.filter((s) => s.grade === gradeFilter);
+    }
+    if (schoolFilter && schoolFilter !== "All Schools") {
+      list = list.filter((s) =>
+        s.school.toLowerCase().includes(schoolFilter.toLowerCase())
+      );
+    }
 
     if (!searchQuery.trim()) return list;
 
@@ -86,33 +114,28 @@ export const Leaderboard: React.FC = () => {
         s.city.toLowerCase().includes(query),
     );
   }, [
+    backendData,
     currentUser,
     gradeFilter,
-    subjectFilter,
-    timeframe,
     schoolFilter,
     searchQuery,
   ]);
 
   // Compute school standings
   const rankedSchools = useMemo(() => {
-    const fullList = getRankedStudents(
-      currentUser,
-      gradeFilter,
-      subjectFilter,
-      timeframe,
-    );
-    const schools = getRankedSchools(fullList);
+    let list =
+      backendData && backendData.schools.length > 0
+        ? backendData.schools
+        : [];
 
-    if (!searchQuery.trim()) return schools;
-
+    if (!searchQuery.trim()) return list;
     const query = searchQuery.toLowerCase().trim();
-    return schools.filter(
+    return list.filter(
       (s) =>
         s.name.toLowerCase().includes(query) ||
         s.city.toLowerCase().includes(query),
     );
-  }, [currentUser, gradeFilter, subjectFilter, timeframe, searchQuery]);
+  }, [backendData, searchQuery]);
 
   // Find user's national rank
   const userRankIndex = rankedStudents.findIndex((s) => s.isCurrentUser);
@@ -255,8 +278,8 @@ export const Leaderboard: React.FC = () => {
                   <option value="All Schools">
                     All Colleges &amp; Schools
                   </option>
-                  {NEPAL_POPULAR_SCHOOLS.map((sch) => (
-                    <option key={sch.name} value={sch.name}>
+                  {colleges.map((sch) => (
+                    <option key={sch.id} value={sch.name}>
                       {sch.name}
                     </option>
                   ))}
@@ -331,9 +354,27 @@ export const Leaderboard: React.FC = () => {
       {/* Profile Customization Modal */}
       <ProfileModal
         isOpen={isProfileModalOpen}
-        profile={profile}
+        profile={{
+          ...profile,
+          school: authUser?.collegeName || profile.school,
+          city: authUser?.collegeCity || profile.city,
+          grade: authUser?.grade || profile.grade,
+          name: authUser?.name || profile.name,
+        }}
         onClose={() => dispatch(setProfileModalOpen(false))}
-        onSave={(updated) => dispatch(updateProfile(updated))}
+        onSave={(updated) => {
+          dispatch(saveUserProfile(updated));
+          if (authUser) {
+            dispatch(
+              updateUserLocal({
+                name: updated.name,
+                collegeName: updated.school,
+                collegeCity: updated.city,
+                grade: updated.grade,
+              })
+            );
+          }
+        }}
       />
 
       {/* Gamified Badges Showcase Modal */}

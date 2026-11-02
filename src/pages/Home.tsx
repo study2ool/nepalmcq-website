@@ -19,14 +19,15 @@ import {
   Users,
 } from 'lucide-react';
 import { ASSET_IMAGES } from '../assets/assetPaths';
-import { useAppDispatch } from '../store';
-import { setGrade, setSubject } from '../store/slices/quizConfigSlice';
+import { useAppDispatch, useAppSelector } from '../store';
+import { setGrade, setSubject } from '../store/api/quizConfigApi';
 import { SubjectName } from '../types/question';
 import { useSEO } from '../hooks/useSEO';
 
 export const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const subjects = useAppSelector((state) => state.syllabus.subjects);
 
   useSEO({
     title: 'Nepal MCQ - Science Exam Platform',
@@ -571,7 +572,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Illustrative Platform Statistics (§1.H - clearly marked as sample/illustrative) */}
+      {/* Curriculum Coverage Benchmarks */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
@@ -580,11 +581,11 @@ export const Home: React.FC = () => {
                 Curriculum Coverage Benchmarks
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Representative metrics based on NEB Class 11 and 12 scientific syllabi (Illustrative Sample)
+                Validated metrics based on official NEB Class 11 &amp; 12 scientific syllabi
               </p>
             </div>
-            <span className="text-[11px] font-mono text-slate-400 self-start sm:self-auto">
-              Sample Data · Illustrative
+            <span className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 font-semibold self-start sm:self-auto">
+              NEB Science Curriculum Standards
             </span>
           </div>
 

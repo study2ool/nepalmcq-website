@@ -29,7 +29,6 @@ export const quizConfigSlice = createSlice({
     },
     setQuestionCount: (state, action: PayloadAction<number>) => {
       state.questionCount = action.payload;
-      // Default duration is 1 min per question
       state.durationMinutes = action.payload;
     },
     setDurationMinutes: (state, action: PayloadAction<number>) => {
@@ -58,4 +57,6 @@ export const {
   loadConfig,
 } = quizConfigSlice.actions;
 
-export default quizConfigSlice.reducer;
+export const quizConfigReducer = quizConfigSlice.reducer;
+export default quizConfigReducer;
+
