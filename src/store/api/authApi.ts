@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from './baseApi';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { apiSlice } from "./baseApi";
 
 export interface User {
   id: string;
@@ -7,11 +7,11 @@ export interface User {
   name: string;
   picture?: string;
   googleId: string;
-  role: 'student' | 'teacher' | 'admin';
+  role: "student" | "teacher" | "admin";
   collegeId?: string;
   collegeName?: string;
   collegeCity?: string;
-  gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
   grade?: 11 | 12;
   isOnboarded?: boolean;
   createdAt: string;
@@ -36,9 +36,9 @@ export interface AuthResponseData {
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMe: builder.query<{ user: User }, void>({
-      query: () => '/auth/me',
+      query: () => "/auth/me",
       transformResponse: (res: any) => res.data,
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
 
     continueWithGoogle: builder.mutation<
@@ -46,35 +46,41 @@ export const authApiSlice = apiSlice.injectEndpoints({
       { credential?: string; code?: string; accessToken?: string }
     >({
       query: (payload) => ({
-        url: '/auth/google',
-        method: 'POST',
+        url: "/auth/google",
+        method: "POST",
         body: payload,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
 
     updateProfile: builder.mutation<
       { user: User; profile: any },
-      { name?: string; school?: string; city?: string; grade?: number; avatarBg?: string }
+      {
+        name?: string;
+        school?: string;
+        city?: string;
+        grade?: number;
+        avatarBg?: string;
+      }
     >({
       query: (updates) => ({
-        url: '/auth/profile',
-        method: 'PATCH',
+        url: "/auth/profile",
+        method: "PATCH",
         body: updates,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['User', 'Leaderboard', 'Dashboard'],
+      invalidatesTags: ["User", "Leaderboard", "Dashboard"],
     }),
 
     logout: builder.mutation<{ loggedOut: boolean }, string | void>({
       query: (tokenParam) => ({
-        url: '/auth/logout',
-        method: 'POST',
+        url: "/auth/logout",
+        method: "POST",
         body: tokenParam ? { token: tokenParam } : {},
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['User', 'Dashboard', 'History'],
+      invalidatesTags: ["User", "Dashboard", "History"],
     }),
   }),
 });
@@ -88,17 +94,19 @@ export const {
 } = authApiSlice;
 
 // Auth State Management
-const savedToken = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-const savedUser: User | null = typeof window !== 'undefined'
-  ? (() => {
-      try {
-        const stored = localStorage.getItem('auth_user');
-        return stored ? (JSON.parse(stored) as User) : null;
-      } catch {
-        return null;
-      }
-    })()
-  : null;
+const savedToken =
+  typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+const savedUser: User | null =
+  typeof window !== "undefined"
+    ? (() => {
+        try {
+          const stored = localStorage.getItem("auth_user");
+          return stored ? (JSON.parse(stored) as User) : null;
+        } catch {
+          return null;
+        }
+      })()
+    : null;
 
 const initialState: AuthState = {
   user: savedUser,
@@ -110,62 +118,81 @@ const initialState: AuthState = {
 };
 
 export const fetchCurrentUser = createAsyncThunk(
-  'auth/fetchCurrentUser',
+  "auth/fetchCurrentUser",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const data = await dispatch(authApiSlice.endpoints.getMe.initiate()).unwrap();
+      const data = await dispatch(
+        authApiSlice.endpoints.getMe.initiate(),
+      ).unwrap();
       return data.user;
     } catch (err: any) {
-      return rejectWithValue(err?.data?.error || err?.message || 'Authentication error');
+      return rejectWithValue(
+        err?.data?.error || err?.message || "Authentication error",
+      );
     }
-  }
+  },
 );
 
 export const loginWithGoogle = createAsyncThunk(
-  'auth/loginWithGoogle',
+  "auth/loginWithGoogle",
   async (
     payload: { credential?: string; code?: string; accessToken?: string },
-    { dispatch, rejectWithValue }
+    { dispatch, rejectWithValue },
   ) => {
     try {
-      const data = await dispatch(authApiSlice.endpoints.continueWithGoogle.initiate(payload)).unwrap();
+      const data = await dispatch(
+        authApiSlice.endpoints.continueWithGoogle.initiate(payload),
+      ).unwrap();
       return data;
     } catch (err: any) {
-      return rejectWithValue(err?.data?.error || err?.message || 'Google login failed');
+      return rejectWithValue(
+        err?.data?.error || err?.message || "Google login failed",
+      );
     }
-  }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
+  "auth/logoutUser",
   async (_, { dispatch, getState }) => {
     const state = getState() as any;
     const activeToken =
       state.auth?.token ||
-      (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
+      (typeof window !== "undefined"
+        ? localStorage.getItem("auth_token")
+        : null);
     if (activeToken) {
       try {
-        await dispatch(authApiSlice.endpoints.logout.initiate(activeToken)).unwrap();
+        await dispatch(
+          authApiSlice.endpoints.logout.initiate(activeToken),
+        ).unwrap();
       } catch (e) {
         // ignore logout errors
       }
     }
-  }
+  },
 );
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    setToken(state, action: PayloadAction<string | { token: string; user?: User }>) {
-      const token = typeof action.payload === 'string' ? action.payload : action.payload.token;
-      const user = typeof action.payload === 'object' ? action.payload.user : undefined;
+    setToken(
+      state,
+      action: PayloadAction<string | { token: string; user?: User }>,
+    ) {
+      const token =
+        typeof action.payload === "string"
+          ? action.payload
+          : action.payload.token;
+      const user =
+        typeof action.payload === "object" ? action.payload.user : undefined;
       state.token = token;
       state.isAuthenticated = true;
-      localStorage.setItem('auth_token', token);
+      localStorage.setItem("auth_token", token);
       if (user) {
         state.user = user;
-        localStorage.setItem('auth_user', JSON.stringify(user));
+        localStorage.setItem("auth_user", JSON.stringify(user));
       }
     },
     logout(state) {
@@ -174,8 +201,8 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isLoading = false;
       state.error = null;
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
     },
     openAuthModal(state) {
       state.isAuthModalOpen = true;
@@ -191,7 +218,7 @@ export const authSlice = createSlice({
           ...state.user,
           ...action.payload,
         };
-        localStorage.setItem('auth_user', JSON.stringify(state.user));
+        localStorage.setItem("auth_user", JSON.stringify(state.user));
       }
     },
     clearAuthError(state) {
@@ -209,27 +236,27 @@ export const authSlice = createSlice({
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.isLoading = false;
         const user = { ...action.payload };
-        if (user.email.toLowerCase() === 'study2ool.nepal@gmail.com') {
-          user.role = 'admin';
+        if (user.email.toLowerCase() === "study2ool.nepal@gmail.com") {
+          user.role = "admin";
         }
         state.user = user;
         state.isAuthenticated = true;
-        localStorage.setItem('auth_user', JSON.stringify(user));
+        localStorage.setItem("auth_user", JSON.stringify(user));
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
         state.isLoading = false;
-        const errMsg = String(action.payload || '');
+        const errMsg = String(action.payload || "");
         if (
-          errMsg.includes('401') ||
-          errMsg.includes('expired') ||
-          errMsg.includes('revoked') ||
-          errMsg.includes('No auth token')
+          errMsg.includes("401") ||
+          errMsg.includes("expired") ||
+          errMsg.includes("revoked") ||
+          errMsg.includes("No auth token")
         ) {
           state.user = null;
           state.token = null;
           state.isAuthenticated = false;
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('auth_user');
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_user");
         }
         state.error = action.payload as string;
       });
@@ -242,16 +269,16 @@ export const authSlice = createSlice({
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
         state.isLoading = false;
         const user = { ...action.payload.user };
-        if (user.email.toLowerCase() === 'study2ool.nepal@gmail.com') {
-          user.role = 'admin';
+        if (user.email.toLowerCase() === "study2ool.nepal@gmail.com") {
+          user.role = "admin";
         }
         state.user = user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.isAuthModalOpen = false;
         state.error = null;
-        localStorage.setItem('auth_token', action.payload.token);
-        localStorage.setItem('auth_user', JSON.stringify(user));
+        localStorage.setItem("auth_token", action.payload.token);
+        localStorage.setItem("auth_user", JSON.stringify(user));
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
         state.isLoading = false;
