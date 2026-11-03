@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiSlice } from './baseApi';
-import { firebaseAuthService } from '../../services/firebaseAuth';
 
 export interface User {
   id: string;
@@ -130,11 +129,6 @@ export const loginWithGoogle = createAsyncThunk(
   ) => {
     try {
       const data = await dispatch(authApiSlice.endpoints.continueWithGoogle.initiate(payload)).unwrap();
-
-      if (data?.token) {
-        firebaseAuthService.signInWithCustomToken(data.token).catch(() => {});
-      }
-
       return data;
     } catch (err: any) {
       return rejectWithValue(err?.data?.error || err?.message || 'Google login failed');
@@ -149,11 +143,6 @@ export const logoutUser = createAsyncThunk(
     const activeToken =
       state.auth?.token ||
       (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
-    try {
-      await firebaseAuthService.signOut();
-    } catch (e) {
-      console.warn('Firebase signOut notice:', e);
-    }
     if (activeToken) {
       try {
         await dispatch(authApiSlice.endpoints.logout.initiate(activeToken)).unwrap();
@@ -187,7 +176,6 @@ export const authSlice = createSlice({
       state.error = null;
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
-      firebaseAuthService.signOut().catch(() => {});
     },
     openAuthModal(state) {
       state.isAuthModalOpen = true;

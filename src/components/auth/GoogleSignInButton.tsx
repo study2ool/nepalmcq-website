@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GoogleIcon } from './GoogleIcon';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { loginWithGoogle } from '../../store/api/authApi';
-import { isFirebaseClientConfigured } from '../../config/firebase';
-import { firebaseAuthService } from '../../services/firebaseAuth';
 import { Loader2 } from 'lucide-react';
 
 interface GoogleSignInButtonProps {
@@ -32,11 +30,9 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   const hiddenBtnRef = useRef<HTMLDivElement>(null);
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-  const hasFirebase = isFirebaseClientConfigured();
 
   useEffect(() => {
-    // If Firebase is configured, Firebase handles Google Auth popups natively
-    if (hasFirebase || !googleClientId) return;
+    if (!googleClientId) return;
 
     if (window.google?.accounts?.id) {
       initGis();
@@ -82,27 +78,10 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
         console.warn('Google Identity Services init error:', err);
       }
     }
-  }, [googleClientId, hasFirebase, dispatch, onSuccess]);
+  }, [googleClientId, dispatch, onSuccess]);
 
   const handleSignInClick = async () => {
-    // 1. Firebase Google Auth Popup Flow
-    if (hasFirebase) {
-      try {
-        setLocalLoading(true);
-        const { idToken } = await firebaseAuthService.signInWithGoogle();
-        const res = await dispatch(loginWithGoogle({ credential: idToken }));
-        if (loginWithGoogle.fulfilled.match(res)) {
-          onSuccess?.();
-        }
-      } catch (err: any) {
-        console.error('Firebase Google sign-in failed:', err);
-      } finally {
-        setLocalLoading(false);
-      }
-      return;
-    }
-
-    // 2. Google OAuth2 Token Client Popup (Instant browser popup, no redirect URI issues)
+    // 1. Google OAuth2 Token Client Popup (Instant browser popup, no redirect URI issues)
     if (window.google?.accounts?.oauth2 && googleClientId) {
       try {
         setLocalLoading(true);
@@ -135,7 +114,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       }
     }
 
-    // 3. Google Identity Services Flow (In-browser button)
+    // 2. Google Identity Services Flow (In-browser button)
     if (gisLoaded && window.google?.accounts?.id) {
       const googleBtn = hiddenBtnRef.current?.querySelector(
         'div[role="button"], button',
@@ -150,7 +129,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       return;
     }
 
-    // 4. Fallback: Backend OAuth consent redirect
+    // 3. Fallback: Direct Backend OAuth consent redirect via pure API
     const apiBase = import.meta.env.VITE_API_BASE_URL || '/api/v1';
     window.location.href = `${apiBase}/auth/google`;
   };
