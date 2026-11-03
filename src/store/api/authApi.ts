@@ -11,7 +11,7 @@ export interface User {
   collegeId?: string;
   collegeName?: string;
   collegeCity?: string;
-  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  gender?: "male" | "female" | "other";
   grade?: 11 | 12;
   isOnboarded?: boolean;
   createdAt: string;

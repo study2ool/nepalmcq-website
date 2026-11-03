@@ -88,15 +88,15 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
                 XP
               </span>
             </div>
-            <div className="flex items-center justify-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold font-mono">
-                <Target className="w-3.5 h-3.5" />
-                {student.overallAccuracy}% acc
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-0.5 sm:gap-1 text-emerald-600 dark:text-emerald-400 font-semibold font-mono whitespace-nowrap">
+                <Target className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <span>{student.overallAccuracy}% acc</span>
               </span>
-              <span>·</span>
-              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold font-mono">
-                <Flame className="w-3.5 h-3.5" />
-                {student.streakDays}d streak
+              <span className="hidden sm:inline">·</span>
+              <span className="flex items-center gap-0.5 sm:gap-1 text-amber-600 dark:text-amber-400 font-semibold font-mono whitespace-nowrap">
+                <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <span>{student.streakDays}d streak</span>
               </span>
             </div>
             <div className="text-[11px] text-slate-400 pt-1">

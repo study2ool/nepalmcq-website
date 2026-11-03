@@ -29,6 +29,7 @@ export const apiSlice = createApi({
     'AdminUsers',
     'AdminSchools',
     'AccountDeletions',
+    'ContactInquiries',
     'Bookmarks',
     'Syllabus',
   ],

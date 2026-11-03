@@ -149,28 +149,29 @@ export const ResultPage: React.FC = () => {
       {/* Top action bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl shrink-0 self-start sm:self-auto">
+        <div className="flex w-full sm:w-auto items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer text-center ${
               activeTab === "overview"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            Performance Overview
+            Overview
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("review")}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer text-center ${
               activeTab === "review"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            Review All Solutions ({currentResult.totalQuestions})
+            <span>Review Solutions</span>
+            <span className="hidden sm:inline"> ({currentResult.totalQuestions})</span>
           </button>
         </div>
 

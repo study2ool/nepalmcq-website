@@ -17,6 +17,15 @@ import {
   Sparkles,
   ChevronRight,
   TrendingUp,
+  MessageSquare,
+  Mail,
+  Inbox,
+  Filter,
+  CheckCircle,
+  Eye,
+  ExternalLink,
+  RefreshCw,
+  BarChart3,
 } from "lucide-react";
 import {
   useGetAdminStatsQuery,
@@ -27,14 +36,20 @@ import {
   useCreateAdminSchoolMutation,
   useUpdateAdminSchoolMutation,
   useDeleteAdminSchoolMutation,
+  useGetAdminInquiriesQuery,
+  useUpdateAdminInquiryMutation,
+  useDeleteAdminInquiryMutation,
+  useSyncPlatformAnalyticsMutation,
   AdminStats,
   AdminSchool,
+  type ContactInquiry,
+  type PlatformAnalytics,
 } from "../store/api/apiSlice";
 import type { User } from "../store/api/authApi";
 import { SearchableSelect } from "../components/common/SearchableSelect";
 import { useSEO } from "../hooks/useSEO";
 
-type AdminTab = "overview" | "users" | "schools";
+type AdminTab = "overview" | "users" | "schools" | "inquiries";
 
 export const AdminPage: React.FC = () => {
   useSEO({
@@ -51,13 +66,42 @@ export const AdminPage: React.FC = () => {
   const { data: schools = [], isLoading: isSchoolsLoading } =
     useGetAdminSchoolsQuery();
 
+  // Inquiries Filter & Selection State
+  const [inquirySearch, setInquirySearch] = useState("");
+  const [inquiryCategoryFilter, setInquiryCategoryFilter] = useState("all");
+  const [inquiryStatusFilter, setInquiryStatusFilter] = useState("all");
+  const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(null);
+  const [inquiryAdminNotes, setInquiryAdminNotes] = useState("");
+  const [isUpdatingInquiry, setIsUpdatingInquiry] = useState(false);
+
+  const { data: inquiries = [], isLoading: isInquiriesLoading } =
+    useGetAdminInquiriesQuery({
+      search: inquirySearch,
+      category: inquiryCategoryFilter,
+      status: inquiryStatusFilter,
+    });
+
   const [updateUserMutation] = useUpdateAdminUserMutation();
   const [deleteUserMutation] = useDeleteAdminUserMutation();
   const [createSchoolMutation] = useCreateAdminSchoolMutation();
   const [updateSchoolMutation] = useUpdateAdminSchoolMutation();
   const [deleteSchoolMutation] = useDeleteAdminSchoolMutation();
+  const [updateInquiryMutation] = useUpdateAdminInquiryMutation();
+  const [deleteInquiryMutation] = useDeleteAdminInquiryMutation();
+  const [syncAnalytics, { isLoading: isSyncingAnalytics }] =
+    useSyncPlatformAnalyticsMutation();
 
-  const isLoading = isStatsLoading || isUsersLoading || isSchoolsLoading;
+  const handleSyncAnalytics = async () => {
+    try {
+      await syncAnalytics().unwrap();
+      showNotification("success", "Analytics collection recalculated and synced successfully!");
+    } catch (err: any) {
+      showNotification("error", err?.data?.error || err.message || "Failed to sync analytics");
+    }
+  };
+
+  const isLoading =
+    isStatsLoading || isUsersLoading || isSchoolsLoading || isInquiriesLoading;
   const [actionMessage, setActionMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -66,7 +110,7 @@ export const AdminPage: React.FC = () => {
   // User Filter State
   const [userSearch, setUserSearch] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
-  const [userGradeFilter, setUserGradeFilter] = useState(0);
+  const [userStatusFilter, setUserStatusFilter] = useState("all");
 
   // School Filter State
   const [schoolSearch, setSchoolSearch] = useState("");
@@ -84,7 +128,7 @@ export const AdminPage: React.FC = () => {
     isPopular: false,
   });
   const [deleteConfirm, setDeleteConfirm] = useState<{
-    type: "user" | "school";
+    type: "user" | "school" | "inquiry";
     id: string;
     name: string;
   } | null>(null);
@@ -94,6 +138,12 @@ export const AdminPage: React.FC = () => {
     setActionMessage({ type, text });
     setTimeout(() => setActionMessage(null), 4000);
   };
+
+  // School-Wise Analytics List
+  const schoolAnalyticsList = useMemo(() => {
+    const sw = stats?.analytics?.schoolWise || stats?.schoolWise || {};
+    return Object.values(sw).sort((a, b) => b.studentCount - a.studentCount);
+  }, [stats]);
 
   // Filtered Users
   const filteredUsers = useMemo(() => {
@@ -106,11 +156,15 @@ export const AdminPage: React.FC = () => {
           u.collegeName.toLowerCase().includes(userSearch.toLowerCase()));
 
       const matchesRole = userRoleFilter === "all" || u.role === userRoleFilter;
-      const matchesGrade = userGradeFilter === 0 || u.grade === userGradeFilter;
+      const isOnboarded = Boolean(u.collegeId || u.gender);
+      const matchesStatus =
+        userStatusFilter === "all" ||
+        (userStatusFilter === "onboarded" && isOnboarded) ||
+        (userStatusFilter === "pending" && !isOnboarded);
 
-      return matchesSearch && matchesRole && matchesGrade;
+      return matchesSearch && matchesRole && matchesStatus;
     });
-  }, [users, userSearch, userRoleFilter, userGradeFilter]);
+  }, [users, userSearch, userRoleFilter, userStatusFilter]);
 
   // Filtered Schools
   const filteredSchools = useMemo(() => {
@@ -182,15 +236,57 @@ export const AdminPage: React.FC = () => {
       if (deleteConfirm.type === "user") {
         await deleteUserMutation(deleteConfirm.id).unwrap();
         showNotification("success", `Deleted user ${deleteConfirm.name}`);
-      } else {
+      } else if (deleteConfirm.type === "school") {
         await deleteSchoolMutation(deleteConfirm.id).unwrap();
         showNotification("success", `Deleted school ${deleteConfirm.name}`);
+      } else if (deleteConfirm.type === "inquiry") {
+        await deleteInquiryMutation(deleteConfirm.id).unwrap();
+        showNotification("success", `Deleted inquiry ${deleteConfirm.name}`);
+        if (selectedInquiry?.id === deleteConfirm.id) {
+          setSelectedInquiry(null);
+        }
       }
       setDeleteConfirm(null);
     } catch (err: any) {
       showNotification("error", err.message || "Failed to delete item");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateInquiryStatus = async (
+    id: string,
+    status: ContactInquiry["status"],
+  ) => {
+    setIsUpdatingInquiry(true);
+    try {
+      const updated = await updateInquiryMutation({ id, status }).unwrap();
+      if (selectedInquiry?.id === id) {
+        setSelectedInquiry(updated);
+      }
+      showNotification("success", `Inquiry #${id} marked as ${status}`);
+    } catch (err: any) {
+      showNotification("error", err?.data?.error || err.message || "Failed to update inquiry status");
+    } finally {
+      setIsUpdatingInquiry(false);
+    }
+  };
+
+  const handleSaveInquiryNotes = async (id: string) => {
+    setIsUpdatingInquiry(true);
+    try {
+      const updated = await updateInquiryMutation({
+        id,
+        adminNotes: inquiryAdminNotes,
+      }).unwrap();
+      if (selectedInquiry?.id === id) {
+        setSelectedInquiry(updated);
+      }
+      showNotification("success", `Saved notes for inquiry #${id}`);
+    } catch (err: any) {
+      showNotification("error", err?.data?.error || err.message || "Failed to save notes");
+    } finally {
+      setIsUpdatingInquiry(false);
     }
   };
 
@@ -214,43 +310,79 @@ export const AdminPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab switcher */}
-        <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700/80 self-start md:self-auto">
+        {/* Tab switcher & Sync Action */}
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700/80">
+            <button
+              type="button"
+              onClick={() => setActiveTab("overview")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "overview"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <Activity className="w-3.5 h-3.5" />
+              <span>Overview</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("users")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "users"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Users ({users.length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("schools")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "schools"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <School className="w-3.5 h-3.5" />
+              <span>Colleges ({schools.length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("inquiries")}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all relative ${
+                activeTab === "inquiries"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Inquiries ({inquiries.length})</span>
+              {stats?.pendingInquiries && stats.pendingInquiries > 0 ? (
+                <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-extrabold bg-amber-500 text-white rounded-full">
+                  {stats.pendingInquiries}
+                </span>
+              ) : null}
+            </button>
+          </div>
+
           <button
             type="button"
-            onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === "overview"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
+            onClick={handleSyncAnalytics}
+            disabled={isSyncingAnalytics}
+            title="Recalculate & Sync Analytics Collection"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs transition-all disabled:opacity-60"
           >
-            <Activity className="w-3.5 h-3.5" />
-            <span>Overview</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("users")}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === "users"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Users ({users.length})</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("schools")}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === "schools"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <School className="w-3.5 h-3.5" />
-            <span>Colleges ({schools.length})</span>
+            <RefreshCw
+              className={`w-3.5 h-3.5 text-indigo-500 ${
+                isSyncingAnalytics ? "animate-spin" : ""
+              }`}
+            />
+            <span className="hidden sm:inline">
+              {isSyncingAnalytics ? "Syncing..." : "Sync Analytics"}
+            </span>
           </button>
         </div>
       </div>
@@ -286,7 +418,7 @@ export const AdminPage: React.FC = () => {
       {activeTab === "overview" && (
         <div className="space-y-8 animate-fadeIn">
           {/* Key Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-xs font-semibold uppercase tracking-wider">
@@ -350,36 +482,77 @@ export const AdminPage: React.FC = () => {
                 Avg. Score: {stats?.averageScore ?? 0} marks / exam
               </p>
             </div>
+
+            <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs col-span-2 sm:col-span-1">
+              <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+                <span className="text-xs font-semibold uppercase tracking-wider">
+                  Contact Inquiries
+                </span>
+                <MessageSquare className="w-4 h-4 text-rose-500" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                {stats?.totalInquiries ?? inquiries.length}
+              </p>
+              <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-500">
+                <span className="text-amber-600 dark:text-amber-400 font-bold">
+                  {stats?.pendingInquiries ??
+                    inquiries.filter((i) => i.status === "pending").length}{" "}
+                  Pending
+                </span>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("inquiries")}
+                  className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
+                >
+                  Manage &rarr;
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Demographic Breakdown & System Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Grade Distribution */}
+            {/* Student Onboarding & Demographics */}
             <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-indigo-500" />
-                <span>Grade Level Distribution</span>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-indigo-500" />
+                  <span>Student Onboarding</span>
+                </div>
+                <span className="text-[11px] font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-full">
+                  {stats?.totalStudents && stats.totalStudents > 0
+                    ? Math.round(
+                        ((stats.onboardedCount || 0) / stats.totalStudents) *
+                          100,
+                      )
+                    : 0}
+                  % Complete
+                </span>
               </h3>
-              <div className="space-y-3 text-xs">
+              <div className="space-y-4 text-xs">
                 <div>
                   <div className="flex justify-between font-semibold mb-1">
                     <span className="text-slate-600 dark:text-slate-300">
-                      Class 11 Science
+                      Profile Completed
                     </span>
-                    <span className="text-slate-900 dark:text-white font-bold font-mono">
-                      {stats?.gradeDistribution["11"] ?? 0}
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                      {stats?.onboardedCount ?? 0}
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-indigo-600 h-full rounded-full transition-all"
+                      className="bg-emerald-500 h-full rounded-full transition-all"
                       style={{
                         width: `${
-                          users.length > 0
-                            ? Math.round(
-                                ((stats?.gradeDistribution["11"] ?? 0) /
-                                  users.length) *
-                                  100,
+                          stats?.totalStudents && stats.totalStudents > 0
+                            ? Math.min(
+                                100,
+                                Math.round(
+                                  ((stats.onboardedCount || 0) /
+                                    stats.totalStudents) *
+                                    100,
+                                ),
                               )
                             : 0
                         }%`,
@@ -391,22 +564,33 @@ export const AdminPage: React.FC = () => {
                 <div>
                   <div className="flex justify-between font-semibold mb-1">
                     <span className="text-slate-600 dark:text-slate-300">
-                      Class 12 Science
+                      Pending Onboarding
                     </span>
-                    <span className="text-slate-900 dark:text-white font-bold font-mono">
-                      {stats?.gradeDistribution["12"] ?? 0}
+                    <span className="text-amber-600 dark:text-amber-400 font-bold font-mono">
+                      {Math.max(
+                        0,
+                        (stats?.totalStudents ?? 0) -
+                          (stats?.onboardedCount ?? 0),
+                      )}
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-purple-600 h-full rounded-full transition-all"
+                      className="bg-amber-500 h-full rounded-full transition-all"
                       style={{
                         width: `${
-                          users.length > 0
-                            ? Math.round(
-                                ((stats?.gradeDistribution["12"] ?? 0) /
-                                  users.length) *
-                                  100,
+                          stats?.totalStudents && stats.totalStudents > 0
+                            ? Math.min(
+                                100,
+                                Math.round(
+                                  (Math.max(
+                                    0,
+                                    stats.totalStudents -
+                                      (stats.onboardedCount || 0),
+                                  ) /
+                                    stats.totalStudents) *
+                                    100,
+                                ),
                               )
                             : 0
                         }%`,
@@ -415,58 +599,68 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-600 dark:text-slate-300">
-                      Unspecified / Guest
-                    </span>
-                    <span className="text-slate-900 dark:text-white font-bold font-mono">
-                      {stats?.gradeDistribution["unspecified"] ?? 0}
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-slate-400 h-full rounded-full transition-all"
-                      style={{
-                        width: `${
-                          users.length > 0
-                            ? Math.round(
-                                ((stats?.gradeDistribution["unspecified"] ??
-                                  0) /
-                                  users.length) *
-                                  100,
-                              )
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-slate-500">
+                  <span>Total Registered Students:</span>
+                  <span className="font-bold text-slate-900 dark:text-white font-mono">
+                    {stats?.totalStudents ?? stats?.usersByRole.student ?? 0}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Gender Demographics */}
             <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <Users className="w-4 h-4 text-emerald-500" />
-                <span>Gender Demographics</span>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-500" />
+                  <span>Gender Demographics</span>
+                </div>
+                <span className="text-[11px] font-mono text-slate-400">
+                  {(stats?.genderDistribution?.male || 0) +
+                    (stats?.genderDistribution?.female || 0) +
+                    (stats?.genderDistribution?.other || 0)}{" "}
+                  Total
+                </span>
               </h3>
-              <div className="space-y-2 text-xs">
-                {Object.entries(stats?.genderDistribution || {}).map(
-                  ([key, val]) => (
-                    <div
-                      key={key}
-                      className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60"
-                    >
-                      <span className="capitalize font-medium text-slate-700 dark:text-slate-300">
-                        {key.replace(/_/g, " ")}
-                      </span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-white">
-                        {val}
-                      </span>
-                    </div>
-                  ),
-                )}
+              <div className="space-y-2.5 text-xs">
+                {/* Male */}
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Male
+                    </span>
+                  </div>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    {stats?.genderDistribution?.male ?? 0}
+                  </span>
+                </div>
+
+                {/* Female */}
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shrink-0" />
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Female
+                    </span>
+                  </div>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    {stats?.genderDistribution?.female ?? 0}
+                  </span>
+                </div>
+
+                {/* Other */}
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0" />
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      Other
+                    </span>
+                  </div>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    {stats?.genderDistribution?.other ?? 0}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -500,6 +694,115 @@ export const AdminPage: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* School-Wise & School-Gender Wise Analytics Table */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-indigo-500" />
+                  <span>College-Wise Demographics &amp; Gender Breakdown</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Aggregated in real-time from single platform summary document (Zero full-table scans)
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500 font-mono">
+                  {schoolAnalyticsList.length} colleges with active students
+                </span>
+              </div>
+            </div>
+
+            {schoolAnalyticsList.length === 0 ? (
+              <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+                <School className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
+                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  No college enrollments recorded yet.
+                </p>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  As students complete their onboarding profile and pick a college, metrics update automatically.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto -mx-6 sm:mx-0">
+                <table className="w-full text-left text-xs min-w-[580px]">
+                  <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase tracking-wider text-[11px]">
+                    <tr>
+                      <th className="py-3 px-4 sm:px-6">College / School</th>
+                      <th className="py-3 px-4">City</th>
+                      <th className="py-3 px-4 text-center">Enrolled Students</th>
+                      <th className="py-3 px-4">Gender Breakdown</th>
+                      <th className="py-3 px-4 text-right">Share</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {schoolAnalyticsList.map((item, idx) => {
+                      const sharePct =
+                        stats?.totalStudents && stats.totalStudents > 0
+                          ? Math.round(
+                              (item.studentCount / stats.totalStudents) * 100,
+                            )
+                          : 0;
+
+                      return (
+                        <tr
+                          key={item.collegeId || idx}
+                          className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                        >
+                          <td className="py-3 px-4 sm:px-6">
+                            <div className="flex items-center gap-2.5">
+                              <span className="w-5 h-5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold flex items-center justify-center shrink-0">
+                                #{idx + 1}
+                              </span>
+                              <span className="font-bold text-slate-900 dark:text-white">
+                                {item.name}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-slate-600 dark:text-slate-300">
+                            {item.city || "Nepal"}
+                          </td>
+                          <td className="py-3 px-4 text-center font-mono font-bold text-slate-900 dark:text-white">
+                            {item.studentCount}
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                              {(item.male ?? 0) > 0 && (
+                                <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold font-mono">
+                                  {item.male} Male
+                                </span>
+                              )}
+                              {(item.female ?? 0) > 0 && (
+                                <span className="px-2 py-0.5 rounded-md bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 font-semibold font-mono">
+                                  {item.female} Female
+                                </span>
+                              )}
+                              {(item.other ?? 0) > 0 && (
+                                <span className="px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-semibold font-mono">
+                                  {item.other} Other
+                                </span>
+                              )}
+                              {!(item.male > 0) &&
+                                !(item.female > 0) &&
+                                !(item.other > 0) && (
+                                  <span className="text-slate-400 italic">
+                                    -
+                                  </span>
+                                )}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-semibold text-slate-600 dark:text-slate-400">
+                            {sharePct}%
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           {/* Recent Platform Activity */}
@@ -648,14 +951,14 @@ export const AdminPage: React.FC = () => {
 
               <SearchableSelect
                 options={[
-                  { value: 0, label: "All Grades" },
-                  { value: 11, label: "Class 11" },
-                  { value: 12, label: "Class 12" },
+                  { value: "all", label: "All Statuses" },
+                  { value: "onboarded", label: "Onboarded" },
+                  { value: "pending", label: "Pending Setup" },
                 ]}
-                value={userGradeFilter}
-                onChange={(val) => setUserGradeFilter(Number(val))}
-                searchPlaceholder="Search grades..."
-                className="w-32"
+                value={userStatusFilter}
+                onChange={(val) => setUserStatusFilter(String(val))}
+                searchPlaceholder="Search status..."
+                className="w-36"
                 buttonClassName="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium"
               />
             </div>
@@ -670,7 +973,7 @@ export const AdminPage: React.FC = () => {
                     <th className="py-3.5 px-4 sm:px-6">User</th>
                     <th className="py-3.5 px-4">Role</th>
                     <th className="py-3.5 px-4">College / School</th>
-                    <th className="py-3.5 px-4 text-center">Grade</th>
+                    <th className="py-3.5 px-4 text-center">Status</th>
                     <th className="py-3.5 px-4 text-center">Gender</th>
                     <th className="py-3.5 px-4">Last Active</th>
                     <th className="py-3.5 px-4 text-right">Actions</th>
@@ -738,18 +1041,24 @@ export const AdminPage: React.FC = () => {
                         )}
                       </td>
 
-                      {/* Grade */}
-                      <td className="py-3.5 px-4 text-center font-mono">
-                        {u.grade ? (
-                          `Class ${u.grade}`
+                      {/* Onboarding Status */}
+                      <td className="py-3.5 px-4 text-center">
+                        {u.collegeId || u.gender ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
+                            <CheckCircle2 className="w-2.5 h-2.5" />
+                            <span>Onboarded</span>
+                          </span>
                         ) : (
-                          <span className="text-slate-400">-</span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400">
+                            <Clock className="w-2.5 h-2.5" />
+                            <span>Pending</span>
+                          </span>
                         )}
                       </td>
 
                       {/* Gender */}
                       <td className="py-3.5 px-4 text-center capitalize">
-                        {u.gender && u.gender !== "prefer_not_to_say" ? (
+                        {u.gender ? (
                           u.gender
                         ) : (
                           <span className="text-slate-400">-</span>
@@ -947,6 +1256,258 @@ export const AdminPage: React.FC = () => {
                         className="py-12 text-center text-slate-400"
                       >
                         No colleges match your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: CONTACT & ACADEMIC INQUIRIES */}
+      {activeTab === "inquiries" && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Header & Filter Controls */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                  <span>Academic Inquiries &amp; Feedback Queue</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Review student question typo reports, college partnership proposals, and curriculum feedback.
+                </p>
+              </div>
+
+              {/* Status Tabs */}
+              <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700/80">
+                {(["all", "pending", "reviewed", "resolved", "archived"] as const).map(
+                  (st) => {
+                    const count =
+                      st === "all"
+                        ? inquiries.length
+                        : inquiries.filter((i) => i.status === st).length;
+                    return (
+                      <button
+                        key={st}
+                        type="button"
+                        onClick={() => setInquiryStatusFilter(st)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${
+                          inquiryStatusFilter === st
+                            ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                            : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                        }`}
+                      >
+                        {st} ({count})
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+            </div>
+
+            {/* Search and Category Filter Bar */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+              <div className="sm:col-span-8 relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={inquirySearch}
+                  onChange={(e) => setInquirySearch(e.target.value)}
+                  placeholder="Search by sender name, email, subject, or #ID..."
+                  className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="sm:col-span-4">
+                <select
+                  value={inquiryCategoryFilter}
+                  onChange={(e) => setInquiryCategoryFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="question_feedback">Question Bank &amp; Answer Key</option>
+                  <option value="technical_issue">Technical &amp; Platform</option>
+                  <option value="college_partnership">College Partnership</option>
+                  <option value="curriculum_request">Curriculum &amp; Syllabus</option>
+                  <option value="account_support">Account &amp; Data Support</option>
+                  <option value="general">General Inquiries</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Inquiries Table View */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th className="py-3.5 px-4 sm:px-6">Sender Details</th>
+                    <th className="py-3.5 px-4">Category &amp; Subject</th>
+                    <th className="py-3.5 px-4 text-center">Status</th>
+                    <th className="py-3.5 px-4">Submitted At</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {inquiries.map((inq) => {
+                    const categoryColors: Record<string, string> = {
+                      question_feedback:
+                        "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60",
+                      technical_issue:
+                        "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60",
+                      college_partnership:
+                        "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800/60",
+                      curriculum_request:
+                        "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800/60",
+                      account_support:
+                        "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/60",
+                      general:
+                        "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+                    };
+                    const catClass =
+                      categoryColors[inq.category] || categoryColors.general;
+
+                    return (
+                      <tr
+                        key={inq.id}
+                        className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                      >
+                        {/* Sender */}
+                        <td className="py-3.5 px-4 sm:px-6">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                              {inq.name.charAt(0) || "U"}
+                            </div>
+                            <div className="min-w-0 max-w-xs">
+                              <p className="font-bold text-slate-900 dark:text-white truncate">
+                                {inq.name}
+                              </p>
+                              <a
+                                href={`mailto:${inq.email}`}
+                                className="text-[11px] text-slate-500 hover:text-indigo-600 dark:text-slate-400 truncate block"
+                              >
+                                {inq.email}
+                              </a>
+                              <span className="inline-block mt-0.5 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 capitalize">
+                                {inq.role.replace(/_/g, " ")}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Category & Subject */}
+                        <td className="py-3.5 px-4 max-w-md">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${catClass}`}
+                              >
+                                {inq.category.replace(/_/g, " ")}
+                              </span>
+                              <span className="text-[10px] font-mono text-slate-400">
+                                #{inq.id}
+                              </span>
+                            </div>
+                            <p className="font-bold text-slate-900 dark:text-white truncate">
+                              {inq.subject}
+                            </p>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                              {inq.message}
+                            </p>
+                          </div>
+                        </td>
+
+                        {/* Status */}
+                        <td className="py-3.5 px-4 text-center">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold capitalize ${
+                              inq.status === "pending"
+                                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400"
+                                : inq.status === "reviewed"
+                                ? "bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400"
+                                : inq.status === "resolved"
+                                ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            }`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                inq.status === "pending"
+                                  ? "bg-amber-500 animate-pulse"
+                                  : inq.status === "reviewed"
+                                  ? "bg-blue-500"
+                                  : inq.status === "resolved"
+                                  ? "bg-emerald-500"
+                                  : "bg-slate-400"
+                              }`}
+                            />
+                            {inq.status}
+                          </span>
+                        </td>
+
+                        {/* Submitted At */}
+                        <td className="py-3.5 px-4 text-slate-500 text-[11px]">
+                          <div>
+                            {new Date(inq.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </div>
+                          <span className="text-[10px] text-slate-400">
+                            {new Date(inq.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="py-3.5 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              title="View and Manage Inquiry"
+                              onClick={() => {
+                                setSelectedInquiry(inq);
+                                setInquiryAdminNotes(inq.adminNotes || "");
+                              }}
+                              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>View</span>
+                            </button>
+                            <button
+                              type="button"
+                              title="Delete Inquiry"
+                              onClick={() =>
+                                setDeleteConfirm({
+                                  type: "inquiry",
+                                  id: inq.id,
+                                  name: `Inquiry #${inq.id} (${inq.subject})`,
+                                })
+                              }
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {inquiries.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                        <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
+                        <p className="font-semibold text-xs text-slate-600 dark:text-slate-400">
+                          No inquiries match the current filter.
+                        </p>
                       </td>
                     </tr>
                   )}
@@ -1158,10 +1719,183 @@ export const AdminPage: React.FC = () => {
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleConfirmDelete}
-                className="px-4 py-2 text-xs font-bold rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-xs disabled:opacity-60"
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-xs disabled:opacity-60 cursor-pointer"
               >
                 {isSubmitting ? "Deleting..." : "Delete Permanently"}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: INQUIRY DETAILS & REPLY */}
+      {selectedInquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800">
+                    #{selectedInquiry.id}
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    {selectedInquiry.category.replace(/_/g, " ")}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {selectedInquiry.subject}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedInquiry(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Sender Metadata Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs">
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Sender</span>
+                <span className="font-bold text-slate-900 dark:text-white truncate block">
+                  {selectedInquiry.name}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Email</span>
+                <a
+                  href={`mailto:${selectedInquiry.email}`}
+                  className="font-mono text-indigo-600 dark:text-indigo-400 hover:underline truncate block"
+                >
+                  {selectedInquiry.email}
+                </a>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Role</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300 capitalize block">
+                  {selectedInquiry.role.replace(/_/g, " ")}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Date</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300 block">
+                  {new Date(selectedInquiry.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+
+            {/* Inquiry Message Body */}
+            <div>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wider">
+                Inquiry Message
+              </label>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80 text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap font-sans">
+                {selectedInquiry.message}
+              </div>
+            </div>
+
+            {/* Status Selector */}
+            <div>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wider">
+                Status Resolution
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(["pending", "reviewed", "resolved", "archived"] as const).map((st) => (
+                  <button
+                    key={st}
+                    type="button"
+                    disabled={isUpdatingInquiry}
+                    onClick={() => handleUpdateInquiryStatus(selectedInquiry.id, st)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold capitalize transition-all border cursor-pointer ${
+                      selectedInquiry.status === st
+                        ? st === "pending"
+                          ? "bg-amber-600 text-white border-amber-600 shadow-xs"
+                          : st === "reviewed"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                          : st === "resolved"
+                          ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                          : "bg-slate-700 text-white border-slate-700 shadow-xs"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Administrator Internal Notes */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Admin Internal Notes
+                </label>
+                <span className="text-[11px] text-slate-400">Visible to team only</span>
+              </div>
+              <textarea
+                rows={3}
+                value={inquiryAdminNotes}
+                onChange={(e) => setInquiryAdminNotes(e.target.value)}
+                placeholder="Add notes about actions taken, response sent, or curriculum updates..."
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <div className="flex justify-end mt-2">
+                <button
+                  type="button"
+                  disabled={isUpdatingInquiry}
+                  onClick={() => handleSaveInquiryNotes(selectedInquiry.id)}
+                  className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white transition-colors cursor-pointer"
+                >
+                  Save Note
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Actions Footer */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteConfirm({
+                    type: "inquiry",
+                    id: selectedInquiry.id,
+                    name: `Inquiry #${selectedInquiry.id} (${selectedInquiry.subject})`,
+                  });
+                }}
+                className="text-xs text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Inquiry</span>
+              </button>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setSelectedInquiry(null)}
+                  className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Close
+                </button>
+                <a
+                  href={`mailto:${selectedInquiry.email}?subject=${encodeURIComponent(
+                    `Re: [Nepal MCQ #${selectedInquiry.id}] ${selectedInquiry.subject}`,
+                  )}&body=${encodeURIComponent(
+                    `Dear ${selectedInquiry.name},\n\nThank you for contacting the Nepal MCQ Academic Team regarding "${selectedInquiry.subject}".\n\n\n---\nNepal MCQ Academic Team\nKathmandu, Nepal`,
+                  )}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-xs cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Reply via Email</span>
+                  <ExternalLink className="w-3 h-3 ml-0.5 opacity-80" />
+                </a>
+              </div>
             </div>
           </div>
         </div>

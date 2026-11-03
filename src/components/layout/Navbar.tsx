@@ -118,6 +118,17 @@ export const Navbar: React.FC = () => {
               {link.label}
             </Link>
           ))}
+          <Link
+            to="/contact"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isActive('/contact')
+                ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
+          >
+            Contact &amp; Support
+          </Link>
 
           {!isAuthenticated && (
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800">

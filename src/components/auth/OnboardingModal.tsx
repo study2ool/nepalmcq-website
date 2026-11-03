@@ -31,8 +31,7 @@ export const OnboardingModal: React.FC = () => {
   const [customCollegeName, setCustomCollegeName] = useState('');
   const [customCity, setCustomCity] = useState('');
   const [isCustomCollege, setIsCustomCollege] = useState(false);
-  const [gender, setGender] = useState<'male' | 'female' | 'other' | 'prefer_not_to_say'>('male');
-  const [grade, setGrade] = useState<11 | 12>(user?.grade || 12);
+  const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -95,7 +94,6 @@ export const OnboardingModal: React.FC = () => {
         collegeCity: finalCity,
         city: finalCity,
         gender,
-        grade,
         name: user.name,
       };
 
@@ -108,7 +106,6 @@ export const OnboardingModal: React.FC = () => {
           collegeName: finalCollegeName,
           collegeCity: finalCity,
           gender,
-          grade,
           isOnboarded: true,
         })
       );
@@ -117,7 +114,6 @@ export const OnboardingModal: React.FC = () => {
         saveUserProfile({
           school: finalCollegeName,
           city: finalCity,
-          grade,
         })
       );
     } catch (err: any) {
@@ -164,34 +160,10 @@ export const OnboardingModal: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Grade Level Selection */}
-          <div>
-            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wider">
-              1. Current Grade / Class
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {[11, 12].map((g) => (
-                <button
-                  key={g}
-                  type="button"
-                  onClick={() => setGrade(g as 11 | 12)}
-                  className={`p-3 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                    grade === g
-                      ? 'border-indigo-600 bg-indigo-50/70 text-indigo-700 dark:bg-indigo-950/50 dark:border-indigo-500 dark:text-indigo-300 ring-2 ring-indigo-500/20'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                  }`}
-                >
-                  <span>Grade {g}</span>
-                  {grade === g && <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Gender Selection */}
           <div>
             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wider">
-              2. Gender
+              1. Gender
             </label>
             <div className="grid grid-cols-3 gap-2.5">
               {[
@@ -220,7 +192,7 @@ export const OnboardingModal: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                3. Your Higher Secondary College
+                2. Your Higher Secondary College / School
               </label>
               <button
                 type="button"

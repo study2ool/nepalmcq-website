@@ -110,7 +110,7 @@ export const UserDropdown: React.FC = () => {
                   Grade {user.grade}
                 </span>
               )}
-              {user.gender && user.gender !== 'prefer_not_to_say' && (
+              {user.gender && (
                 <span className="px-2 py-0.5 text-[10px] font-medium capitalize bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full">
                   {user.gender}
                 </span>

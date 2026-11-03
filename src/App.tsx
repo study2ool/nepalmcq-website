@@ -14,6 +14,7 @@ const Subjects = lazy(() => import('./pages/Subjects'));
 const Practice = lazy(() => import('./pages/Practice'));
 const History = lazy(() => import('./pages/History'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
+const Contact = lazy(() => import('./pages/Contact'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -36,6 +37,7 @@ export default function App() {
                 <Route path="practice" element={<Practice />} />
                 <Route path="leaderboard" element={<Leaderboard />} />
                 <Route path="history" element={<History />} />
+                <Route path="contact" element={<Contact />} />
                 <Route path="auth/callback" element={<AuthCallback />} />
                 <Route
                   path="admin"

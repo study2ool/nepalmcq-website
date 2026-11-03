@@ -313,10 +313,10 @@ export const Dashboard: React.FC = () => {
           </h1>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <Link
             to="/leaderboard"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors shadow-xs"
+            className="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors shadow-xs"
           >
             <Trophy className="w-4 h-4 text-amber-500" />
             <span>Leaderboard {isRanked ? `(#${userRank})` : ""}</span>
@@ -324,7 +324,7 @@ export const Dashboard: React.FC = () => {
 
           <Link
             to="/practice"
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-xs"
+            className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-xs"
           >
             <span>Start Practice</span>
             <ArrowRight className="w-4 h-4" />
@@ -333,12 +333,12 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Leaderboard Standing & School Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-900/50 text-white flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-3.5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-900/50 text-white flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm max-w-full overflow-hidden">
+        <div className="flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
             <Trophy className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs uppercase font-bold text-amber-400 tracking-wider">
                 National Standing
@@ -347,7 +347,7 @@ export const Dashboard: React.FC = () => {
               <span className="text-xs text-slate-300 font-mono">
                 Class {currentUser.grade}
               </span>
-              {authUser?.gender && authUser.gender !== "prefer_not_to_say" && (
+              {authUser?.gender && (
                 <>
                   <span className="text-slate-400">·</span>
                   <span className="text-xs text-indigo-300 capitalize">
@@ -356,7 +356,7 @@ export const Dashboard: React.FC = () => {
                 </>
               )}
             </div>
-            <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5">
+            <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5 truncate">
               {isRanked ? (
                 <>
                   Rank #{userRank} of {totalStudents} Students Nationwide
@@ -368,7 +368,7 @@ export const Dashboard: React.FC = () => {
                 </>
               )}
             </h4>
-            <p className="text-xs text-slate-400 truncate max-w-sm sm:max-w-md flex items-center gap-1.5 mt-0.5">
+            <p className="text-xs text-slate-400 truncate flex items-center gap-1.5 mt-0.5">
               <School className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
               <span className="truncate">
                 Representing{" "}
@@ -382,10 +382,10 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="w-full md:w-auto shrink-0 flex items-center">
           <Link
             to="/leaderboard"
-            className="px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center gap-1.5 shadow-xs whitespace-nowrap"
+            className="w-full md:w-auto justify-center px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors flex items-center gap-1.5 shadow-xs whitespace-nowrap"
           >
             <span>View Full Leaderboard</span>
             <ArrowRight className="w-3.5 h-3.5" />

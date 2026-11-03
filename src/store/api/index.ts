@@ -10,4 +10,5 @@ export * from './syllabusApi';
 export * from './questionBankApi';
 export * from './adminApi';
 export * from './accountDeletionApi';
+export * from './contactApi';
 export * from './themeApi';

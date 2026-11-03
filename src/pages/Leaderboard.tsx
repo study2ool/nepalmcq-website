@@ -169,11 +169,11 @@ export const Leaderboard: React.FC = () => {
         </div>
 
         {/* View Scope Tabs: Students vs Schools */}
-        <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 self-start md:self-auto border border-slate-200 dark:border-slate-700/60">
+        <div className="flex w-full sm:w-auto items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60">
           <button
             type="button"
             onClick={() => dispatch(setScope("students"))}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex-1 sm:flex-none justify-center flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
               scope === "students"
                 ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -186,7 +186,7 @@ export const Leaderboard: React.FC = () => {
           <button
             type="button"
             onClick={() => dispatch(setScope("schools"))}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex-1 sm:flex-none justify-center flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
               scope === "schools"
                 ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"

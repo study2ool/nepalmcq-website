@@ -1,8 +1,36 @@
 import { apiSlice } from './baseApi';
 import type { User } from './authApi';
 
+export interface GenderBreakdown {
+  male: number;
+  female: number;
+  other: number;
+}
+
+export interface SchoolAnalyticsItem {
+  collegeId: string;
+  name: string;
+  city: string;
+  studentCount: number;
+  male: number;
+  female: number;
+  other: number;
+}
+
+export interface PlatformAnalytics {
+  id: string;
+  totalColleges: number;
+  totalStudents: number;
+  totalUsers: number;
+  onboardedCount: number;
+  genderWise: GenderBreakdown;
+  schoolWise: Record<string, SchoolAnalyticsItem>;
+  updatedAt: string;
+}
+
 export interface AdminStats {
   totalUsers: number;
+  totalStudents?: number;
   usersByRole: {
     student: number;
     teacher: number;
@@ -10,7 +38,9 @@ export interface AdminStats {
   };
   onboardedCount: number;
   genderDistribution: Record<string, number>;
-  gradeDistribution: Record<string, number>;
+  gradeDistribution?: Record<string, number>;
+  schoolWise?: Record<string, SchoolAnalyticsItem>;
+  analytics?: PlatformAnalytics;
   totalColleges: number;
   totalAttempts: number;
   totalQuestionsAnswered: number;
@@ -39,6 +69,16 @@ export interface AdminStats {
     topSubject: string;
     nationalRank: number;
   }>;
+  totalInquiries?: number;
+  pendingInquiries?: number;
+  inquiryStats?: {
+    total: number;
+    pending: number;
+    reviewed: number;
+    resolved: number;
+    archived: number;
+    byCategory: Record<string, number>;
+  };
 }
 
 export interface AdminSchool {
@@ -131,6 +171,21 @@ export const adminApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['AdminSchools', 'Colleges', 'AdminStats'],
     }),
+
+    getPlatformAnalytics: builder.query<PlatformAnalytics, void>({
+      query: () => '/admin/analytics',
+      transformResponse: (res: any) => res.data,
+      providesTags: ['AdminStats'],
+    }),
+
+    syncPlatformAnalytics: builder.mutation<PlatformAnalytics, void>({
+      query: () => ({
+        url: '/admin/analytics/sync',
+        method: 'POST',
+      }),
+      transformResponse: (res: any) => res.data,
+      invalidatesTags: ['AdminStats', 'Colleges', 'Leaderboard'],
+    }),
   }),
 });
 
@@ -144,5 +199,7 @@ export const {
   useCreateAdminSchoolMutation,
   useUpdateAdminSchoolMutation,
   useDeleteAdminSchoolMutation,
+  useGetPlatformAnalyticsQuery,
+  useSyncPlatformAnalyticsMutation,
 } = adminApiSlice;
 
