@@ -90,7 +90,6 @@ export const ResultPage: React.FC = () => {
     }
     dispatch(loadConfig(currentResult.config));
     dispatch(startQuiz(currentResult.config));
-    navigate("/exam/active");
   };
 
   // Action: Practice Incorrect Questions
@@ -117,7 +116,6 @@ export const ResultPage: React.FC = () => {
 
     dispatch(loadConfig(customConfig));
     dispatch(startQuiz(customConfig));
-    navigate("/exam/active");
   };
 
   // Action: Practice Unattempted Questions
@@ -144,7 +142,6 @@ export const ResultPage: React.FC = () => {
 
     dispatch(loadConfig(customConfig));
     dispatch(startQuiz(customConfig));
-    navigate("/exam/active");
   };
 
   return (

@@ -43,7 +43,6 @@ export const History: React.FC = () => {
     }
     dispatch(loadConfig(config));
     dispatch(startQuiz(config));
-    navigate("/exam/active");
   };
 
   const handleConfirmClear = () => {

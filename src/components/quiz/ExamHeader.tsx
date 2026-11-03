@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, AlertCircle, LayoutGrid, CheckCircle2 } from 'lucide-react';
+import { Clock, LayoutGrid, CheckCircle2, X } from 'lucide-react';
 import { QuizSession } from '../../types/quiz';
 import { formatTimeHHMMSS, formatTimeMMSS } from '../../utils/timer';
 
@@ -7,12 +7,14 @@ interface ExamHeaderProps {
   session: QuizSession;
   onOpenPalette: () => void;
   onRequestSubmit: () => void;
+  onExit?: () => void;
 }
 
 export const ExamHeader: React.FC<ExamHeaderProps> = ({
   session,
   onOpenPalette,
   onRequestSubmit,
+  onExit,
 }) => {
   const currentQ = session.questions[session.currentQuestionIndex];
   const totalQuestions = session.questions.length;
@@ -110,6 +112,19 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Submit Exam</span>
             </button>
+
+            {/* Exit / Close button for Dialog */}
+            {onExit && (
+              <button
+                type="button"
+                onClick={onExit}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+                title="Exit Examination"
+                aria-label="Exit Examination"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 

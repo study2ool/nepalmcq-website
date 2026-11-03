@@ -5,6 +5,7 @@ import Footer from './Footer';
 import ScrollToTop from '../common/ScrollToTop';
 import { AuthModal } from '../auth/AuthModal';
 import { OnboardingModal } from '../auth/OnboardingModal';
+import { ExamDialog } from '../quiz/ExamDialog';
 import { useAppDispatch } from '../../store';
 import { fetchCurrentUser } from '../../store/api/authApi';
 import { fetchSyllabusOverview } from '../../store/api/syllabusApi';
@@ -38,6 +39,7 @@ export const Layout: React.FC = () => {
         <Outlet />
       </main>
       {!isExamPage && <Footer />}
+      <ExamDialog />
       <AuthModal />
       <OnboardingModal />
     </div>

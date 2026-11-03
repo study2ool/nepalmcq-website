@@ -81,11 +81,9 @@ export const Practice: React.FC = () => {
       await dispatch(
         prepareAndStartQuiz({ config, useAi: useAiGenerator }),
       ).unwrap();
-      navigate("/exam/active");
     } catch {
       // Fallback directly to local questions if API is unavailable
       dispatch(startQuiz(config));
-      navigate("/exam/active");
     } finally {
       setIsStartingExam(false);
     }
