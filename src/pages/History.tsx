@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   History as HistoryIcon,
   RotateCcw,
   Trash2,
   ArrowRight,
-  Award,
-  Clock,
-  CheckCircle2,
   AlertTriangle,
-  X,
-} from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { clearHistory, fetchResultsHistory } from '../store/api/resultsApi';
-import { openAuthModal } from '../store/api/authApi';
-import { startQuiz } from '../store/api/quizApi';
-import { loadConfig } from '../store/api/quizConfigApi';
-import { formatTimeMMSS } from '../utils/timer';
-import { QuizConfig } from '../types/quiz';
-import { useSEO } from '../hooks/useSEO';
+} from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../store";
+import { clearHistory, fetchResultsHistory } from "../store/api/resultsApi";
+import { openAuthModal } from "../store/api/authApi";
+import { startQuiz } from "../store/api/quizApi";
+import { loadConfig } from "../store/api/quizConfigApi";
+import { formatTimeMMSS } from "../utils/timer";
+import { QuizConfig } from "../types/quiz";
+import { useSEO } from "../hooks/useSEO";
 
 export const History: React.FC = () => {
   useSEO({
-    title: 'Past Examination Attempts & Performance Records',
-    description: 'Review your completed computer-based tests, scores, time taken, and retake past test papers for NEB Grade 11 & 12.',
-    canonicalPath: '/history',
+    title: "Past Examination Attempts & Performance Records",
+    description:
+      "Review your completed computer-based tests, scores, time taken, and retake past test papers for NEB Grade 11 & 12.",
+    canonicalPath: "/history",
   });
 
   const navigate = useNavigate();
@@ -46,7 +43,7 @@ export const History: React.FC = () => {
     }
     dispatch(loadConfig(config));
     dispatch(startQuiz(config));
-    navigate('/exam/active');
+    navigate("/exam/active");
   };
 
   const handleConfirmClear = () => {
@@ -68,7 +65,8 @@ export const History: React.FC = () => {
                 Clear Examination History?
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                This will permanently delete all your saved test attempts and score records from this browser. This action cannot be undone.
+                This will permanently delete all your saved test attempts and
+                score records from this browser. This action cannot be undone.
               </p>
             </div>
             <div className="flex items-center justify-end gap-2 pt-2">
@@ -103,7 +101,8 @@ export const History: React.FC = () => {
             Examination History
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            All your completed computer-based tests, scores, and performance breakdowns.
+            All your completed computer-based tests, scores, and performance
+            breakdowns.
           </p>
         </div>
 
@@ -128,7 +127,8 @@ export const History: React.FC = () => {
             No Examination History Yet
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            You haven't completed any examinations yet. Start your first timed practice test to track your performance.
+            You haven't completed any examinations yet. Start your first timed
+            practice test to track your performance.
           </p>
           <div className="pt-2">
             <Link
@@ -164,10 +164,10 @@ export const History: React.FC = () => {
                     >
                       <td className="py-4 px-4 sm:px-6 text-slate-500 font-mono">
                         {new Date(record.completedAt).toLocaleString([], {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                       </td>
 
@@ -175,7 +175,9 @@ export const History: React.FC = () => {
                         <span className="font-bold text-slate-900 dark:text-white block">
                           Grade {record.config.grade}
                         </span>
-                        <span className="text-slate-500 text-[11px] block">{record.config.subject}</span>
+                        <span className="text-slate-500 text-[11px] block">
+                          {record.config.subject}
+                        </span>
                       </td>
 
                       <td className="py-4 px-4 text-slate-600 dark:text-slate-300 max-w-[140px] truncate">
@@ -183,7 +185,8 @@ export const History: React.FC = () => {
                       </td>
 
                       <td className="py-4 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                        {record.totalMarksObtained} / {record.totalPossibleMarks}
+                        {record.totalMarksObtained} /{" "}
+                        {record.totalPossibleMarks}
                         <span className="text-[10px] text-slate-400 block font-normal">
                           ({record.correctAnswers} correct)
                         </span>

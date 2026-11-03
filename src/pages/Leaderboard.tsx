@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Users, School, Search } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
@@ -10,7 +10,6 @@ import {
   setSearchQuery,
   setProfileModalOpen,
   setBadgesModalOpen,
-  updateProfile,
   saveUserProfile,
 } from "../store/api/leaderboardApi";
 import { updateUserLocal } from "../store/api/authApi";
@@ -22,8 +21,6 @@ import {
 } from "../store/api/apiSlice";
 import {
   buildCurrentUserLeaderboardEntry,
-  getRankedStudents,
-  getRankedSchools,
   evaluateUserBadges,
 } from "../utils/leaderboardUtils";
 import LeaderboardPodium from "../components/leaderboard/LeaderboardPodium";
@@ -102,7 +99,7 @@ export const Leaderboard: React.FC = () => {
     }
     if (schoolFilter && schoolFilter !== "All Schools") {
       list = list.filter((s) =>
-        s.school.toLowerCase().includes(schoolFilter.toLowerCase())
+        s.school.toLowerCase().includes(schoolFilter.toLowerCase()),
       );
     }
 
@@ -115,13 +112,7 @@ export const Leaderboard: React.FC = () => {
         s.school.toLowerCase().includes(query) ||
         s.city.toLowerCase().includes(query),
     );
-  }, [
-    backendData,
-    currentUser,
-    gradeFilter,
-    schoolFilter,
-    searchQuery,
-  ]);
+  }, [backendData, currentUser, gradeFilter, schoolFilter, searchQuery]);
 
   // Compute school standings
   const schoolOptions = useMemo(() => {
@@ -137,9 +128,7 @@ export const Leaderboard: React.FC = () => {
 
   const rankedSchools = useMemo(() => {
     let list =
-      backendData && backendData.schools.length > 0
-        ? backendData.schools
-        : [];
+      backendData && backendData.schools.length > 0 ? backendData.schools : [];
 
     if (!searchQuery.trim()) return list;
     const query = searchQuery.toLowerCase().trim();
@@ -377,7 +366,7 @@ export const Leaderboard: React.FC = () => {
                 collegeName: updated.school,
                 collegeCity: updated.city,
                 grade: updated.grade,
-              })
+              }),
             );
           }
         }}

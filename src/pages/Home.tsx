@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Clock,
@@ -16,13 +16,12 @@ import {
   ShieldCheck,
   Zap,
   Trophy,
-  Users,
-} from 'lucide-react';
-import { ASSET_IMAGES } from '../assets/assetPaths';
-import { useAppDispatch, useAppSelector } from '../store';
-import { setGrade, setSubject } from '../store/api/quizConfigApi';
-import { SubjectName } from '../types/question';
-import { useSEO } from '../hooks/useSEO';
+} from "lucide-react";
+import { ASSET_IMAGES } from "../assets/assetPaths";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setGrade, setSubject } from "../store/api/quizConfigApi";
+import { SubjectName } from "../types/question";
+import { useSEO } from "../hooks/useSEO";
 
 export const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,20 +29,20 @@ export const Home: React.FC = () => {
   const subjects = useAppSelector((state) => state.syllabus.subjects);
 
   useSEO({
-    title: 'Nepal MCQ - Science Exam Platform',
+    title: "Nepal MCQ - Science Exam Platform",
     description:
-      'Interactive NEB Grade 11 & 12 Science MCQ practice and computer-based examination platform for Physics, Chemistry, Biology, Mathematics, and Computer Science.',
-    canonicalPath: '/',
+      "Interactive NEB Grade 11 & 12 Science MCQ practice and computer-based examination platform for Physics, Chemistry, Biology, Mathematics, and Computer Science.",
+    canonicalPath: "/",
   });
 
   const handleSelectGradeAndStart = (grade: 11 | 12) => {
     dispatch(setGrade(grade));
-    navigate('/practice');
+    navigate("/practice");
   };
 
   const handleSelectSubject = (subject: SubjectName) => {
     dispatch(setSubject(subject));
-    navigate('/practice');
+    navigate("/practice");
   };
 
   return (
@@ -65,7 +64,11 @@ export const Home: React.FC = () => {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Nepal’s dedicated computer-based examination and practice platform for NEB Grade 11 &amp; 12 science students. Master Physics, Chemistry, and Biology with authentic timed mocks, individual question pacing, and step-by-step scientific derivations.
+                Nepal’s dedicated computer-based examination and practice
+                platform for NEB Grade 11 &amp; 12 science students. Master
+                Physics, Chemistry, and Biology with authentic timed mocks,
+                individual question pacing, and step-by-step scientific
+                derivations.
               </p>
 
               {/* CTAs */}
@@ -128,7 +131,8 @@ export const Home: React.FC = () => {
             Select Your Academic Level
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Choose your current class to access curriculum-mapped topic banks and examinations
+            Choose your current class to access curriculum-mapped topic banks
+            and examinations
           </p>
         </div>
 
@@ -140,13 +144,17 @@ export const Home: React.FC = () => {
                 <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                   Higher Secondary · First Year
                 </span>
-                <span className="text-xs font-mono font-medium text-slate-400">Class XI</span>
+                <span className="text-xs font-mono font-medium text-slate-400">
+                  Class XI
+                </span>
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Grade 11 Science
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                Foundational syllabus covering Vectors, Kinematics, Atomic Structure, Chemical Bonding, Cell Biology, Biomolecules, and Plant Anatomy.
+                Foundational syllabus covering Vectors, Kinematics, Atomic
+                Structure, Chemical Bonding, Cell Biology, Biomolecules, and
+                Plant Anatomy.
               </p>
               <div className="pt-2 flex flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <span>Physics (13 Topics)</span>
@@ -177,13 +185,17 @@ export const Home: React.FC = () => {
                 <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                   Higher Secondary · Board Final Year
                 </span>
-                <span className="text-xs font-mono font-medium text-slate-400">Class XII</span>
+                <span className="text-xs font-mono font-medium text-slate-400">
+                  Class XII
+                </span>
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Grade 12 Science
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                Advanced NEB syllabus &amp; competitive entrance preparation. Covers Rotational Dynamics, Modern Physics, Volumetric Analysis, Organic Chemistry, Genetics, and Biotechnology.
+                Advanced NEB syllabus &amp; competitive entrance preparation.
+                Covers Rotational Dynamics, Modern Physics, Volumetric Analysis,
+                Organic Chemistry, Genetics, and Biotechnology.
               </p>
               <div className="pt-2 flex flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <span>Physics (16 Topics)</span>
@@ -195,7 +207,9 @@ export const Home: React.FC = () => {
             </div>
 
             <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span className="text-xs text-slate-500">Board &amp; Entrance Standard</span>
+              <span className="text-xs text-slate-500">
+                Board &amp; Entrance Standard
+              </span>
               <button
                 type="button"
                 onClick={() => handleSelectGradeAndStart(12)}
@@ -216,7 +230,8 @@ export const Home: React.FC = () => {
             Curriculum Subjects
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Focus your revision on specific disciplines or take a mixed multi-subject examination
+            Focus your revision on specific disciplines or take a mixed
+            multi-subject examination
           </p>
         </div>
 
@@ -244,15 +259,18 @@ export const Home: React.FC = () => {
                   Physics Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Mechanics, Heat &amp; Thermodynamics, Waves &amp; Optics, Electricity &amp; Magnetism, and Modern Physics.
+                  Mechanics, Heat &amp; Thermodynamics, Waves &amp; Optics,
+                  Electricity &amp; Magnetism, and Modern Physics.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Physics')}
+                  onClick={() => handleSelectSubject("Physics")}
                   className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice Physics</span>
@@ -285,15 +303,18 @@ export const Home: React.FC = () => {
                   Chemistry Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Physical Chemistry, Inorganic Reaction Equations, Organic Reaction Mechanisms, and Volumetric Calculations.
+                  Physical Chemistry, Inorganic Reaction Equations, Organic
+                  Reaction Mechanisms, and Volumetric Calculations.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Chemistry')}
+                  onClick={() => handleSelectSubject("Chemistry")}
                   className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice Chemistry</span>
@@ -326,15 +347,18 @@ export const Home: React.FC = () => {
                   Biology Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Botany &amp; Zoology, Cell Division, Genetics &amp; Evolution, Human Physiology, Ecology, and Biotechnology.
+                  Botany &amp; Zoology, Cell Division, Genetics &amp; Evolution,
+                  Human Physiology, Ecology, and Biotechnology.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Biology')}
+                  onClick={() => handleSelectSubject("Biology")}
                   className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice Biology</span>
@@ -367,15 +391,18 @@ export const Home: React.FC = () => {
                   Mathematics Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Calculus, Matrices, Trigonometry, 3D Vectors, Differential Equations, and Probability.
+                  Calculus, Matrices, Trigonometry, 3D Vectors, Differential
+                  Equations, and Probability.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Mathematics')}
+                  onClick={() => handleSelectSubject("Mathematics")}
                   className="text-xs font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice Mathematics</span>
@@ -408,15 +435,18 @@ export const Home: React.FC = () => {
                   English Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Grammar (Concord, Causative, Inversion), Reading Comprehension, Literary Analysis, and Vocabulary.
+                  Grammar (Concord, Causative, Inversion), Reading
+                  Comprehension, Literary Analysis, and Vocabulary.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('English')}
+                  onClick={() => handleSelectSubject("English")}
                   className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice English</span>
@@ -449,15 +479,18 @@ export const Home: React.FC = () => {
                   नेपाली अभ्यास सेटहरू
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  व्याकरण (शब्दवर्ग, पदसङ्गति, काल र पक्ष, समास, कारक, वाच्य), शब्द स्रोत, र पाठ्यपुस्तक साहित्य बोध।
+                  व्याकरण (शब्दवर्ग, पदसङ्गति, काल र पक्ष, समास, कारक, वाच्य),
+                  शब्द स्रोत, र पाठ्यपुस्तक साहित्य बोध।
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Nepali')}
+                  onClick={() => handleSelectSubject("Nepali")}
                   className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>नेपाली अभ्यास गर्नुहोस्</span>
@@ -490,15 +523,18 @@ export const Home: React.FC = () => {
                   Computer Science Practice Sets
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Basics to Intermediate (CS01): Architecture, Boolean Logic, C Programming, DBMS, Networking, OOP, and Cyber Law.
+                  Basics to Intermediate (CS01): Architecture, Boolean Logic, C
+                  Programming, DBMS, Networking, OOP, and Cyber Law.
                 </p>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-400">Class 11 &amp; 12</span>
+                <span className="text-xs text-slate-400">
+                  Class 11 &amp; 12
+                </span>
                 <button
                   type="button"
-                  onClick={() => handleSelectSubject('Computer Science')}
+                  onClick={() => handleSelectSubject("Computer Science")}
                   className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Practice Computer Science</span>
@@ -517,7 +553,8 @@ export const Home: React.FC = () => {
             Engineered for High-Stakes Exam Success
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Features mirroring real computer-based entrance tests and NEB board specifications
+            Features mirroring real computer-based entrance tests and NEB board
+            specifications
           </p>
         </div>
 
@@ -530,7 +567,8 @@ export const Home: React.FC = () => {
               Dual Countdown Timers
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Overall examination duration paired with an individual 60-second question timer to build speed and prevent getting stuck.
+              Overall examination duration paired with an individual 60-second
+              question timer to build speed and prevent getting stuck.
             </p>
           </div>
 
@@ -542,7 +580,8 @@ export const Home: React.FC = () => {
               Topic-Wise &amp; Full Mocks
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Select specific chapters like Rotational Dynamics or test comprehensive 60-question mixed sets simulating board conditions.
+              Select specific chapters like Rotational Dynamics or test
+              comprehensive 60-question mixed sets simulating board conditions.
             </p>
           </div>
 
@@ -554,7 +593,8 @@ export const Home: React.FC = () => {
               Instant Diagnostic Analytics
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Immediate scoring, donut distribution, subject-wise breakdown, and identification of specific weak chapters for revision.
+              Immediate scoring, donut distribution, subject-wise breakdown, and
+              identification of specific weak chapters for revision.
             </p>
           </div>
 
@@ -566,7 +606,8 @@ export const Home: React.FC = () => {
               Detailed Explanations
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Step-by-step LaTeX formulas and scientific derivations for every single question to understand why an answer is correct.
+              Step-by-step LaTeX formulas and scientific derivations for every
+              single question to understand why an answer is correct.
             </p>
           </div>
         </div>
@@ -581,7 +622,8 @@ export const Home: React.FC = () => {
                 Curriculum Coverage Benchmarks
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Validated metrics based on official NEB Class 11 &amp; 12 scientific syllabi
+                Validated metrics based on official NEB Class 11 &amp; 12
+                scientific syllabi
               </p>
             </div>
             <span className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 font-semibold self-start sm:self-auto">
@@ -597,7 +639,9 @@ export const Home: React.FC = () => {
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mt-1">
                 NEB Syllabus Coverage
               </span>
-              <span className="text-[11px] text-slate-400">Physics, Chem &amp; Bio</span>
+              <span className="text-[11px] text-slate-400">
+                Physics, Chem &amp; Bio
+              </span>
             </div>
 
             <div>
@@ -607,7 +651,9 @@ export const Home: React.FC = () => {
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mt-1">
                 Target Question Speed
               </span>
-              <span className="text-[11px] text-slate-400">Optimized pacing</span>
+              <span className="text-[11px] text-slate-400">
+                Optimized pacing
+              </span>
             </div>
 
             <div>
@@ -617,7 +663,9 @@ export const Home: React.FC = () => {
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mt-1">
                 Syllabus Chapters
               </span>
-              <span className="text-[11px] text-slate-400">Grade 11 &amp; Grade 12</span>
+              <span className="text-[11px] text-slate-400">
+                Grade 11 &amp; Grade 12
+              </span>
             </div>
 
             <div>
@@ -627,7 +675,9 @@ export const Home: React.FC = () => {
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mt-1">
                 Timestamp Precision
               </span>
-              <span className="text-[11px] text-slate-400">Accurate countdowns</span>
+              <span className="text-[11px] text-slate-400">
+                Accurate countdowns
+              </span>
             </div>
           </div>
         </div>
@@ -645,7 +695,10 @@ export const Home: React.FC = () => {
               Compete With Top Science Students Across Nepal
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Earn XP points, unlock achievement badges, and climb subject-wise leaderboards in Physics, Chemistry, Biology, Mathematics, and Computer Science. Represent your college in the inter-school championship!
+              Earn XP points, unlock achievement badges, and climb subject-wise
+              leaderboards in Physics, Chemistry, Biology, Mathematics, and
+              Computer Science. Represent your college in the inter-school
+              championship!
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
@@ -671,15 +724,21 @@ export const Home: React.FC = () => {
                 Top Colleges
               </span>
               <div className="text-lg font-bold text-white">16+ Schools</div>
-              <span className="text-[11px] text-slate-400">St. Xavier's, Prasadi, KMC, LAC</span>
+              <span className="text-[11px] text-slate-400">
+                St. Xavier's, Prasadi, KMC, LAC
+              </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-1">
               <span className="text-[10px] uppercase font-bold text-amber-400 block">
                 Gamification
               </span>
-              <div className="text-lg font-bold text-white">XP &amp; Badges</div>
-              <span className="text-[11px] text-slate-400">Daily streaks &amp; medals</span>
+              <div className="text-lg font-bold text-white">
+                XP &amp; Badges
+              </div>
+              <span className="text-[11px] text-slate-400">
+                Daily streaks &amp; medals
+              </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-1">
@@ -687,7 +746,9 @@ export const Home: React.FC = () => {
                 Subject Ranks
               </span>
               <div className="text-lg font-bold text-white">7 Disciplines</div>
-              <span className="text-[11px] text-slate-400">Science, Math, CS &amp; more</span>
+              <span className="text-[11px] text-slate-400">
+                Science, Math, CS &amp; more
+              </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-1">
@@ -695,7 +756,9 @@ export const Home: React.FC = () => {
                 Inter-School
               </span>
               <div className="text-lg font-bold text-white">National Cup</div>
-              <span className="text-[11px] text-slate-400">School community score</span>
+              <span className="text-[11px] text-slate-400">
+                School community score
+              </span>
             </div>
           </div>
         </div>
@@ -708,7 +771,8 @@ export const Home: React.FC = () => {
             Ready to test your knowledge for upcoming examinations?
           </h2>
           <p className="text-sm sm:text-base text-indigo-100 max-w-xl mx-auto leading-relaxed">
-            Practice topic-wise drills or launch full timed mock exams with individual question pacing and instant performance analytics.
+            Practice topic-wise drills or launch full timed mock exams with
+            individual question pacing and instant performance analytics.
           </p>
           <div className="pt-2">
             <Link

@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import confetti from 'canvas-confetti';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import confetti from "canvas-confetti";
 import {
   RotateCcw,
   Target,
   ArrowRight,
   LayoutDashboard,
-  Award,
   AlertCircle,
   Trophy,
-} from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { loadResultById } from '../store/api/resultsApi';
-import { openAuthModal } from '../store/api/authApi';
-import { startQuiz } from '../store/api/quizApi';
-import { loadConfig } from '../store/api/quizConfigApi';
-import ResultSummaryCards from '../components/results/ResultSummaryCards';
-import PerformanceCharts from '../components/results/PerformanceCharts';
-import QuestionReviewList from '../components/results/QuestionReviewList';
-import { QuizConfig } from '../types/quiz';
-import { useSEO } from '../hooks/useSEO';
+} from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../store";
+import { loadResultById } from "../store/api/resultsApi";
+import { openAuthModal } from "../store/api/authApi";
+import { startQuiz } from "../store/api/quizApi";
+import { loadConfig } from "../store/api/quizConfigApi";
+import ResultSummaryCards from "../components/results/ResultSummaryCards";
+import PerformanceCharts from "../components/results/PerformanceCharts";
+import QuestionReviewList from "../components/results/QuestionReviewList";
+import { QuizConfig } from "../types/quiz";
+import { useSEO } from "../hooks/useSEO";
 
 export const ResultPage: React.FC = () => {
   useSEO({
-    title: 'Examination Results & Performance Review',
-    description: 'Comprehensive performance scorecard, accuracy metrics, topic breakdown, and question-by-question derivations.',
-    canonicalPath: '/result',
+    title: "Examination Results & Performance Review",
+    description:
+      "Comprehensive performance scorecard, accuracy metrics, topic breakdown, and question-by-question derivations.",
+    canonicalPath: "/result",
   });
 
   const { resultId } = useParams<{ resultId: string }>();
@@ -34,7 +34,7 @@ export const ResultPage: React.FC = () => {
 
   const currentResult = useAppSelector((state) => state.results.currentResult);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const [activeTab, setActiveTab] = useState<'overview' | 'review'>('overview');
+  const [activeTab, setActiveTab] = useState<"overview" | "review">("overview");
 
   useEffect(() => {
     if (resultId) {
@@ -90,7 +90,7 @@ export const ResultPage: React.FC = () => {
     }
     dispatch(loadConfig(currentResult.config));
     dispatch(startQuiz(currentResult.config));
-    navigate('/exam/active');
+    navigate("/exam/active");
   };
 
   // Action: Practice Incorrect Questions
@@ -100,11 +100,11 @@ export const ResultPage: React.FC = () => {
       return;
     }
     const incorrectQs = currentResult.questionResults
-      .filter((qr) => qr.status === 'incorrect')
+      .filter((qr) => qr.status === "incorrect")
       .map((qr) => qr.question);
 
     if (incorrectQs.length === 0) {
-      alert('You have no incorrect questions from this examination!');
+      alert("You have no incorrect questions from this examination!");
       return;
     }
 
@@ -112,12 +112,12 @@ export const ResultPage: React.FC = () => {
       ...currentResult.config,
       questionCount: incorrectQs.length,
       durationMinutes: incorrectQs.length,
-      questionMode: 'random',
+      questionMode: "random",
     };
 
     dispatch(loadConfig(customConfig));
     dispatch(startQuiz(customConfig));
-    navigate('/exam/active');
+    navigate("/exam/active");
   };
 
   // Action: Practice Unattempted Questions
@@ -127,11 +127,11 @@ export const ResultPage: React.FC = () => {
       return;
     }
     const unattemptedQs = currentResult.questionResults
-      .filter((qr) => qr.status === 'unattempted')
+      .filter((qr) => qr.status === "unattempted")
       .map((qr) => qr.question);
 
     if (unattemptedQs.length === 0) {
-      alert('You answered all questions in this examination!');
+      alert("You answered all questions in this examination!");
       return;
     }
 
@@ -139,12 +139,12 @@ export const ResultPage: React.FC = () => {
       ...currentResult.config,
       questionCount: unattemptedQs.length,
       durationMinutes: unattemptedQs.length,
-      questionMode: 'random',
+      questionMode: "random",
     };
 
     dispatch(loadConfig(customConfig));
     dispatch(startQuiz(customConfig));
-    navigate('/exam/active');
+    navigate("/exam/active");
   };
 
   return (
@@ -155,22 +155,22 @@ export const ResultPage: React.FC = () => {
         <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl shrink-0 self-start sm:self-auto">
           <button
             type="button"
-            onClick={() => setActiveTab('overview')}
+            onClick={() => setActiveTab("overview")}
             className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-              activeTab === 'overview'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              activeTab === "overview"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             Performance Overview
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('review')}
+            onClick={() => setActiveTab("review")}
             className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-              activeTab === 'review'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              activeTab === "review"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
             Review All Solutions ({currentResult.totalQuestions})
@@ -196,7 +196,9 @@ export const ResultPage: React.FC = () => {
               onClick={handlePracticeUnattempted}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
-              <span>Practice Unattempted ({currentResult.unattemptedQuestions})</span>
+              <span>
+                Practice Unattempted ({currentResult.unattemptedQuestions})
+              </span>
             </button>
           )}
 
@@ -228,7 +230,7 @@ export const ResultPage: React.FC = () => {
       </div>
 
       {/* Main Tab Content */}
-      {activeTab === 'overview' ? (
+      {activeTab === "overview" ? (
         <div className="space-y-8 animate-in fade-in duration-200">
           {/* Key Metric cards */}
           <ResultSummaryCards result={currentResult} />
@@ -243,12 +245,13 @@ export const ResultPage: React.FC = () => {
                 Ready to review question solutions?
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Inspect step-by-step mathematical explanations, options comparisons, and formulas.
+                Inspect step-by-step mathematical explanations, options
+                comparisons, and formulas.
               </p>
             </div>
             <button
               type="button"
-              onClick={() => setActiveTab('review')}
+              onClick={() => setActiveTab("review")}
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shrink-0 cursor-pointer"
             >
               <span>Review All Questions</span>

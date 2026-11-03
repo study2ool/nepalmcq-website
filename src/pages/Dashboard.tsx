@@ -1,13 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Trophy,
   ArrowRight,
   TrendingUp,
   AlertTriangle,
-  Database,
   School,
-  GraduationCap,
 } from "lucide-react";
 import {
   LineChart,
@@ -47,8 +45,12 @@ export const Dashboard: React.FC = () => {
 
   // RTK Query Hooks with automatic caching and invalidation
   const { data: bankStats = [] } = useGetQuizSubjectsQuery();
-  const { data: serverLeaderboardData } = useGetLeaderboardQuery({ timeframe: "all-time" });
-  const { data: backendStats } = useGetDashboardSummaryQuery(undefined, { skip: !isAuthenticated });
+  const { data: serverLeaderboardData } = useGetLeaderboardQuery({
+    timeframe: "all-time",
+  });
+  const { data: backendStats } = useGetDashboardSummaryQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   const serverLeaderboard = useMemo(() => {
     if (!serverLeaderboardData) return null;
@@ -68,7 +70,8 @@ export const Dashboard: React.FC = () => {
         Mathematics: backendStats.subjectMastery["Mathematics"]?.accuracy || 0,
         English: backendStats.subjectMastery["English"]?.accuracy || 0,
         Nepali: backendStats.subjectMastery["Nepali"]?.accuracy || 0,
-        "Computer Science": backendStats.subjectMastery["Computer Science"]?.accuracy || 0,
+        "Computer Science":
+          backendStats.subjectMastery["Computer Science"]?.accuracy || 0,
       };
 
       const progressData = backendStats.recentTrend.map((t, idx) => ({
@@ -87,7 +90,9 @@ export const Dashboard: React.FC = () => {
       const avgScore =
         backendStats.lifetime.totalExams > 0
           ? Math.round(
-              (backendStats.lifetime.totalCorrect / backendStats.lifetime.totalExams) * 10
+              (backendStats.lifetime.totalCorrect /
+                backendStats.lifetime.totalExams) *
+                10,
             ) / 10
           : 0;
 
@@ -277,9 +282,13 @@ export const Dashboard: React.FC = () => {
     const ranked = getRankedStudents(user, "All", "All", "all-time");
     const idx = ranked.findIndex((s) => s.isCurrentUser);
 
-    const total = serverLeaderboard ? serverLeaderboard.totalStudents : ranked.length;
-    const rank = serverLeaderboard?.currentUserRank || (idx !== -1 ? idx + 1 : 1);
-    const hasAttempted = stats.totalExams > 0 || history.length > 0 || user.examsCompleted > 0;
+    const total = serverLeaderboard
+      ? serverLeaderboard.totalStudents
+      : ranked.length;
+    const rank =
+      serverLeaderboard?.currentUserRank || (idx !== -1 ? idx + 1 : 1);
+    const hasAttempted =
+      stats.totalExams > 0 || history.length > 0 || user.examsCompleted > 0;
 
     return {
       currentUser: user,
@@ -310,7 +319,7 @@ export const Dashboard: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors shadow-xs"
           >
             <Trophy className="w-4 h-4 text-amber-500" />
-            <span>Leaderboard {isRanked ? `(#${userRank})` : ''}</span>
+            <span>Leaderboard {isRanked ? `(#${userRank})` : ""}</span>
           </Link>
 
           <Link
@@ -338,7 +347,7 @@ export const Dashboard: React.FC = () => {
               <span className="text-xs text-slate-300 font-mono">
                 Class {currentUser.grade}
               </span>
-              {authUser?.gender && authUser.gender !== 'prefer_not_to_say' && (
+              {authUser?.gender && authUser.gender !== "prefer_not_to_say" && (
                 <>
                   <span className="text-slate-400">·</span>
                   <span className="text-xs text-indigo-300 capitalize">
@@ -349,9 +358,14 @@ export const Dashboard: React.FC = () => {
             </div>
             <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5">
               {isRanked ? (
-                <>Rank #{userRank} of {totalStudents} Students Nationwide</>
+                <>
+                  Rank #{userRank} of {totalStudents} Students Nationwide
+                </>
               ) : (
-                <>Unranked · Complete your first exam to appear on the leaderboard!</>
+                <>
+                  Unranked · Complete your first exam to appear on the
+                  leaderboard!
+                </>
               )}
             </h4>
             <p className="text-xs text-slate-400 truncate max-w-sm sm:max-w-md flex items-center gap-1.5 mt-0.5">
@@ -574,9 +588,15 @@ export const Dashboard: React.FC = () => {
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">
                       {subItem.name}
-                      {bankStats.find((s) => s.name === subItem.name)?.existingQuestionsCount ? (
+                      {bankStats.find((s) => s.name === subItem.name)
+                        ?.existingQuestionsCount ? (
                         <span className="ml-1.5 text-[10px] font-normal text-slate-400">
-                          ({bankStats.find((s) => s.name === subItem.name)?.existingQuestionsCount} questions)
+                          (
+                          {
+                            bankStats.find((s) => s.name === subItem.name)
+                              ?.existingQuestionsCount
+                          }{" "}
+                          questions)
                         </span>
                       ) : null}
                     </span>

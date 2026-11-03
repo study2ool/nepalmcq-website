@@ -46,8 +46,10 @@ export const AdminPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const { data: stats, isLoading: isStatsLoading } = useGetAdminStatsQuery();
-  const { data: users = [], isLoading: isUsersLoading } = useGetAdminUsersQuery();
-  const { data: schools = [], isLoading: isSchoolsLoading } = useGetAdminSchoolsQuery();
+  const { data: users = [], isLoading: isUsersLoading } =
+    useGetAdminUsersQuery();
+  const { data: schools = [], isLoading: isSchoolsLoading } =
+    useGetAdminSchoolsQuery();
 
   const [updateUserMutation] = useUpdateAdminUserMutation();
   const [deleteUserMutation] = useDeleteAdminUserMutation();

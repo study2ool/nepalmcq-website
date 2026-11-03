@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Clock,
   Layers,
   Sparkles,
   Play,
@@ -80,7 +79,7 @@ export const Practice: React.FC = () => {
     setIsStartingExam(true);
     try {
       await dispatch(
-        prepareAndStartQuiz({ config, useAi: useAiGenerator })
+        prepareAndStartQuiz({ config, useAi: useAiGenerator }),
       ).unwrap();
       navigate("/exam/active");
     } catch {
@@ -536,7 +535,8 @@ export const Practice: React.FC = () => {
             )}
 
             <p className="text-[11px] text-slate-400 text-center leading-normal">
-              Clicking will launch the timed examination interface connected to our NEB question bank.
+              Clicking will launch the timed examination interface connected to
+              our NEB question bank.
             </p>
           </div>
         </div>

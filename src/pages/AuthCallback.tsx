@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAppDispatch } from '../store';
-import { setToken, fetchCurrentUser } from '../store/api/authApi';
-import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch } from "../store";
+import { setToken, fetchCurrentUser } from "../store/api/authApi";
+import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 
 export const AuthCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -11,8 +11,8 @@ export const AuthCallback: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    const error = searchParams.get('error');
+    const token = searchParams.get("token");
+    const error = searchParams.get("error");
 
     if (error) {
       setErrorMessage(decodeURIComponent(error));
@@ -24,13 +24,13 @@ export const AuthCallback: React.FC = () => {
       dispatch(fetchCurrentUser())
         .unwrap()
         .then(() => {
-          navigate('/dashboard', { replace: true });
+          navigate("/dashboard", { replace: true });
         })
         .catch((err) => {
-          setErrorMessage(err || 'Failed to initialize session');
+          setErrorMessage(err || "Failed to initialize session");
         });
     } else {
-      setErrorMessage('No authentication token received from Google callback.');
+      setErrorMessage("No authentication token received from Google callback.");
     }
   }, [searchParams, dispatch, navigate]);
 
@@ -49,7 +49,7 @@ export const AuthCallback: React.FC = () => {
           </p>
           <button
             type="button"
-            onClick={() => navigate('/practice', { replace: true })}
+            onClick={() => navigate("/practice", { replace: true })}
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-all w-full"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -74,4 +74,3 @@ export const AuthCallback: React.FC = () => {
 };
 
 export default AuthCallback;
-

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Home, ArrowLeft } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Home } from "lucide-react";
 
 export const NotFound: React.FC = () => {
   return (
@@ -12,7 +12,8 @@ export const NotFound: React.FC = () => {
         Page Not Found
       </h1>
       <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-        The examination paper or section you are looking for does not exist or has been relocated.
+        The examination paper or section you are looking for does not exist or
+        has been relocated.
       </p>
       <div className="pt-2 flex items-center justify-center gap-3">
         <Link

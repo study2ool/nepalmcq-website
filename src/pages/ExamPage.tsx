@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store";
 import {
   setCurrentQuestionIndex,
   selectAnswer,
@@ -9,25 +9,26 @@ import {
   updateTimers,
   autoAdvanceQuestion,
   submitQuiz,
-} from '../store/api/quizApi';
-import { toggleBookmarkThunk } from '../store/api/questionBankApi';
-import { setLatestResult } from '../store/api/resultsApi';
-import { openAuthModal } from '../store/api/authApi';
-import { calculateQuizResult } from '../utils/scoring';
-import { useSubmitAttemptMutation } from '../store/api/apiSlice';
-import ExamHeader from '../components/quiz/ExamHeader';
-import QuestionCard from '../components/quiz/QuestionCard';
-import QuestionPalette from '../components/quiz/QuestionPalette';
-import SubmitModal from '../components/quiz/SubmitModal';
-import TimeWarningModal from '../components/quiz/TimeWarningModal';
-import { X } from 'lucide-react';
-import { useSEO } from '../hooks/useSEO';
+} from "../store/api/quizApi";
+import { toggleBookmarkThunk } from "../store/api/questionBankApi";
+import { setLatestResult } from "../store/api/resultsApi";
+import { openAuthModal } from "../store/api/authApi";
+import { calculateQuizResult } from "../utils/scoring";
+import { useSubmitAttemptMutation } from "../store/api/apiSlice";
+import ExamHeader from "../components/quiz/ExamHeader";
+import QuestionCard from "../components/quiz/QuestionCard";
+import QuestionPalette from "../components/quiz/QuestionPalette";
+import SubmitModal from "../components/quiz/SubmitModal";
+import TimeWarningModal from "../components/quiz/TimeWarningModal";
+import { X } from "lucide-react";
+import { useSEO } from "../hooks/useSEO";
 
 export const ExamPage: React.FC = () => {
   useSEO({
-    title: 'Active Computer-Based Examination Session',
-    description: 'Timed NEB simulation test with independent question countdown, anti-drift exam clock, and question palette.',
-    canonicalPath: '/exam',
+    title: "Active Computer-Based Examination Session",
+    description:
+      "Timed NEB simulation test with independent question countdown, anti-drift exam clock, and question palette.",
+    canonicalPath: "/exam",
   });
 
   const navigate = useNavigate();
@@ -49,12 +50,12 @@ export const ExamPage: React.FC = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       dispatch(openAuthModal());
-      navigate('/practice', { replace: true });
+      navigate("/practice", { replace: true });
       return;
     }
 
     if (!session || session.isSubmitted) {
-      navigate('/practice', { replace: true });
+      navigate("/practice", { replace: true });
     }
   }, [isAuthenticated, session, navigate, dispatch]);
 
@@ -63,11 +64,11 @@ export const ExamPage: React.FC = () => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (session && !session.isSubmitted) {
         e.preventDefault();
-        e.returnValue = '';
+        e.returnValue = "";
       }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [session]);
 
   const activeQuestion = session?.questions[session?.currentQuestionIndex ?? 0];
@@ -85,9 +86,11 @@ export const ExamPage: React.FC = () => {
     dispatch(submitQuiz());
 
     // Asynchronously sync attempt to backend database and update user stats & leaderboard via RTK Query
-    submitAttemptMutation(calculatedResult).unwrap().catch((err) => {
-      console.warn('Syncing attempt to backend failed:', err);
-    });
+    submitAttemptMutation(calculatedResult)
+      .unwrap()
+      .catch((err) => {
+        console.warn("Syncing attempt to backend failed:", err);
+      });
 
     navigate(`/result/${session.quizId}`, { replace: true });
   }, [session, dispatch, navigate, submitAttemptMutation]);
@@ -100,7 +103,10 @@ export const ExamPage: React.FC = () => {
 
     timerIntervalRef.current = setInterval(() => {
       const now = Date.now();
-      const elapsedSeconds = Math.max(0, Math.floor((now - lastTickTimeRef.current) / 1000));
+      const elapsedSeconds = Math.max(
+        0,
+        Math.floor((now - lastTickTimeRef.current) / 1000),
+      );
 
       if (elapsedSeconds >= 1 && activeQuestion) {
         lastTickTimeRef.current = now;
@@ -122,14 +128,15 @@ export const ExamPage: React.FC = () => {
         }
 
         // Active question remaining check
-        const currentQRemaining = session.questionTimeRemaining[activeQuestion.id] ?? 60;
+        const currentQRemaining =
+          session.questionTimeRemaining[activeQuestion.id] ?? 60;
         if (currentQRemaining - elapsedSeconds <= 0) {
           // Question timer expired! Auto advance to next question
           dispatch(
             updateTimers({
               deltaSeconds: elapsedSeconds,
               activeQuestionId: activeQuestion.id,
-            })
+            }),
           );
           dispatch(autoAdvanceQuestion());
         } else {
@@ -138,7 +145,7 @@ export const ExamPage: React.FC = () => {
             updateTimers({
               deltaSeconds: elapsedSeconds,
               activeQuestionId: activeQuestion.id,
-            })
+            }),
           );
         }
       }
@@ -165,9 +172,11 @@ export const ExamPage: React.FC = () => {
       if (
         isSubmitModalOpen ||
         is5MinWarningOpen ||
-        ['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)
+        ["INPUT", "TEXTAREA", "SELECT"].includes(
+          (e.target as HTMLElement).tagName,
+        )
       ) {
-        if (e.key === 'Escape') {
+        if (e.key === "Escape") {
           setIsSubmitModalOpen(false);
           setIs5MinWarningOpen(false);
           setIsPaletteDrawerOpen(false);
@@ -177,33 +186,41 @@ export const ExamPage: React.FC = () => {
 
       if (!session || !activeQuestion) return;
 
-      if (e.key === 'ArrowRight') {
+      if (e.key === "ArrowRight") {
         e.preventDefault();
         if (session.currentQuestionIndex < session.questions.length - 1) {
           dispatch(setCurrentQuestionIndex(session.currentQuestionIndex + 1));
         }
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         if (session.currentQuestionIndex > 0) {
           dispatch(setCurrentQuestionIndex(session.currentQuestionIndex - 1));
         }
-      } else if (['a', 'A'].includes(e.key)) {
-        dispatch(selectAnswer({ questionId: activeQuestion.id, optionId: 'A' }));
-      } else if (['b', 'B'].includes(e.key)) {
-        dispatch(selectAnswer({ questionId: activeQuestion.id, optionId: 'B' }));
-      } else if (['c', 'C'].includes(e.key)) {
-        dispatch(selectAnswer({ questionId: activeQuestion.id, optionId: 'C' }));
-      } else if (['d', 'D'].includes(e.key)) {
-        dispatch(selectAnswer({ questionId: activeQuestion.id, optionId: 'D' }));
-      } else if (['r', 'R'].includes(e.key)) {
+      } else if (["a", "A"].includes(e.key)) {
+        dispatch(
+          selectAnswer({ questionId: activeQuestion.id, optionId: "A" }),
+        );
+      } else if (["b", "B"].includes(e.key)) {
+        dispatch(
+          selectAnswer({ questionId: activeQuestion.id, optionId: "B" }),
+        );
+      } else if (["c", "C"].includes(e.key)) {
+        dispatch(
+          selectAnswer({ questionId: activeQuestion.id, optionId: "C" }),
+        );
+      } else if (["d", "D"].includes(e.key)) {
+        dispatch(
+          selectAnswer({ questionId: activeQuestion.id, optionId: "D" }),
+        );
+      } else if (["r", "R"].includes(e.key)) {
         dispatch(toggleMarkForReview(activeQuestion.id));
-      } else if (e.key === 'Escape') {
+      } else if (e.key === "Escape") {
         setIsPaletteDrawerOpen(false);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [session, activeQuestion, isSubmitModalOpen, is5MinWarningOpen, dispatch]);
 
   if (!session || !activeQuestion) {
@@ -238,11 +255,17 @@ export const ExamPage: React.FC = () => {
               isMarkedForReview={isMarked}
               isBookmarked={isBookmarked}
               onSelectOption={(optionId) =>
-                dispatch(selectAnswer({ questionId: activeQuestion.id, optionId }))
+                dispatch(
+                  selectAnswer({ questionId: activeQuestion.id, optionId }),
+                )
               }
               onClearOption={() => dispatch(clearAnswer(activeQuestion.id))}
-              onToggleReview={() => dispatch(toggleMarkForReview(activeQuestion.id))}
-              onToggleBookmark={() => dispatch(toggleBookmarkThunk(activeQuestion.id))}
+              onToggleReview={() =>
+                dispatch(toggleMarkForReview(activeQuestion.id))
+              }
+              onToggleBookmark={() =>
+                dispatch(toggleBookmarkThunk(activeQuestion.id))
+              }
               onNext={() => dispatch(setCurrentQuestionIndex(currentIndex + 1))}
               onPrev={() => dispatch(setCurrentQuestionIndex(currentIndex - 1))}
               hasPrev={currentIndex > 0}
