@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GoogleIcon } from './GoogleIcon';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { loginWithGoogle } from '../../store/api/authApi';
-import { authApi } from '../../services/authApi';
 import { isFirebaseClientConfigured } from '../../config/firebase';
 import { firebaseAuthService } from '../../services/firebaseAuth';
 import { Loader2 } from 'lucide-react';
@@ -152,7 +151,8 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     }
 
     // 4. Fallback: Backend OAuth consent redirect
-    window.location.href = authApi.getGoogleRedirectUrl();
+    const apiBase = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+    window.location.href = `${apiBase}/auth/google`;
   };
 
   const isBusy = isLoading || localLoading;

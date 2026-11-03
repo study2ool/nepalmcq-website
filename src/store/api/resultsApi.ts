@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiSlice } from './baseApi';
 import type { QuizResult } from '../../types/results';
 import { storage } from '../../utils/storage';
-import { progressApi } from '../../services/progressApi';
+import { progressApiSlice } from './progressApi';
 
 export interface ResultsState {
   currentResult: QuizResult | null;
@@ -18,12 +18,12 @@ const initialState: ResultsState = {
 
 export const fetchResultsHistory = createAsyncThunk(
   'results/fetchHistory',
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const backendHistory = await progressApi.getUserHistory();
+      const backendHistory = await dispatch(progressApiSlice.endpoints.getUserHistory.initiate()).unwrap();
       return backendHistory;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch history');
+      return rejectWithValue(err?.data?.error || err?.message || 'Failed to fetch history');
     }
   }
 );

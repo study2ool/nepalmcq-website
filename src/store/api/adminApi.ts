@@ -1,5 +1,5 @@
 import { apiSlice } from './baseApi';
-import type { User } from '../slices/authSlice';
+import type { User } from './authApi';
 
 export interface AdminStats {
   totalUsers: number;

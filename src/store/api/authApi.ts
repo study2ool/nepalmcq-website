@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiSlice } from './baseApi';
-import { authApi } from '../../services/authApi';
 import { firebaseAuthService } from '../../services/firebaseAuth';
 
 export interface User {
@@ -113,15 +112,12 @@ const initialState: AuthState = {
 
 export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const response = await authApi.getMe();
-      if (!response.success || !response.data?.user) {
-        return rejectWithValue(response.error || 'Failed to fetch user profile');
-      }
-      return response.data.user;
+      const data = await dispatch(authApiSlice.endpoints.getMe.initiate()).unwrap();
+      return data.user;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Authentication error');
+      return rejectWithValue(err?.data?.error || err?.message || 'Authentication error');
     }
   }
 );
@@ -130,21 +126,40 @@ export const loginWithGoogle = createAsyncThunk(
   'auth/loginWithGoogle',
   async (
     payload: { credential?: string; code?: string; accessToken?: string },
-    { rejectWithValue }
+    { dispatch, rejectWithValue }
   ) => {
     try {
-      const response = await authApi.continueWithGoogle(payload);
-      if (!response.success || !response.data) {
-        return rejectWithValue(response.error || 'Google login failed');
+      const data = await dispatch(authApiSlice.endpoints.continueWithGoogle.initiate(payload)).unwrap();
+
+      if (data?.token) {
+        firebaseAuthService.signInWithCustomToken(data.token).catch(() => {});
       }
 
-      if (response.data.token) {
-        firebaseAuthService.signInWithCustomToken(response.data.token).catch(() => {});
-      }
-
-      return response.data;
+      return data;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to login with Google');
+      return rejectWithValue(err?.data?.error || err?.message || 'Google login failed');
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { dispatch, getState }) => {
+    const state = getState() as any;
+    const activeToken =
+      state.auth?.token ||
+      (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null);
+    try {
+      await firebaseAuthService.signOut();
+    } catch (e) {
+      console.warn('Firebase signOut notice:', e);
+    }
+    if (activeToken) {
+      try {
+        await dispatch(authApiSlice.endpoints.logout.initiate(activeToken)).unwrap();
+      } catch (e) {
+        // ignore logout errors
+      }
     }
   }
 );
@@ -165,7 +180,6 @@ export const authSlice = createSlice({
       }
     },
     logout(state) {
-      const activeToken = state.token || localStorage.getItem('auth_token');
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -173,7 +187,6 @@ export const authSlice = createSlice({
       state.error = null;
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
-      authApi.logout(activeToken || undefined).catch(() => {});
       firebaseAuthService.signOut().catch(() => {});
     },
     openAuthModal(state) {

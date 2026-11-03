@@ -279,7 +279,7 @@ export const Dashboard: React.FC = () => {
 
     const total = serverLeaderboard ? serverLeaderboard.totalStudents : ranked.length;
     const rank = serverLeaderboard?.currentUserRank || (idx !== -1 ? idx + 1 : 1);
-    const hasAttempted = stats.totalExams > 0 || history.length > 0 || user.totalTests > 0;
+    const hasAttempted = stats.totalExams > 0 || history.length > 0 || user.examsCompleted > 0;
 
     return {
       currentUser: user,

@@ -4,7 +4,6 @@ import type { Question, QuestionOption, GradeLevel, SubjectName, DifficultyLevel
 import type { QuizConfig, QuizSession } from '../../types/quiz';
 import { selectQuestionsForQuiz } from '../../utils/questionSelection';
 import { storage } from '../../utils/storage';
-import { quizApi } from '../../services/quizApi';
 
 export interface BackendHealthResponse {
   status: 'ok' | 'error';
@@ -151,24 +150,26 @@ const initialState: QuizState = {
 
 export const prepareAndStartQuiz = createAsyncThunk(
   'quiz/prepareAndStartQuiz',
-  async (payload: { config: QuizConfig; useAi?: boolean }) => {
+  async (payload: { config: QuizConfig; useAi?: boolean }, { dispatch }) => {
     const { config, useAi } = payload;
     let questions: Question[] = [];
 
     try {
       if (useAi && config.subject !== 'All Subjects') {
-        questions = await quizApi.generateQuiz({
-          subject: config.subject,
-          classLevel: config.grade,
-          count: Math.min(config.questionCount, 15),
-          topic: config.topic !== 'All Topics' ? config.topic : undefined,
-          difficulty:
-            config.difficulty !== 'All Levels'
-              ? (config.difficulty as 'Easy' | 'Medium' | 'Hard')
-              : undefined,
-        });
+        questions = await dispatch(
+          quizApiSlice.endpoints.generateQuiz.initiate({
+            subject: config.subject,
+            classLevel: config.grade,
+            count: Math.min(config.questionCount, 15),
+            topic: config.topic !== 'All Topics' ? config.topic : undefined,
+            difficulty:
+              config.difficulty !== 'All Levels'
+                ? (config.difficulty as 'Easy' | 'Medium' | 'Hard')
+                : undefined,
+          })
+        ).unwrap();
       } else {
-        questions = await quizApi.getQuestions(config);
+        questions = await dispatch(quizApiSlice.endpoints.getQuestions.initiate(config)).unwrap();
       }
     } catch (err: any) {
       console.warn('Backend question fetch failed, falling back to local dataset:', err);

@@ -1,12 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { apiSlice } from './baseApi';
-import {
-  syllabusApi,
-  type SubjectSummary,
-  type SyllabusFile,
-} from '../../services/syllabusApi';
+import type {
+  SubjectSummary,
+  SyllabusFile,
+  SyllabusGrade,
+  SyllabusBranch,
+  SyllabusChapter,
+  SyllabusTopic,
+} from '../../types/syllabus';
 
-export type { SubjectSummary, SyllabusFile };
+export type {
+  SubjectSummary,
+  SyllabusFile,
+  SyllabusGrade,
+  SyllabusBranch,
+  SyllabusChapter,
+  SyllabusTopic,
+};
 
 export interface SyllabusOverviewData {
   subjects: SubjectSummary[];
@@ -55,7 +65,7 @@ export const syllabusApiSlice = apiSlice.injectEndpoints({
           }
         }
 
-        return { data: { subjects, topics: filteredTopics } };
+        return { data: { subjects, topicsByGrade: filteredTopics } };
       },
       providesTags: ['Syllabus'],
     }),
@@ -96,32 +106,13 @@ const initialState: SyllabusState = {
 
 export const fetchSyllabusOverview = createAsyncThunk(
   'syllabus/fetchOverview',
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const [subjects, topics] = await Promise.all([
-        syllabusApi.getSubjects('science'),
-        syllabusApi.getTopicsByGrade(),
-      ]);
-
-      const scienceSubjectNames = new Set(subjects.map((s) => s.name));
-      const filteredTopics: Record<number, Record<string, string[]>> = {
-        11: {},
-        12: {},
-      };
-
-      for (const grade of [11, 12] as const) {
-        filteredTopics[grade] = {};
-        for (const [subj, chList] of Object.entries(topics[grade] || {})) {
-          if (scienceSubjectNames.has(subj)) {
-            filteredTopics[grade][subj] = chList;
-          }
-        }
-      }
-
-      return { subjects, topics: filteredTopics };
+      const data = await dispatch(syllabusApiSlice.endpoints.getSyllabusOverview.initiate()).unwrap();
+      return { subjects: data.subjects, topics: data.topicsByGrade };
     } catch (err: any) {
       return rejectWithValue(
-        err.message || 'Failed to fetch science syllabus data',
+        err?.message || 'Failed to fetch science syllabus data',
       );
     }
   }
@@ -129,13 +120,13 @@ export const fetchSyllabusOverview = createAsyncThunk(
 
 export const fetchSubjectDetails = createAsyncThunk(
   'syllabus/fetchSubjectDetails',
-  async (subject: string, { rejectWithValue }) => {
+  async (subject: string, { dispatch, rejectWithValue }) => {
     try {
-      const syllabus = await syllabusApi.getSyllabus(subject);
+      const syllabus = await dispatch(syllabusApiSlice.endpoints.getSyllabusBySubject.initiate(subject)).unwrap();
       return { subject, syllabus };
     } catch (err: any) {
       return rejectWithValue(
-        err.message || `Failed to fetch syllabus details for ${subject}`,
+        err?.message || `Failed to fetch syllabus details for ${subject}`,
       );
     }
   }
@@ -169,4 +160,3 @@ export const syllabusSlice = createSlice({
 
 export const syllabusReducer = syllabusSlice.reducer;
 export default syllabusReducer;
-

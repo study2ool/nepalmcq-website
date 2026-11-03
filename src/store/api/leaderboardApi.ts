@@ -10,8 +10,7 @@ import {
   saveStoredUserProfile,
   DEFAULT_USER_PROFILE,
 } from '../../utils/leaderboardUtils';
-import { authApi } from '../../services/authApi';
-import { fetchCurrentUser } from './authApi';
+import { fetchCurrentUser, authApiSlice } from './authApi';
 
 export const saveUserProfile = createAsyncThunk(
   'leaderboard/saveUserProfile',
@@ -23,7 +22,7 @@ export const saveUserProfile = createAsyncThunk(
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     if (token) {
       try {
-        await authApi.updateProfile(updates);
+        await dispatch(authApiSlice.endpoints.updateProfile.initiate(updates)).unwrap();
         dispatch(fetchCurrentUser());
       } catch (err) {
         console.warn('Backend profile update failed:', err);

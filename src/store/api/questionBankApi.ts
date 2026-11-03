@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiSlice } from './baseApi';
 import { storage } from '../../utils/storage';
-import { bookmarkApi } from '../../services/bookmarkApi';
 
 export const questionBankApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -49,12 +48,12 @@ const initialState: QuestionBankState = {
 
 export const fetchBookmarks = createAsyncThunk(
   'questionBank/fetchBookmarks',
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const serverBookmarks = await bookmarkApi.getBookmarks();
+      const serverBookmarks = await dispatch(questionBankApiSlice.endpoints.getBookmarks.initiate()).unwrap();
       return serverBookmarks;
     } catch (err: any) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err?.data?.error || err?.message || 'Failed to fetch bookmarks');
     }
   }
 );
@@ -71,10 +70,14 @@ export const toggleBookmarkThunk = createAsyncThunk(
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     if (token) {
-      if (isCurrentlyBookmarked) {
-        await bookmarkApi.removeBookmark(questionId);
-      } else {
-        await bookmarkApi.addBookmark(questionId);
+      try {
+        if (isCurrentlyBookmarked) {
+          await dispatch(questionBankApiSlice.endpoints.removeBookmark.initiate(questionId)).unwrap();
+        } else {
+          await dispatch(questionBankApiSlice.endpoints.addBookmark.initiate(questionId)).unwrap();
+        }
+      } catch (err) {
+        console.warn('Bookmark sync failed:', err);
       }
     }
 

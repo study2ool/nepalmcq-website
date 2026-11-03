@@ -15,6 +15,7 @@ import {
 } from "../store/api/leaderboardApi";
 import { updateUserLocal } from "../store/api/authApi";
 import { SubjectName, GradeLevel } from "../types/question";
+import type { LeaderboardStudent } from "../types/leaderboard";
 import {
   useGetCollegesQuery,
   useGetLeaderboardQuery,
@@ -71,7 +72,7 @@ export const Leaderboard: React.FC = () => {
   const { data: colleges = [] } = useGetCollegesQuery();
   const { data: backendData = null } = useGetLeaderboardQuery({
     timeframe,
-    grade: gradeFilter,
+    grade: gradeFilter === "All" ? undefined : String(gradeFilter),
     subject: subjectFilter,
   });
 
