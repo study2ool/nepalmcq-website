@@ -31,6 +31,7 @@ import SchoolLeaderboardTable from "../components/leaderboard/SchoolLeaderboardT
 import UserRankStickyCard from "../components/leaderboard/UserRankStickyCard";
 import ProfileModal from "../components/leaderboard/ProfileModal";
 import BadgesShowcase from "../components/leaderboard/BadgesShowcase";
+import { SearchableSelect } from "../components/common/SearchableSelect";
 import { useSEO } from "../hooks/useSEO";
 
 const SUBJECT_OPTIONS: Array<"All" | SubjectName> = [
@@ -122,6 +123,17 @@ export const Leaderboard: React.FC = () => {
   ]);
 
   // Compute school standings
+  const schoolOptions = useMemo(() => {
+    return [
+      { value: "All Schools", label: "All Colleges & Schools" },
+      ...colleges.map((sch) => ({
+        value: sch.name,
+        label: sch.name,
+        description: sch.city,
+      })),
+    ];
+  }, [colleges]);
+
   const rankedSchools = useMemo(() => {
     let list =
       backendData && backendData.schools.length > 0
@@ -269,22 +281,15 @@ export const Leaderboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {/* School Filter Dropdown */}
             {scope === "students" && (
-              <div className="relative">
-                <select
-                  value={schoolFilter}
-                  onChange={(e) => dispatch(setSchoolFilter(e.target.value))}
-                  className="w-full sm:w-48 px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                >
-                  <option value="All Schools">
-                    All Colleges &amp; Schools
-                  </option>
-                  {colleges.map((sch) => (
-                    <option key={sch.id} value={sch.name}>
-                      {sch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <SearchableSelect
+                options={schoolOptions}
+                value={schoolFilter}
+                onChange={(val) => dispatch(setSchoolFilter(val))}
+                searchPlaceholder="Search colleges..."
+                icon={<School className="w-3.5 h-3.5" />}
+                className="w-full sm:w-56"
+                buttonClassName="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-white"
+              />
             )}
 
             {/* Search Input */}

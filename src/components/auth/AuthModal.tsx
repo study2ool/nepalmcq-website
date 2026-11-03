@@ -55,7 +55,7 @@ export const AuthModal: React.FC = () => {
           </div>
           <div className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
             <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>Resume incomplete exams on any phone or laptop</span>
+            <span>Sync quiz history and diagnostics across devices</span>
           </div>
         </div>
 

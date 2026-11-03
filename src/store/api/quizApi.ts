@@ -142,10 +142,9 @@ export interface QuizState {
   error: string | null;
 }
 
-const savedSession = storage.getActiveSession();
 const initialState: QuizState = {
-  session: savedSession && !savedSession.isSubmitted ? savedSession : null,
-  hasActiveSession: !!(savedSession && !savedSession.isSubmitted),
+  session: null,
+  hasActiveSession: false,
   isLoading: false,
   error: null,
 };
@@ -226,12 +225,6 @@ export const quizSlice = createSlice({
       state.session = newSession;
       state.hasActiveSession = true;
       storage.saveActiveSession(newSession);
-    },
-
-    resumeExistingSession: (state, action: PayloadAction<QuizSession>) => {
-      state.session = action.payload;
-      state.hasActiveSession = true;
-      storage.saveActiveSession(action.payload);
     },
 
     setCurrentQuestionIndex: (state, action: PayloadAction<number>) => {
@@ -355,7 +348,6 @@ export const quizSlice = createSlice({
 
 export const {
   startQuiz,
-  resumeExistingSession,
   setCurrentQuestionIndex,
   selectAnswer,
   clearAnswer,

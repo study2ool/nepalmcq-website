@@ -31,6 +31,7 @@ import {
   AdminSchool,
 } from "../store/api/apiSlice";
 import type { User } from "../store/api/authApi";
+import { SearchableSelect } from "../components/common/SearchableSelect";
 import { useSEO } from "../hooks/useSEO";
 
 type AdminTab = "overview" | "users" | "schools";
@@ -629,26 +630,32 @@ export const AdminPage: React.FC = () => {
 
             {/* Filters */}
             <div className="flex items-center gap-2">
-              <select
+              <SearchableSelect
+                options={[
+                  { value: "all", label: "All Roles" },
+                  { value: "student", label: "Student" },
+                  { value: "teacher", label: "Teacher" },
+                  { value: "admin", label: "Administrator" },
+                ]}
                 value={userRoleFilter}
-                onChange={(e) => setUserRoleFilter(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium"
-              >
-                <option value="all">All Roles</option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="admin">Administrator</option>
-              </select>
+                onChange={(val) => setUserRoleFilter(String(val))}
+                searchPlaceholder="Search roles..."
+                className="w-36"
+                buttonClassName="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium"
+              />
 
-              <select
+              <SearchableSelect
+                options={[
+                  { value: 0, label: "All Grades" },
+                  { value: 11, label: "Class 11" },
+                  { value: 12, label: "Class 12" },
+                ]}
                 value={userGradeFilter}
-                onChange={(e) => setUserGradeFilter(Number(e.target.value))}
-                className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium"
-              >
-                <option value="0">All Grades</option>
-                <option value="11">Class 11</option>
-                <option value="12">Class 12</option>
-              </select>
+                onChange={(val) => setUserGradeFilter(Number(val))}
+                searchPlaceholder="Search grades..."
+                className="w-32"
+                buttonClassName="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium"
+              />
             </div>
           </div>
 

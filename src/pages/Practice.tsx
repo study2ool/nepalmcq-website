@@ -25,6 +25,7 @@ import {
 } from "../store/api/quizConfigApi";
 import { startQuiz, prepareAndStartQuiz } from "../store/api/quizApi";
 import { GradeLevel, SubjectName, DifficultyLevel } from "../types/question";
+import { SearchableSelect } from "../components/common/SearchableSelect";
 import { useSEO } from "../hooks/useSEO";
 
 export const Practice: React.FC = () => {
@@ -55,6 +56,19 @@ export const Practice: React.FC = () => {
     }
     return gradeTopics[config.subject] || [];
   }, [config.grade, config.subject, topicsByGrade]);
+
+  const topicOptions = useMemo(() => {
+    return [
+      {
+        value: "All Topics",
+        label: `All Topics (${availableTopics.length} available)`,
+      },
+      ...availableTopics.map((top) => ({
+        value: top,
+        label: top,
+      })),
+    ];
+  }, [availableTopics]);
 
   const handleStartExam = async (useAiGenerator = false) => {
     // If student is not logged in, block starting the exam and open auth modal
@@ -281,20 +295,15 @@ export const Practice: React.FC = () => {
                 {availableTopics.length} chapters available
               </span>
             </div>
-            <select
+            <SearchableSelect
+              options={topicOptions}
               value={config.topic}
-              onChange={(e) => dispatch(setTopic(e.target.value))}
-              className="w-full py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-            >
-              <option value="All Topics">
-                All Topics ({availableTopics.length} available)
-              </option>
-              {availableTopics.map((top) => (
-                <option key={top} value={top}>
-                  {top}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => dispatch(setTopic(val))}
+              searchPlaceholder="Search syllabus chapters..."
+              icon={<BookOpen className="w-3.5 h-3.5" />}
+              className="w-full"
+              buttonClassName="w-full py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs sm:text-sm"
+            />
           </div>
 
           {/* 4. Number of Questions & Examination Duration */}

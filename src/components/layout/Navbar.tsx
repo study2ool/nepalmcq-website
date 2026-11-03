@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Menu, X, Play, ArrowRight, LogIn } from 'lucide-react';
+import { BookOpen, Menu, X, ArrowRight, LogIn } from 'lucide-react';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { openAuthModal } from '../../store/api/authApi';
@@ -11,9 +11,7 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const session = useAppSelector((state) => state.quiz.session);
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-  const hasActiveExam = session && !session.isSubmitted;
   const isAdmin =
     isAuthenticated &&
     user &&
@@ -83,24 +81,13 @@ export const Navbar: React.FC = () => {
             </button>
           )}
 
-          {hasActiveExam ? (
-            <Link
-              to={`/exam/${session.quizId}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0 animate-pulse"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span className="hidden sm:inline">Resume Exam</span>
-              <span className="sm:hidden">Resume</span>
-            </Link>
-          ) : (
-            <Link
-              to="/practice"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0"
-            >
-              <span>Practice</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          )}
+          <Link
+            to="/practice"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 rounded-lg shadow-sm transition-all whitespace-nowrap shrink-0"
+          >
+            <span>Practice</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
 
           {/* Mobile menu trigger */}
           <button
