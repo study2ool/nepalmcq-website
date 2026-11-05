@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Trophy,
@@ -42,6 +42,12 @@ export const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.results.history);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/practice", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // RTK Query Hooks with automatic caching and invalidation
   const { data: bankStats = [] } = useGetQuizSubjectsQuery();

@@ -19,6 +19,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 import { AdminRoute } from './components/auth/AdminRoute';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 export default function App() {
   return (
@@ -32,7 +33,14 @@ export default function App() {
                 <Route path="configure" element={<Navigate to="/practice" replace />} />
                 <Route path="exam/:quizId" element={<ExamPage />} />
                 <Route path="result/:resultId" element={<ResultPage />} />
-                <Route path="dashboard" element={<Dashboard />} />
+                <Route
+                  path="dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="subjects" element={<Subjects />} />
                 <Route path="practice" element={<Practice />} />
                 <Route path="leaderboard" element={<Leaderboard />} />
