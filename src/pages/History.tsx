@@ -31,10 +31,16 @@ export const History: React.FC = () => {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
+      navigate("/practice", { replace: true });
+    } else {
       dispatch(fetchResultsHistory());
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleRetakeExam = (config: QuizConfig) => {
     if (!isAuthenticated) {

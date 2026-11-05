@@ -16,18 +16,13 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://nepalmcq.edu.np/dashboard</loc>
-    <changefreq>always</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://nepalmcq.edu.np/leaderboard</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://nepalmcq.edu.np/history</loc>
-    <changefreq>always</changefreq>
-    <priority>0.6</priority>
+    <loc>https://nepalmcq.edu.np/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

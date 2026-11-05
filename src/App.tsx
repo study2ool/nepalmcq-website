@@ -44,7 +44,14 @@ export default function App() {
                 <Route path="subjects" element={<Subjects />} />
                 <Route path="practice" element={<Practice />} />
                 <Route path="leaderboard" element={<Leaderboard />} />
-                <Route path="history" element={<History />} />
+                <Route
+                  path="history"
+                  element={
+                    <ProtectedRoute>
+                      <History />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route path="contact" element={<Contact />} />
                 <Route path="auth/callback" element={<AuthCallback />} />
                 <Route

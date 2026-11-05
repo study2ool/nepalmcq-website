@@ -11,9 +11,11 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useGetHealthQuery } from '../../store/api/apiSlice';
+import { useAppSelector } from '../../store';
 
 export const Footer: React.FC = () => {
   const { data: health, isLoading: isChecking } = useGetHealthQuery();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400">
@@ -82,14 +84,16 @@ export const Footer: React.FC = () => {
                   National &amp; College Leaderboard
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/history"
-                  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block py-0.5"
-                >
-                  Past Examination Attempts
-                </Link>
-              </li>
+              {isAuthenticated && (
+                <li>
+                  <Link
+                    to="/history"
+                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block py-0.5"
+                  >
+                    Past Examination Attempts
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   to="/contact"
