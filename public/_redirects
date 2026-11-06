@@ -1,6 +1,6 @@
 # Cloudflare Pages Redirects & API Proxy Configuration
-# If your backend is deployed (e.g., Render, Railway, fly.io), you can proxy API calls directly:
-# /api/*  https://<YOUR-BACKEND-HOST>/api/:splat  200
+# Proxies all /api/* requests to your live Render backend
+/api/*  https://nepalmcq-backend.onrender.com/api/:splat  200
 
 # SPA fallback for React Router
 /*    /index.html   200
