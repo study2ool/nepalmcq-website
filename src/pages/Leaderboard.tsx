@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { Users, School, Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Users, School, Search, ArrowRight, Trophy } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   setScope,
@@ -12,7 +13,7 @@ import {
   setBadgesModalOpen,
   saveUserProfile,
 } from "../store/api/leaderboardApi";
-import { updateUserLocal } from "../store/api/authApi";
+import { updateUserLocal, openAuthModal } from "../store/api/authApi";
 import { SubjectName, GradeLevel } from "../types/question";
 import type { LeaderboardStudent } from "../types/leaderboard";
 import {
@@ -30,6 +31,7 @@ import UserRankStickyCard from "../components/leaderboard/UserRankStickyCard";
 import ProfileModal from "../components/leaderboard/ProfileModal";
 import BadgesShowcase from "../components/leaderboard/BadgesShowcase";
 import { SearchableSelect } from "../components/common/SearchableSelect";
+import { GoogleIcon } from "../components/auth/GoogleIcon";
 import { useSEO } from "../hooks/useSEO";
 
 const SUBJECT_OPTIONS: Array<"All" | SubjectName> = [
@@ -38,22 +40,39 @@ const SUBJECT_OPTIONS: Array<"All" | SubjectName> = [
   "Chemistry",
   "Biology",
   "Mathematics",
+  "Computer Science",
   "English",
   "Nepali",
-  "Computer Science",
+  "Accounting",
+  "Economics",
+  "Business Studies",
+  "Business Math",
+  "Hotel Management",
 ];
 
 export const Leaderboard: React.FC = () => {
   useSEO({
-    title: "National & Inter-College Leaderboard | Nepal MCQ",
+    title: "National & Inter-College Student Leaderboard – Nepal MCQ",
     description:
-      "Track top performing Grade 11 & 12 students and secondary schools across Nepal by subject, accuracy, and examination scores.",
+      "Live national rankings of top-performing NEB Grade 11 & 12 students and secondary schools across Nepal. Explore academic standings by subject, accuracy, and examination scores across Science and Management streams.",
     canonicalPath: "/leaderboard",
+    keywords:
+      "Nepal leaderboard, top students Nepal, NEB college rankings, St. Xaviers, Budhanilkantha, Prasadi Academy, SOS Hermann Gmeiner, Science leaderboard, Management leaderboard, Grade 11 ranking, Grade 12 ranking Nepal",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Nepal National NEB Student & College Leaderboard",
+      "description":
+        "National academic rankings of Grade 11 & 12 students and secondary schools across Nepal based on NEB curriculum examination performance.",
+      "url": "https://nepalmcq.edu.np/leaderboard",
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+    },
   });
 
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.results.history);
   const authUser = useAppSelector((state) => state.auth.user);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const {
     profile,
     scope,
@@ -198,15 +217,52 @@ export const Leaderboard: React.FC = () => {
         </div>
       </div>
 
-      {/* User Personal Standing Card */}
-      <UserRankStickyCard
-        currentUser={currentUser}
-        userRank={userRank}
-        totalStudents={rankedStudents.length}
-        nextStudent={nextStudent}
-        onEditProfile={() => dispatch(setProfileModalOpen(true))}
-        onViewBadges={() => dispatch(setBadgesModalOpen(true))}
-      />
+      {/* User Personal Standing Card or Public Welcome Banner */}
+      {isAuthenticated || history.length > 0 ? (
+        <UserRankStickyCard
+          currentUser={currentUser}
+          userRank={userRank}
+          totalStudents={rankedStudents.length}
+          nextStudent={nextStudent}
+          onEditProfile={() => dispatch(setProfileModalOpen(true))}
+          onViewBadges={() => dispatch(setBadgesModalOpen(true))}
+        />
+      ) : (
+        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-amber-400 text-slate-900">
+                National Standings
+              </span>
+              <span className="text-xs text-indigo-300 font-medium">Public Nepal-wide Rankings</span>
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-white">
+              Publicly Ranked Secondary Schools &amp; Top Students
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Explore live benchmarks across Grade 11 &amp; 12. To see your personal rank, accumulate XP, and represent your college on the national board, start a practice test or sign in.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => dispatch(openAuthModal())}
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+            >
+              <GoogleIcon className="w-3.5 h-3.5" />
+              <span>Continue with Google</span>
+            </button>
+            <Link
+              to="/practice"
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Take a Test</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Filter Controls Bar */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 space-y-4 shadow-xs">

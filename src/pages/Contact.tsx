@@ -65,10 +65,20 @@ const FAQS = [
 
 export const Contact: React.FC = () => {
   useSEO({
-    title: "Contact Us & Academic Support - Nepal MCQ",
+    title: "Contact & Academic Support – Nepal MCQ",
     description:
-      "Reach out to the Nepal MCQ academic team for question feedback, syllabus suggestions, college partnerships, or technical support.",
+      "Reach out to the Nepal MCQ academic team for question feedback, syllabus suggestions, college partnerships, or technical support across Kathmandu and Nepal.",
     canonicalPath: "/contact",
+    keywords:
+      "Nepal MCQ contact, academic support Nepal, NEB question feedback, college partnership, report syllabus error",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Nepal MCQ Academic Team",
+      "description":
+        "Contact academic support, report question feedback, or register secondary schools on Nepal's National Leaderboard.",
+      "url": "https://nepalmcq.edu.np/contact",
+    },
   });
 
   const currentUser = useAppSelector((state) => state.auth.user);

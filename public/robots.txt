@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /exam/
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /history
 
 Sitemap: https://nepalmcq.edu.np/sitemap.xml

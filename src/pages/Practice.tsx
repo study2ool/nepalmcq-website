@@ -94,10 +94,21 @@ export const Practice: React.FC = () => {
   }, [practiceStream]);
 
   useSEO({
-    title: "Practice Center – NEB MCQs & Board Mock Examinations",
+    title: "NEB Online Practice & Mock Examination Center – Grade 11 & 12",
     description:
-      "Practice topic-wise drills or launch full-length NEB Grade 11 & 12 mock examinations across Physics, Chemistry, Biology, Mathematics, English, Nepali, and Computer Science.",
+      "Practice chapter-wise MCQs, simulate full-length NEB board examinations with strict timers, and solve past questions ('Old is Gold') across Science and Management streams.",
     canonicalPath: "/practice",
+    keywords:
+      "NEB mock test, NEB practice exam, Old is Gold NEB, Class 11 MCQ, Class 12 MCQ, IOE entrance test, CEE mock test, timed examination Nepal, online exam NEB",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      "name": "NEB Grade 11 & 12 Practice Tests & Board Examination Center",
+      "description":
+        "Computer-based tests, instant study mode with derivations, and past paper drills for secondary education students in Nepal.",
+      "educationalLevel": "Secondary Education (NEB Grade 11-12)",
+      "isAccessibleForFree": true,
+    },
   });
 
   // Available topics loaded dynamically from backend syllabus

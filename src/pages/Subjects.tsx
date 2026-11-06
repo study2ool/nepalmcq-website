@@ -88,10 +88,25 @@ export const Subjects: React.FC = () => {
   );
 
   useSEO({
-    title: "NEB Curriculum Syllabi, Chapters & Learning Objectives – Grade 11 & 12",
+    title: "NEB Curriculum Syllabus, Specification Grids & Formulas – Grade 11 & 12",
     description:
-      "Explore official Nepal NEB curriculum chapters, CDC syllabus trees, and lesson objectives for Science and Commerce streams.",
+      "Explore official CDC and NEB syllabus chapters, specification grids, mark distributions, high-yield formula cheatsheets, and Group B (5M) & Group C (8M) model derivations across Science and Management streams.",
     canonicalPath: "/subjects",
+    keywords:
+      "NEB syllabus, CDC curriculum, NEB Grade 11 syllabus, NEB Grade 12 syllabus, Specification Grid NEB, marks weightage, Physics formula sheet, Math formulas, Accounting ratios, Group B questions, Group C derivations",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "NEB Grade 11 & 12 Official Curriculum Syllabus",
+      "description":
+        "Complete curriculum specifications, chapter objectives, formula cheatsheets, and question weightage grids for Grade 11 and 12 in Nepal.",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Nepal MCQ",
+        "url": "https://nepalmcq.edu.np",
+      },
+      "educationalCredentialAwarded": "National Examinations Board (NEB) Certification Preparation",
+    },
   });
 
   // Fetch full syllabus tree for active subject when changed

@@ -35,10 +35,12 @@ export const Bookmarks: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useSEO({
-    title: "My Saved & Bookmarked Questions – Personal Question Bank",
+    title: "Saved Questions Vault & Revision Drills – Nepal MCQ",
     description:
-      "Review your saved difficult questions, inspect detailed conceptual derivations, and launch targeted practice drills.",
+      "Review your saved difficult questions, inspect step-by-step conceptual derivations, and launch targeted practice sessions across NEB Science and Management subjects.",
     canonicalPath: "/saved",
+    keywords:
+      "saved questions, bookmark questions, revision drills, question bank Nepal, NEB exam revision",
   });
 
   // Resolve bookmarked question objects from allQuestions (or local storage/backend)
