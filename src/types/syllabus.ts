@@ -1,7 +1,7 @@
 export interface SubjectSummary {
   name: string;
   code: string;
-  category: 'science';
+  category: 'science' | 'commerce' | string;
   isNepaliLang: boolean;
   grades: number[];
   totalChapters: number;
@@ -29,6 +29,42 @@ export interface SyllabusBranch {
   branchNumber: number;
   branchName: string;
   chapters: SyllabusChapter[];
+  weightageMarks?: number;
+  teachingHours?: number;
+}
+
+export interface BloomTaxonomy {
+  knowledgePercent: number;
+  understandingPercent: number;
+  applicationPercent: number;
+  higherAbilityPercent: number;
+}
+
+export interface UnitWeightageItem {
+  unitName: string;
+  weightageMarks: number;
+  teachingHours: number;
+  mcqMarks?: number;
+  shortAnswerMarks?: number;
+  longAnswerMarks?: number;
+}
+
+export interface NebSpecificationGrid {
+  subject: string;
+  grade: 11 | 12;
+  theoryMarks: number;
+  practicalMarks: number;
+  passMarksTheory: number;
+  creditHours: number;
+  teachingHours: number;
+  examDurationMinutes: number;
+  questionFormat: {
+    groupA: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
+    groupB: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
+    groupC: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
+  };
+  bloomTaxonomy: BloomTaxonomy;
+  units: UnitWeightageItem[];
 }
 
 export interface SyllabusGrade {

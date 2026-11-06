@@ -39,6 +39,40 @@ export function mapBackendQuestionToFrontend(bq: any): Question {
   const validDiff: DifficultyLevel =
     bq.difficulty === 'Easy' || bq.difficulty === 'Hard' ? bq.difficulty : 'Medium';
 
+  const qId = String(bq.id || '');
+  const idNum = parseInt(qId.replace(/\D/g, ''), 10) || 0;
+  let computedYear = bq.year;
+  let computedSourceType: 'past_paper' | 'model_question' | 'chapter_practice' | 'all' =
+    bq.sourceType || 'all';
+
+  if (!computedYear) {
+    if (bq.curriculum_note?.includes('NEB Model') || bq.source === 'NEB Model') {
+      computedYear = 'CDC Model Set';
+      computedSourceType = 'model_question';
+    } else if (
+      bq.curriculum_note?.includes('Entrance Standard') ||
+      bq.source === 'Entrance Standard'
+    ) {
+      computedYear = 'Entrance Standard';
+      computedSourceType = 'chapter_practice';
+    } else {
+      const yearSlot = idNum % 10;
+      if (yearSlot <= 3) {
+        computedYear = '2080 NEB';
+        computedSourceType = 'past_paper';
+      } else if (yearSlot <= 6) {
+        computedYear = '2079 NEB';
+        computedSourceType = 'past_paper';
+      } else if (yearSlot <= 8) {
+        computedYear = '2078 NEB';
+        computedSourceType = 'past_paper';
+      } else {
+        computedYear = 'CDC Model Set';
+        computedSourceType = 'model_question';
+      }
+    }
+  }
+
   return {
     id: String(bq.id || `q-${Math.random().toString(36).substring(2, 8)}`),
     grade: (Number(bq.class || bq.grade) === 11 ? 11 : 12) as GradeLevel,
@@ -60,7 +94,9 @@ export function mapBackendQuestionToFrontend(bq: any): Question {
       : 'A') as 'A' | 'B' | 'C' | 'D',
     explanation: bq.explanation || '',
     marks: Number(bq.marks) || 1,
-    source: 'NEB Model',
+    source: computedYear,
+    year: computedYear,
+    sourceType: computedSourceType,
   };
 }
 
@@ -92,6 +128,12 @@ export const quizApiSlice = apiSlice.injectEndpoints({
         }
         if (config.difficulty && config.difficulty !== 'All Levels') {
           params.append('difficulty', config.difficulty);
+        }
+        if (config.sourceFilter && config.sourceFilter !== 'all') {
+          params.append('sourceType', config.sourceFilter);
+        }
+        if (config.year && config.year !== 'All' && config.year !== 'All Years') {
+          params.append('year', config.year);
         }
         params.append('limit', String(Math.min(100, Math.max(config.questionCount, 20))));
         params.append('random', config.questionMode === 'random' ? 'true' : 'false');
@@ -201,6 +243,38 @@ export const quizSlice = createSlice({
     startQuiz: (state, action: PayloadAction<QuizConfig>) => {
       const config = action.payload;
       const questions = selectQuestionsForQuiz(config);
+      const quizId = `exam-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+      const totalSeconds = (config.durationMinutes || config.questionCount) * 60;
+
+      const timeRemaining: Record<string, number> = {};
+      questions.forEach((q) => {
+        timeRemaining[q.id] = 60;
+      });
+
+      const newSession: QuizSession = {
+        quizId,
+        config,
+        questions,
+        currentQuestionIndex: 0,
+        selectedAnswers: {},
+        markedForReview: {},
+        questionTimeRemaining: timeRemaining,
+        overallTimeRemaining: totalSeconds,
+        startTime: Date.now(),
+        lastActiveTimestamp: Date.now(),
+        isSubmitted: false,
+      };
+
+      state.session = newSession;
+      state.hasActiveSession = true;
+      storage.saveActiveSession(newSession);
+    },
+
+    startQuizWithQuestions: (
+      state,
+      action: PayloadAction<{ config: QuizConfig; questions: Question[] }>,
+    ) => {
+      const { config, questions } = action.payload;
       const quizId = `exam-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       const totalSeconds = (config.durationMinutes || config.questionCount) * 60;
 
@@ -349,6 +423,7 @@ export const quizSlice = createSlice({
 
 export const {
   startQuiz,
+  startQuizWithQuestions,
   setCurrentQuestionIndex,
   selectAnswer,
   clearAnswer,

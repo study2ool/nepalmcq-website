@@ -6,7 +6,12 @@ export type SubjectName =
   | 'Mathematics'
   | 'English'
   | 'Nepali'
-  | 'Computer Science';
+  | 'Computer Science'
+  | 'Accounting'
+  | 'Economics'
+  | 'Business Studies'
+  | 'Hotel Management'
+  | 'Business Math';
 export type DifficultyLevel = 'Easy' | 'Medium' | 'Hard';
 
 export interface QuestionOption {
@@ -25,7 +30,9 @@ export interface Question {
   correctAnswer: 'A' | 'B' | 'C' | 'D';
   explanation: string;
   marks: number;
-  source?: 'NEB Model' | 'Entrance Standard' | 'Conceptual Practice';
+  source?: 'NEB Model' | 'Entrance Standard' | 'Conceptual Practice' | string;
+  year?: string;
+  sourceType?: 'past_paper' | 'model_question' | 'chapter_practice' | 'all';
 }
 
 export interface QuestionFilter {

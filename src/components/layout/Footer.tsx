@@ -85,14 +85,24 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               {isAuthenticated && (
-                <li>
-                  <Link
-                    to="/history"
-                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block py-0.5"
-                  >
-                    Past Examination Attempts
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link
+                      to="/saved"
+                      className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block py-0.5"
+                    >
+                      Saved Questions Vault
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/history"
+                      className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block py-0.5"
+                    >
+                      Past Examination Attempts
+                    </Link>
+                  </li>
+                </>
               )}
               <li>
                 <Link

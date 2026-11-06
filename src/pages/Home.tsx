@@ -29,9 +29,9 @@ export const Home: React.FC = () => {
   const subjects = useAppSelector((state) => state.syllabus.subjects);
 
   useSEO({
-    title: "Nepal MCQ - Science Exam Platform",
+    title: "Nepal MCQ – Centralized NEB Syllabus & Practice Platform",
     description:
-      "Interactive NEB Grade 11 & 12 Science MCQ practice and computer-based examination platform for Physics, Chemistry, Biology, Mathematics, and Computer Science.",
+      "Interactive NEB Grade 11 & 12 Science & Management MCQ practice, specification grids, formula sheets, and computer-based examination platform.",
     canonicalPath: "/",
   });
 
@@ -56,7 +56,7 @@ export const Home: React.FC = () => {
               <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                 <span>National Examinations Board (NEB)</span>
                 <span>·</span>
-                <span>Grade 11 &amp; 12 Science Curriculum</span>
+                <span>Grade 11 &amp; 12 Science &amp; Management Curriculum</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] text-balance">
@@ -64,11 +64,7 @@ export const Home: React.FC = () => {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Nepal’s dedicated computer-based examination and practice
-                platform for NEB Grade 11 &amp; 12 science students. Master
-                Physics, Chemistry, and Biology with authentic timed mocks,
-                individual question pacing, and step-by-step scientific
-                derivations.
+                Nepal’s centralized curriculum syllabus and computer-based examination platform for NEB Grade 11 &amp; 12 Science and Management streams. Master your subjects with authentic timed mocks, chapter mastery tracking, high-yield formula cheatsheets, and step-by-step model derivations.
               </p>
 
               {/* CTAs */}

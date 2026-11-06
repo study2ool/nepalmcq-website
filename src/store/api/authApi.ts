@@ -145,6 +145,11 @@ export const loginWithGoogle = createAsyncThunk(
       ).unwrap();
       return data;
     } catch (err: any) {
+      if (err?.status === 405 || err?.originalStatus === 405) {
+        return rejectWithValue(
+          "Backend API unreachable (405 Method Not Allowed). Please ensure VITE_API_BASE_URL is configured in your Cloudflare Pages deployment settings.",
+        );
+      }
       return rejectWithValue(
         err?.data?.error || err?.message || "Google login failed",
       );

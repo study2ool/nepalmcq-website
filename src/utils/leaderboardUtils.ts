@@ -241,6 +241,11 @@ export const buildCurrentUserLeaderboardEntry = (
     English: 0,
     Nepali: 0,
     'Computer Science': 0,
+    Accounting: 0,
+    Economics: 0,
+    'Business Studies': 0,
+    'Hotel Management': 0,
+    'Business Math': 0,
   };
 
   const subjectStats: Record<SubjectName, { attempted: number; correct: number }> = {
@@ -251,6 +256,11 @@ export const buildCurrentUserLeaderboardEntry = (
     English: { attempted: 0, correct: 0 },
     Nepali: { attempted: 0, correct: 0 },
     'Computer Science': { attempted: 0, correct: 0 },
+    Accounting: { attempted: 0, correct: 0 },
+    Economics: { attempted: 0, correct: 0 },
+    'Business Studies': { attempted: 0, correct: 0 },
+    'Hotel Management': { attempted: 0, correct: 0 },
+    'Business Math': { attempted: 0, correct: 0 },
   };
 
   history.forEach((h) => {
@@ -278,6 +288,11 @@ export const buildCurrentUserLeaderboardEntry = (
     English: 0,
     Nepali: 0,
     'Computer Science': 0,
+    Accounting: 0,
+    Economics: 0,
+    'Business Studies': 0,
+    'Hotel Management': 0,
+    'Business Math': 0,
   };
 
   let topSubject: SubjectName = 'Physics';
@@ -405,6 +420,11 @@ export const getRankedSchools = (
           English: 0,
           Nepali: 0,
           'Computer Science': 0,
+          Accounting: 0,
+          Economics: 0,
+          'Business Studies': 0,
+          'Hotel Management': 0,
+          'Business Math': 0,
         },
       };
     }

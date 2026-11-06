@@ -73,7 +73,11 @@ export const ExamDialog: React.FC = () => {
       timerIntervalRef.current = null;
     }
 
-    const calculatedResult = calculateQuizResult(session);
+    const markingScheme = session.config.markingScheme || {
+      correctMarks: 1,
+      incorrectPenalty: session.config.negativeMarking ? 0.25 : 0,
+    };
+    const calculatedResult = calculateQuizResult(session, markingScheme);
     dispatch(setLatestResult(calculatedResult));
     dispatch(submitQuiz());
 
@@ -132,10 +136,11 @@ export const ExamDialog: React.FC = () => {
           setIs5MinWarningOpen(true);
         }
 
-        // Active question remaining check
+        // Active question remaining check (only auto-advance in timed exam mode)
+        const isStudyMode = session.config.mode === 'study';
         const currentQRemaining =
           session.questionTimeRemaining[activeQuestion.id] ?? 60;
-        if (currentQRemaining - elapsedSeconds <= 0) {
+        if (!isStudyMode && currentQRemaining - elapsedSeconds <= 0) {
           // Question timer expired! Auto advance to next question
           dispatch(
             updateTimers({
@@ -289,6 +294,7 @@ export const ExamDialog: React.FC = () => {
                   selectedOption={selectedOption}
                   isMarkedForReview={isMarked}
                   isBookmarked={isBookmarked}
+                  isStudyMode={session?.config.mode === 'study'}
                   onSelectOption={(optionId) =>
                     dispatch(
                       selectAnswer({ questionId: activeQuestion.id, optionId }),

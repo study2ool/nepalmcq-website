@@ -15,6 +15,12 @@ export interface QuizConfig {
   durationMinutes: number; // calculated 1 min per question by default
   difficulty: DifficultyLevel | 'All Levels';
   questionMode: 'random' | 'sequential';
+  mode?: 'exam' | 'study';
+  sourceFilter?: 'all' | 'past_papers' | 'model_questions';
+  year?: string;
+  negativeMarking?: boolean;
+  markingScheme?: { correctMarks: number; incorrectPenalty: number };
+  examPreset?: 'custom' | 'neb_board' | 'cee_medical' | 'ioe_engineering';
 }
 
 export interface QuizSession {

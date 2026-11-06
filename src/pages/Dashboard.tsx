@@ -6,6 +6,7 @@ import {
   TrendingUp,
   AlertTriangle,
   School,
+  BookmarkCheck,
 } from "lucide-react";
 import {
   LineChart,
@@ -78,6 +79,14 @@ export const Dashboard: React.FC = () => {
         Nepali: backendStats.subjectMastery["Nepali"]?.accuracy || 0,
         "Computer Science":
           backendStats.subjectMastery["Computer Science"]?.accuracy || 0,
+        Accounting: backendStats.subjectMastery["Accounting"]?.accuracy || 0,
+        Economics: backendStats.subjectMastery["Economics"]?.accuracy || 0,
+        "Business Studies":
+          backendStats.subjectMastery["Business Studies"]?.accuracy || 0,
+        "Hotel Management":
+          backendStats.subjectMastery["Hotel Management"]?.accuracy || 0,
+        "Business Math":
+          backendStats.subjectMastery["Business Math"]?.accuracy || 0,
       };
 
       const progressData = backendStats.recentTrend.map((t, idx) => ({
@@ -165,6 +174,11 @@ export const Dashboard: React.FC = () => {
       English: { correct: 0, attempted: 0 },
       Nepali: { correct: 0, attempted: 0 },
       "Computer Science": { correct: 0, attempted: 0 },
+      Accounting: { correct: 0, attempted: 0 },
+      Economics: { correct: 0, attempted: 0 },
+      "Business Studies": { correct: 0, attempted: 0 },
+      "Hotel Management": { correct: 0, attempted: 0 },
+      "Business Math": { correct: 0, attempted: 0 },
     };
 
     // Topic aggregator
@@ -229,6 +243,11 @@ export const Dashboard: React.FC = () => {
       English: calcSubAccuracy("English"),
       Nepali: calcSubAccuracy("Nepali"),
       "Computer Science": calcSubAccuracy("Computer Science"),
+      Accounting: calcSubAccuracy("Accounting"),
+      Economics: calcSubAccuracy("Economics"),
+      "Business Studies": calcSubAccuracy("Business Studies"),
+      "Hotel Management": calcSubAccuracy("Hotel Management"),
+      "Business Math": calcSubAccuracy("Business Math"),
     };
 
     // Weak topics (accuracy < 60% with at least 2 questions)
@@ -326,6 +345,14 @@ export const Dashboard: React.FC = () => {
           >
             <Trophy className="w-4 h-4 text-amber-500" />
             <span>Leaderboard {isRanked ? `(#${userRank})` : ""}</span>
+          </Link>
+
+          <Link
+            to="/saved"
+            className="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors shadow-xs"
+          >
+            <BookmarkCheck className="w-4 h-4 text-emerald-500" />
+            <span>Saved Questions</span>
           </Link>
 
           <Link

@@ -10,6 +10,12 @@ const initialState: QuizConfig = {
   durationMinutes: 60,
   difficulty: 'All Levels',
   questionMode: 'random',
+  mode: 'study',
+  sourceFilter: 'all',
+  year: 'All',
+  negativeMarking: false,
+  markingScheme: { correctMarks: 1, incorrectPenalty: 0 },
+  examPreset: 'custom',
 };
 
 export const quizConfigSlice = createSlice({
@@ -40,6 +46,31 @@ export const quizConfigSlice = createSlice({
     setQuestionMode: (state, action: PayloadAction<'random' | 'sequential'>) => {
       state.questionMode = action.payload;
     },
+    setPracticeMode: (state, action: PayloadAction<'exam' | 'study'>) => {
+      state.mode = action.payload;
+    },
+    setSourceFilter: (
+      state,
+      action: PayloadAction<'all' | 'past_papers' | 'model_questions'>,
+    ) => {
+      state.sourceFilter = action.payload;
+    },
+    setYear: (state, action: PayloadAction<string>) => {
+      state.year = action.payload;
+    },
+    setNegativeMarking: (state, action: PayloadAction<boolean>) => {
+      state.negativeMarking = action.payload;
+      state.markingScheme = {
+        correctMarks: 1,
+        incorrectPenalty: action.payload ? 0.25 : 0,
+      };
+    },
+    setExamPreset: (
+      state,
+      action: PayloadAction<'custom' | 'neb_board' | 'cee_medical' | 'ioe_engineering'>,
+    ) => {
+      state.examPreset = action.payload;
+    },
     resetConfig: () => initialState,
     loadConfig: (_state, action: PayloadAction<QuizConfig>) => action.payload,
   },
@@ -53,6 +84,11 @@ export const {
   setDurationMinutes,
   setDifficulty,
   setQuestionMode,
+  setPracticeMode,
+  setSourceFilter,
+  setYear,
+  setNegativeMarking,
+  setExamPreset,
   resetConfig,
   loadConfig,
 } = quizConfigSlice.actions;

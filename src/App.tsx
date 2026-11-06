@@ -13,6 +13,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Subjects = lazy(() => import('./pages/Subjects'));
 const Practice = lazy(() => import('./pages/Practice'));
 const History = lazy(() => import('./pages/History'));
+const Bookmarks = lazy(() => import('./pages/Bookmarks'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Contact = lazy(() => import('./pages/Contact'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -52,6 +53,15 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="saved"
+                  element={
+                    <ProtectedRoute>
+                      <Bookmarks />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="bookmarks" element={<Navigate to="/saved" replace />} />
                 <Route path="contact" element={<Contact />} />
                 <Route path="auth/callback" element={<AuthCallback />} />
                 <Route

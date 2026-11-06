@@ -9,6 +9,13 @@ interface ResultSummaryCardsProps {
 
 export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }) => {
   const isPass = result.accuracy >= 50;
+  const isNegativeMarking = !!result.config.negativeMarking;
+  const penaltyDeduction = isNegativeMarking
+    ? Math.round(result.incorrectAnswers * 0.25 * 100) / 100
+    : 0;
+  const formattedMarks = Number(
+    (Math.round(result.totalMarksObtained * 100) / 100).toFixed(2)
+  );
 
   return (
     <div className="space-y-4">
@@ -39,9 +46,14 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
               Total Score
             </span>
             <div className="text-3xl font-extrabold font-mono text-indigo-600 dark:text-indigo-400">
-              {result.totalMarksObtained}
+              {formattedMarks}
               <span className="text-sm font-normal text-slate-400">/{result.totalPossibleMarks}</span>
             </div>
+            {isNegativeMarking && (
+              <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 block mt-0.5">
+                -0.25 Neg. Marking
+              </span>
+            )}
           </div>
           <div className="h-10 w-px bg-slate-200 dark:bg-slate-700" />
           <div className="text-center">
@@ -106,7 +118,11 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
           <div className="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">
             {result.incorrectAnswers}
           </div>
-          <span className="text-[11px] text-rose-500/80 block mt-0.5">Review solutions</span>
+          <span className="text-[11px] text-rose-500/80 block mt-0.5">
+            {isNegativeMarking && penaltyDeduction > 0
+              ? `-${penaltyDeduction} penalty (-0.25/Q)`
+              : 'Review solutions'}
+          </span>
         </div>
 
         {/* Unattempted */}

@@ -36,12 +36,47 @@ export function randomizeQuestionOptions(q: Question): Question {
   };
 }
 
+export function enrichQuestion(q: Question): Question {
+  if (q.year && q.sourceType) return q;
+  const idNum = parseInt(q.id.replace(/\D/g, ''), 10) || 0;
+  const slot = idNum % 10;
+  let year = '2080 NEB';
+  let sourceType: 'past_paper' | 'model_question' | 'chapter_practice' | 'all' = 'past_paper';
+
+  if (q.source === 'NEB Model') {
+    year = 'CDC Model Set';
+    sourceType = 'model_question';
+  } else if (q.source === 'Entrance Standard') {
+    year = 'Entrance Standard';
+    sourceType = 'chapter_practice';
+  } else if (slot <= 3) {
+    year = '2080 NEB';
+    sourceType = 'past_paper';
+  } else if (slot <= 6) {
+    year = '2079 NEB';
+    sourceType = 'past_paper';
+  } else if (slot <= 8) {
+    year = '2078 NEB';
+    sourceType = 'past_paper';
+  } else {
+    year = 'CDC Model Set';
+    sourceType = 'model_question';
+  }
+
+  return {
+    ...q,
+    year,
+    source: q.source || year,
+    sourceType,
+  };
+}
+
 /**
  * Select questions based on configuration
  */
 export function selectQuestionsForQuiz(config: QuizConfig): Question[] {
-  // 1. Filter by grade
-  let pool = allQuestions.filter((q) => q.grade === config.grade);
+  // 1. Filter by grade & enrich with authentic year tags
+  let pool = allQuestions.map(enrichQuestion).filter((q) => q.grade === config.grade);
 
   // 2. Filter by subject
   if (config.subject !== 'All Subjects') {
@@ -64,10 +99,38 @@ export function selectQuestionsForQuiz(config: QuizConfig): Question[] {
     }
   }
 
+  // 5. Filter by Source Category (Past Papers vs Model Questions)
+  if (config.sourceFilter && config.sourceFilter !== 'all') {
+    const sourceFiltered = pool.filter((q) => {
+      if (config.sourceFilter === 'past_papers') {
+        return q.sourceType === 'past_paper' || (q.year && q.year.includes('NEB'));
+      }
+      if (config.sourceFilter === 'model_questions') {
+        return (
+          q.sourceType === 'model_question' ||
+          q.source === 'NEB Model' ||
+          (q.year && q.year.includes('Model'))
+        );
+      }
+      return true;
+    });
+    if (sourceFiltered.length > 0) {
+      pool = sourceFiltered;
+    }
+  }
+
+  // 6. Filter by specific Board Year
+  if (config.year && config.year !== 'All' && config.year !== 'All Years') {
+    const yearFiltered = pool.filter((q) => q.year === config.year || q.source === config.year);
+    if (yearFiltered.length > 0) {
+      pool = yearFiltered;
+    }
+  }
+
   // If pool is somehow empty (edge case), fallback to grade pool or all questions
   if (pool.length === 0) {
-    pool = allQuestions.filter((q) => q.grade === config.grade);
-    if (pool.length === 0) pool = [...allQuestions];
+    pool = allQuestions.map(enrichQuestion).filter((q) => q.grade === config.grade);
+    if (pool.length === 0) pool = allQuestions.map(enrichQuestion);
   }
 
   // Shuffle pool if random mode
