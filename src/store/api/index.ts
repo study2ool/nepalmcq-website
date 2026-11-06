@@ -12,3 +12,5 @@ export * from './adminApi';
 export * from './accountDeletionApi';
 export * from './contactApi';
 export * from './themeApi';
+export * from './questionReactionApi';
+export { default as questionReactionReducer } from './questionReactionApi';

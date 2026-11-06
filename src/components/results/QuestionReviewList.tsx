@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckCircle2, XCircle, HelpCircle, Clock } from 'lucide-react';
 import { QuestionResult } from '../../types/results';
 import MathRenderer from '../common/MathRenderer';
+import QuestionReactionButtons from '../common/QuestionReactionButtons';
 
 interface QuestionReviewListProps {
   results: QuestionResult[];
@@ -101,8 +102,10 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
                     </span>
                   </div>
 
-                  {/* Status indicator */}
-                  <div className="flex items-center gap-1.5">
+                  {/* Status indicator & Reactions */}
+                  <div className="flex items-center gap-2">
+                    <QuestionReactionButtons questionId={question.id} size="xs" />
+
                     {isCorrect && (
                       <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-md">
                         <CheckCircle2 className="w-3.5 h-3.5" />

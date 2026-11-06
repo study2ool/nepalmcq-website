@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Question } from '../../types/question';
 import MathRenderer from '../common/MathRenderer';
+import QuestionReactionButtons from '../common/QuestionReactionButtons';
 
 interface QuestionCardProps {
   question: Question;
@@ -124,6 +125,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             >
               {question.difficulty}
             </span>
+
+            {/* Like & Dislike Reactions */}
+            <QuestionReactionButtons questionId={question.id} size="sm" />
 
             {/* Bookmark button */}
             <button

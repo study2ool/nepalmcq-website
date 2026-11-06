@@ -24,6 +24,7 @@ import { allQuestions } from "../data/questions";
 import { Question, SubjectName } from "../types/question";
 import { QuizConfig } from "../types/quiz";
 import MathRenderer from "../components/common/MathRenderer";
+import QuestionReactionButtons from "../components/common/QuestionReactionButtons";
 import { useSEO } from "../hooks/useSEO";
 
 export const Bookmarks: React.FC = () => {
@@ -313,15 +314,19 @@ export const Bookmarks: React.FC = () => {
                       )}
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => dispatch(toggleBookmarkThunk(q.id))}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
-                      title="Remove from saved questions"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Remove</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <QuestionReactionButtons questionId={q.id} size="xs" />
+
+                      <button
+                        type="button"
+                        onClick={() => dispatch(toggleBookmarkThunk(q.id))}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        title="Remove from saved questions"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Question Prompt */}

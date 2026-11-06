@@ -11,6 +11,7 @@ import {
   questionBankReducer,
   resultsReducer,
   leaderboardReducer,
+  questionReactionReducer,
 } from './api';
 
 export const store = configureStore({
@@ -24,6 +25,7 @@ export const store = configureStore({
     questionBank: questionBankReducer,
     results: resultsReducer,
     leaderboard: leaderboardReducer,
+    questionReactions: questionReactionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

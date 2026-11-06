@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { storage } from "../../utils/storage";
 
 const rawBase = import.meta.env.VITE_API_BASE_URL;
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -34,6 +35,14 @@ export const apiSlice = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+      try {
+        const guestId = storage.getGuestId();
+        if (guestId) {
+          headers.set("x-guest-id", guestId);
+        }
+      } catch {
+        // ignore storage errors
+      }
       return headers;
     },
   }),
@@ -51,6 +60,7 @@ export const apiSlice = createApi({
     "ContactInquiries",
     "Bookmarks",
     "Syllabus",
+    "Reactions",
   ],
   endpoints: () => ({}),
 });
