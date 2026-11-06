@@ -53,14 +53,7 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="saved"
-                  element={
-                    <ProtectedRoute>
-                      <Bookmarks />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="saved" element={<Bookmarks />} />
                 <Route path="bookmarks" element={<Navigate to="/saved" replace />} />
                 <Route path="contact" element={<Contact />} />
                 <Route path="auth/callback" element={<AuthCallback />} />

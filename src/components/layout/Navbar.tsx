@@ -21,7 +21,7 @@ export const Navbar: React.FC = () => {
     { label: 'Practice', path: '/practice' },
     { label: 'Subjects', path: '/subjects' },
     { label: 'Leaderboard', path: '/leaderboard' },
-    ...(isAuthenticated ? [{ label: 'Saved', path: '/saved' }] : []),
+    { label: 'Saved', path: '/saved' },
     ...(isAuthenticated ? [{ label: 'Dashboard', path: '/dashboard' }] : []),
     ...(isAuthenticated ? [{ label: 'History', path: '/history' }] : []),
     ...(isAdmin ? [{ label: 'Admin', path: '/admin' }] : []),

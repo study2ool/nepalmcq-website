@@ -13,11 +13,13 @@ import {
   Sparkles,
   CheckCircle2,
   HelpCircle,
+  Cloud,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { toggleBookmarkThunk } from "../store/api/questionBankApi";
 import { startQuizWithQuestions } from "../store/api/quizApi";
 import { loadConfig } from "../store/api/quizConfigApi";
+import { openAuthModal } from "../store/api/authApi";
 import { allQuestions } from "../data/questions";
 import { Question, SubjectName } from "../types/question";
 import { QuizConfig } from "../types/quiz";
@@ -131,6 +133,36 @@ export const Bookmarks: React.FC = () => {
           full step-by-step derivations, and launch targeted drill sessions.
         </p>
       </div>
+
+      {/* Guest Notice & Cloud Sync Banner */}
+      {!isAuthenticated && (
+        <div className="bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-indigo-50/90 dark:from-indigo-950/40 dark:via-purple-950/30 dark:to-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-2xs">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+              <Cloud className="w-5 h-5" />
+            </div>
+            <div className="space-y-0.5 text-xs sm:text-sm">
+              <p className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>Saved locally on this device</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
+                  Guest Mode
+                </span>
+              </p>
+              <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                Your bookmarks are preserved in this browser. Sign in with Google to sync them securely across your phone and PC, and never lose your revision drills.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => dispatch(openAuthModal())}
+            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-colors cursor-pointer"
+          >
+            <span>Sign In to Sync</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Top Action & Overview Card */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
