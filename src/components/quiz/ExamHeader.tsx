@@ -1,7 +1,7 @@
-import React from 'react';
-import { Clock, LayoutGrid, CheckCircle2, X, BookOpen } from 'lucide-react';
-import { QuizSession } from '../../types/quiz';
-import { formatTimeHHMMSS, formatTimeMMSS } from '../../utils/timer';
+import React from "react";
+import { Clock, LayoutGrid, CheckCircle2, X, BookOpen } from "lucide-react";
+import { QuizSession } from "../../types/quiz";
+import { formatTimeHHMMSS, formatTimeMMSS } from "../../utils/timer";
 
 interface ExamHeaderProps {
   session: QuizSession;
@@ -34,10 +34,12 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({
   const isLowQuestionTime = questionSeconds <= 10;
   const isCriticalQuestionTime = questionSeconds <= 5;
   const isLowOverallTime = overallSeconds <= 300; // <= 5 mins
-  const isStudyMode = session.config.mode === 'study';
+  const isStudyMode = session.config.mode === "study";
 
   return (
-    <header className={`shrink-0 z-30 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shadow-xs backdrop-blur ${className}`}>
+    <header
+      className={`shrink-0 z-30 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shadow-xs backdrop-blur ${className}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Left: Metadata info */}
@@ -69,7 +71,15 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({
               </div>
               <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-slate-500 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <Clock className="w-3 h-3 text-slate-400" />
-                <span>Elapsed: {formatTimeMMSS(Math.max(0, Math.floor((Date.now() - session.startTime) / 1000)))}</span>
+                <span>
+                  Elapsed:{" "}
+                  {formatTimeMMSS(
+                    Math.max(
+                      0,
+                      Math.floor((Date.now() - session.startTime) / 1000),
+                    ),
+                  )}
+                </span>
               </div>
             </div>
           ) : (
@@ -78,10 +88,10 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({
               <div
                 className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-mono font-medium border transition-colors ${
                   isCriticalQuestionTime
-                    ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse'
+                    ? "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse"
                     : isLowQuestionTime
-                    ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                      ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700"
                 }`}
                 title="Time remaining for this specific question"
               >
@@ -89,15 +99,17 @@ export const ExamHeader: React.FC<ExamHeaderProps> = ({
                 <span className="hidden md:inline text-[11px] font-sans text-slate-500 dark:text-slate-400">
                   Question:
                 </span>
-                <span className="tabular-nums font-semibold">{formatTimeMMSS(questionSeconds)}</span>
+                <span className="tabular-nums font-semibold">
+                  {formatTimeMMSS(questionSeconds)}
+                </span>
               </div>
 
               {/* Overall examination timer */}
               <div
                 className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-md text-[11px] sm:text-xs font-mono font-medium border transition-colors ${
                   isLowOverallTime
-                    ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800'
-                    : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                    ? "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800"
+                    : "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800"
                 }`}
                 title="Total examination time remaining"
               >

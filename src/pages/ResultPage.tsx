@@ -171,7 +171,10 @@ export const ResultPage: React.FC = () => {
             }`}
           >
             <span>Review Solutions</span>
-            <span className="hidden sm:inline"> ({currentResult.totalQuestions})</span>
+            <span className="hidden sm:inline">
+              {" "}
+              ({currentResult.totalQuestions})
+            </span>
           </button>
         </div>
 

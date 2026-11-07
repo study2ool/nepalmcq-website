@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { updateUserLocal } from '../../store/api/authApi';
-import { saveUserProfile } from '../../store/api/leaderboardApi';
-import { useGetCollegesQuery, useUpdateProfileMutation, CollegeItem } from '../../store/api/apiSlice';
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { updateUserLocal } from "../../store/api/authApi";
+import { saveUserProfile } from "../../store/api/leaderboardApi";
+import {
+  useGetCollegesQuery,
+  useUpdateProfileMutation,
+  CollegeItem,
+} from "../../store/api/apiSlice";
 import {
   School,
   Check,
@@ -11,7 +15,7 @@ import {
   Loader2,
   ChevronRight,
   UserCheck,
-} from 'lucide-react';
+} from "lucide-react";
 
 export const OnboardingModal: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,18 +24,22 @@ export const OnboardingModal: React.FC = () => {
 
   // Show only if authenticated and student hasn't selected a college yet
   const needsOnboarding = Boolean(
-    isAuthenticated && user && (!user.collegeId || !user.isOnboarded)
+    isAuthenticated && user && (!user.collegeId || !user.isOnboarded),
   );
 
-  const { data: colleges = [] } = useGetCollegesQuery(undefined, { skip: !needsOnboarding });
+  const { data: colleges = [] } = useGetCollegesQuery(undefined, {
+    skip: !needsOnboarding,
+  });
   const [updateProfileMutation] = useUpdateProfileMutation();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(null);
-  const [customCollegeName, setCustomCollegeName] = useState('');
-  const [customCity, setCustomCity] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCollege, setSelectedCollege] = useState<CollegeItem | null>(
+    null,
+  );
+  const [customCollegeName, setCustomCollegeName] = useState("");
+  const [customCity, setCustomCity] = useState("");
   const [isCustomCollege, setIsCustomCollege] = useState(false);
-  const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
+  const [gender, setGender] = useState<"male" | "female" | "other">("male");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -47,18 +55,18 @@ export const OnboardingModal: React.FC = () => {
   const filteredColleges = colleges.filter(
     (c) =>
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.city.toLowerCase().includes(searchQuery.toLowerCase())
+      c.city.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleSelectCollege = (c: CollegeItem) => {
-    if (c.id === 'clg_other') {
+    if (c.id === "clg_other") {
       setIsCustomCollege(true);
       setSelectedCollege(c);
     } else {
       setIsCustomCollege(false);
       setSelectedCollege(c);
-      setCustomCollegeName('');
-      setCustomCity('');
+      setCustomCollegeName("");
+      setCustomCity("");
     }
   };
 
@@ -66,22 +74,25 @@ export const OnboardingModal: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
 
-    let finalCollegeId = selectedCollege?.id || 'clg_other';
-    let finalCollegeName = selectedCollege?.name || '';
-    let finalCity = selectedCollege?.city || 'Nepal';
+    let finalCollegeId = selectedCollege?.id || "clg_other";
+    let finalCollegeName = selectedCollege?.name || "";
+    let finalCity = selectedCollege?.city || "Nepal";
 
     if (isCustomCollege) {
       if (!customCollegeName.trim()) {
-        setErrorMessage('Please enter your college name');
+        setErrorMessage("Please enter your college name");
         return;
       }
-      finalCollegeId = `clg_custom_${customCollegeName.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30)}`;
+      finalCollegeId = `clg_custom_${customCollegeName
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "_")
+        .slice(0, 30)}`;
       finalCollegeName = customCollegeName.trim();
-      finalCity = customCity.trim() || 'Nepal';
+      finalCity = customCity.trim() || "Nepal";
     }
 
     if (!finalCollegeName) {
-      setErrorMessage('Please select or specify your college');
+      setErrorMessage("Please select or specify your college");
       return;
     }
 
@@ -107,17 +118,17 @@ export const OnboardingModal: React.FC = () => {
           collegeCity: finalCity,
           gender,
           isOnboarded: true,
-        })
+        }),
       );
 
       dispatch(
         saveUserProfile({
           school: finalCollegeName,
           city: finalCity,
-        })
+        }),
       );
     } catch (err: any) {
-      setErrorMessage(err.message || 'Failed to save student profile');
+      setErrorMessage(err.message || "Failed to save student profile");
     } finally {
       setIsSubmitting(false);
     }
@@ -141,14 +152,15 @@ export const OnboardingModal: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                Welcome, {user.name.split(' ')[0]}!
+                Welcome, {user.name.split(" ")[0]}!
               </h2>
               <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                 <Sparkles className="w-3 h-3" /> Step 1 of 1
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Select your College and Gender to personalize your dashboard and represent your institution on the Nepal leaderboard.
+              Select your College and Gender to personalize your dashboard and
+              represent your institution on the Nepal leaderboard.
             </p>
           </div>
         </div>
@@ -167,9 +179,9 @@ export const OnboardingModal: React.FC = () => {
             </label>
             <div className="grid grid-cols-3 gap-2.5">
               {[
-                { id: 'male', label: 'Male', icon: '👨' },
-                { id: 'female', label: 'Female', icon: '👩' },
-                { id: 'other', label: 'Other', icon: '🧑' },
+                { id: "male", label: "Male", icon: "👨" },
+                { id: "female", label: "Female", icon: "👩" },
+                { id: "other", label: "Other", icon: "🧑" },
               ].map((item) => (
                 <button
                   key={item.id}
@@ -177,8 +189,8 @@ export const OnboardingModal: React.FC = () => {
                   onClick={() => setGender(item.id as any)}
                   className={`p-3 rounded-xl border text-xs sm:text-sm font-semibold flex flex-col sm:flex-row items-center justify-center gap-2 transition-all cursor-pointer ${
                     gender === item.id
-                      ? 'border-indigo-600 bg-indigo-50/70 text-indigo-700 dark:bg-indigo-950/50 dark:border-indigo-500 dark:text-indigo-300 ring-2 ring-indigo-500/20'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                      ? "border-indigo-600 bg-indigo-50/70 text-indigo-700 dark:bg-indigo-950/50 dark:border-indigo-500 dark:text-indigo-300 ring-2 ring-indigo-500/20"
+                      : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700"
                   }`}
                 >
                   <span className="text-base">{item.icon}</span>
@@ -199,7 +211,7 @@ export const OnboardingModal: React.FC = () => {
                 onClick={() => setIsCustomCollege(!isCustomCollege)}
                 className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
               >
-                {isCustomCollege ? 'Choose from list' : '+ Enter other college'}
+                {isCustomCollege ? "Choose from list" : "+ Enter other college"}
               </button>
             </div>
 
@@ -228,21 +240,27 @@ export const OnboardingModal: React.FC = () => {
                         onClick={() => handleSelectCollege(col)}
                         className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between cursor-pointer ${
                           isSelected
-                            ? 'bg-indigo-600 text-white shadow-sm'
-                            : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-200'
+                            ? "bg-indigo-600 text-white shadow-sm"
+                            : "hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         <div className="truncate pr-2">
-                          <p className="text-xs font-bold truncate">{col.name}</p>
+                          <p className="text-xs font-bold truncate">
+                            {col.name}
+                          </p>
                           <p
                             className={`text-[11px] truncate ${
-                              isSelected ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'
+                              isSelected
+                                ? "text-indigo-100"
+                                : "text-slate-400 dark:text-slate-500"
                             }`}
                           >
                             {col.city}
                           </p>
                         </div>
-                        {isSelected && <Check className="w-4 h-4 shrink-0 text-white" />}
+                        {isSelected && (
+                          <Check className="w-4 h-4 shrink-0 text-white" />
+                        )}
                       </button>
                     );
                   })}
@@ -320,4 +338,3 @@ export const OnboardingModal: React.FC = () => {
     </div>
   );
 };
-

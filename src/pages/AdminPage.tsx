@@ -10,7 +10,6 @@ import {
   Edit2,
   X,
   AlertTriangle,
-  BookOpen,
   Trophy,
   CheckCircle2,
   Clock,
@@ -20,8 +19,6 @@ import {
   MessageSquare,
   Mail,
   Inbox,
-  Filter,
-  CheckCircle,
   Eye,
   ExternalLink,
   RefreshCw,
@@ -40,10 +37,8 @@ import {
   useUpdateAdminInquiryMutation,
   useDeleteAdminInquiryMutation,
   useSyncPlatformAnalyticsMutation,
-  AdminStats,
   AdminSchool,
   type ContactInquiry,
-  type PlatformAnalytics,
 } from "../store/api/apiSlice";
 import type { User } from "../store/api/authApi";
 import { SearchableSelect } from "../components/common/SearchableSelect";
@@ -70,7 +65,9 @@ export const AdminPage: React.FC = () => {
   const [inquirySearch, setInquirySearch] = useState("");
   const [inquiryCategoryFilter, setInquiryCategoryFilter] = useState("all");
   const [inquiryStatusFilter, setInquiryStatusFilter] = useState("all");
-  const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(null);
+  const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(
+    null,
+  );
   const [inquiryAdminNotes, setInquiryAdminNotes] = useState("");
   const [isUpdatingInquiry, setIsUpdatingInquiry] = useState(false);
 
@@ -94,9 +91,15 @@ export const AdminPage: React.FC = () => {
   const handleSyncAnalytics = async () => {
     try {
       await syncAnalytics().unwrap();
-      showNotification("success", "Analytics collection recalculated and synced successfully!");
+      showNotification(
+        "success",
+        "Analytics collection recalculated and synced successfully!",
+      );
     } catch (err: any) {
-      showNotification("error", err?.data?.error || err.message || "Failed to sync analytics");
+      showNotification(
+        "error",
+        err?.data?.error || err.message || "Failed to sync analytics",
+      );
     }
   };
 
@@ -266,7 +269,10 @@ export const AdminPage: React.FC = () => {
       }
       showNotification("success", `Inquiry #${id} marked as ${status}`);
     } catch (err: any) {
-      showNotification("error", err?.data?.error || err.message || "Failed to update inquiry status");
+      showNotification(
+        "error",
+        err?.data?.error || err.message || "Failed to update inquiry status",
+      );
     } finally {
       setIsUpdatingInquiry(false);
     }
@@ -284,7 +290,10 @@ export const AdminPage: React.FC = () => {
       }
       showNotification("success", `Saved notes for inquiry #${id}`);
     } catch (err: any) {
-      showNotification("error", err?.data?.error || err.message || "Failed to save notes");
+      showNotification(
+        "error",
+        err?.data?.error || err.message || "Failed to save notes",
+      );
     } finally {
       setIsUpdatingInquiry(false);
     }
@@ -705,7 +714,8 @@ export const AdminPage: React.FC = () => {
                   <span>College-Wise Demographics &amp; Gender Breakdown</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
-                  Aggregated in real-time from single platform summary document (Zero full-table scans)
+                  Aggregated in real-time from single platform summary document
+                  (Zero full-table scans)
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -722,7 +732,8 @@ export const AdminPage: React.FC = () => {
                   No college enrollments recorded yet.
                 </p>
                 <p className="text-[11px] text-slate-400 mt-1">
-                  As students complete their onboarding profile and pick a college, metrics update automatically.
+                  As students complete their onboarding profile and pick a
+                  college, metrics update automatically.
                 </p>
               </div>
             ) : (
@@ -732,7 +743,9 @@ export const AdminPage: React.FC = () => {
                     <tr>
                       <th className="py-3 px-4 sm:px-6">College / School</th>
                       <th className="py-3 px-4">City</th>
-                      <th className="py-3 px-4 text-center">Enrolled Students</th>
+                      <th className="py-3 px-4 text-center">
+                        Enrolled Students
+                      </th>
                       <th className="py-3 px-4">Gender Breakdown</th>
                       <th className="py-3 px-4 text-right">Share</th>
                     </tr>
@@ -1278,34 +1291,41 @@ export const AdminPage: React.FC = () => {
                   <span>Academic Inquiries &amp; Feedback Queue</span>
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Review student question typo reports, college partnership proposals, and curriculum feedback.
+                  Review student question typo reports, college partnership
+                  proposals, and curriculum feedback.
                 </p>
               </div>
 
               {/* Status Tabs */}
               <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl border border-slate-200 dark:border-slate-700/80">
-                {(["all", "pending", "reviewed", "resolved", "archived"] as const).map(
-                  (st) => {
-                    const count =
-                      st === "all"
-                        ? inquiries.length
-                        : inquiries.filter((i) => i.status === st).length;
-                    return (
-                      <button
-                        key={st}
-                        type="button"
-                        onClick={() => setInquiryStatusFilter(st)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${
-                          inquiryStatusFilter === st
-                            ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                            : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                        }`}
-                      >
-                        {st} ({count})
-                      </button>
-                    );
-                  },
-                )}
+                {(
+                  [
+                    "all",
+                    "pending",
+                    "reviewed",
+                    "resolved",
+                    "archived",
+                  ] as const
+                ).map((st) => {
+                  const count =
+                    st === "all"
+                      ? inquiries.length
+                      : inquiries.filter((i) => i.status === st).length;
+                  return (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setInquiryStatusFilter(st)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${
+                        inquiryStatusFilter === st
+                          ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                      }`}
+                    >
+                      {st} ({count})
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -1329,11 +1349,21 @@ export const AdminPage: React.FC = () => {
                   className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="all">All Categories</option>
-                  <option value="question_feedback">Question Bank &amp; Answer Key</option>
-                  <option value="technical_issue">Technical &amp; Platform</option>
-                  <option value="college_partnership">College Partnership</option>
-                  <option value="curriculum_request">Curriculum &amp; Syllabus</option>
-                  <option value="account_support">Account &amp; Data Support</option>
+                  <option value="question_feedback">
+                    Question Bank &amp; Answer Key
+                  </option>
+                  <option value="technical_issue">
+                    Technical &amp; Platform
+                  </option>
+                  <option value="college_partnership">
+                    College Partnership
+                  </option>
+                  <option value="curriculum_request">
+                    Curriculum &amp; Syllabus
+                  </option>
+                  <option value="account_support">
+                    Account &amp; Data Support
+                  </option>
                   <option value="general">General Inquiries</option>
                 </select>
               </div>
@@ -1429,10 +1459,10 @@ export const AdminPage: React.FC = () => {
                               inq.status === "pending"
                                 ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400"
                                 : inq.status === "reviewed"
-                                ? "bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400"
-                                : inq.status === "resolved"
-                                ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                  ? "bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400"
+                                  : inq.status === "resolved"
+                                    ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
+                                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                             }`}
                           >
                             <span
@@ -1440,10 +1470,10 @@ export const AdminPage: React.FC = () => {
                                 inq.status === "pending"
                                   ? "bg-amber-500 animate-pulse"
                                   : inq.status === "reviewed"
-                                  ? "bg-blue-500"
-                                  : inq.status === "resolved"
-                                  ? "bg-emerald-500"
-                                  : "bg-slate-400"
+                                    ? "bg-blue-500"
+                                    : inq.status === "resolved"
+                                      ? "bg-emerald-500"
+                                      : "bg-slate-400"
                               }`}
                             />
                             {inq.status}
@@ -1453,17 +1483,23 @@ export const AdminPage: React.FC = () => {
                         {/* Submitted At */}
                         <td className="py-3.5 px-4 text-slate-500 text-[11px]">
                           <div>
-                            {new Date(inq.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
+                            {new Date(inq.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
                           </div>
                           <span className="text-[10px] text-slate-400">
-                            {new Date(inq.createdAt).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(inq.createdAt).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
                           </span>
                         </td>
 
@@ -1503,7 +1539,10 @@ export const AdminPage: React.FC = () => {
                   })}
                   {inquiries.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                      <td
+                        colSpan={5}
+                        className="py-12 text-center text-slate-400"
+                      >
                         <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
                         <p className="font-semibold text-xs text-slate-600 dark:text-slate-400">
                           No inquiries match the current filter.
@@ -1759,13 +1798,17 @@ export const AdminPage: React.FC = () => {
             {/* Sender Metadata Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs">
               <div>
-                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Sender</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">
+                  Sender
+                </span>
                 <span className="font-bold text-slate-900 dark:text-white truncate block">
                   {selectedInquiry.name}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Email</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">
+                  Email
+                </span>
                 <a
                   href={`mailto:${selectedInquiry.email}`}
                   className="font-mono text-indigo-600 dark:text-indigo-400 hover:underline truncate block"
@@ -1774,19 +1817,26 @@ export const AdminPage: React.FC = () => {
                 </a>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Role</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">
+                  Role
+                </span>
                 <span className="font-medium text-slate-700 dark:text-slate-300 capitalize block">
                   {selectedInquiry.role.replace(/_/g, " ")}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Date</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">
+                  Date
+                </span>
                 <span className="font-medium text-slate-700 dark:text-slate-300 block">
-                  {new Date(selectedInquiry.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {new Date(selectedInquiry.createdAt).toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    },
+                  )}
                 </span>
               </div>
             </div>
@@ -1807,27 +1857,31 @@ export const AdminPage: React.FC = () => {
                 Status Resolution
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(["pending", "reviewed", "resolved", "archived"] as const).map((st) => (
-                  <button
-                    key={st}
-                    type="button"
-                    disabled={isUpdatingInquiry}
-                    onClick={() => handleUpdateInquiryStatus(selectedInquiry.id, st)}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold capitalize transition-all border cursor-pointer ${
-                      selectedInquiry.status === st
-                        ? st === "pending"
-                          ? "bg-amber-600 text-white border-amber-600 shadow-xs"
-                          : st === "reviewed"
-                          ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                          : st === "resolved"
-                          ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                          : "bg-slate-700 text-white border-slate-700 shadow-xs"
-                        : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-300"
-                    }`}
-                  >
-                    {st}
-                  </button>
-                ))}
+                {(["pending", "reviewed", "resolved", "archived"] as const).map(
+                  (st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      disabled={isUpdatingInquiry}
+                      onClick={() =>
+                        handleUpdateInquiryStatus(selectedInquiry.id, st)
+                      }
+                      className={`py-2 px-3 rounded-xl text-xs font-bold capitalize transition-all border cursor-pointer ${
+                        selectedInquiry.status === st
+                          ? st === "pending"
+                            ? "bg-amber-600 text-white border-amber-600 shadow-xs"
+                            : st === "reviewed"
+                              ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                              : st === "resolved"
+                                ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                                : "bg-slate-700 text-white border-slate-700 shadow-xs"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
 
@@ -1837,7 +1891,9 @@ export const AdminPage: React.FC = () => {
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Admin Internal Notes
                 </label>
-                <span className="text-[11px] text-slate-400">Visible to team only</span>
+                <span className="text-[11px] text-slate-400">
+                  Visible to team only
+                </span>
               </div>
               <textarea
                 rows={3}

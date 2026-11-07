@@ -26,7 +26,8 @@ export const TermsOfService: React.FC = () => {
       "@type": "WebPage",
       name: "Terms of Service – Nepal MCQ",
       url: "https://nepalmcq.edu.np/terms",
-      description: "Official Terms of Service for Nepal MCQ educational platform.",
+      description:
+        "Official Terms of Service for Nepal MCQ educational platform.",
       datePublished: "2026-01-01",
       dateModified: new Date().toISOString().split("T")[0],
     },
@@ -56,8 +57,8 @@ export const TermsOfService: React.FC = () => {
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
           Welcome to Nepal MCQ. By accessing our platform, practicing questions,
-          or sitting for mock examinations, you agree to comply with and be bound
-          by these Terms of Service.
+          or sitting for mock examinations, you agree to comply with and be
+          bound by these Terms of Service.
         </p>
         <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200/60 dark:border-slate-800">
           <span>Effective Date: November 2026</span>
@@ -79,17 +80,18 @@ export const TermsOfService: React.FC = () => {
             </h2>
           </div>
           <p>
-            Nepal MCQ is an educational computer-based testing (CBT) and syllabus
-            practice platform designed to assist Grade 11 &amp; 12 students in
-            Nepal preparing for National Examinations Board (NEB) curriculum exams
-            and professional entrance qualifications (IOE, CEE).
+            Nepal MCQ is an educational computer-based testing (CBT) and
+            syllabus practice platform designed to assist Grade 11 &amp; 12
+            students in Nepal preparing for National Examinations Board (NEB)
+            curriculum exams and professional entrance qualifications (IOE,
+            CEE).
           </p>
           <p>
-            While our question banks, specification grids, and model questions are
-            meticulously aligned with Curriculum Development Centre (CDC)
+            While our question banks, specification grids, and model questions
+            are meticulously aligned with Curriculum Development Centre (CDC)
             frameworks, Nepal MCQ is an independent learning platform. Official
-            examinations and certifications remain under the exclusive jurisdiction
-            of the National Examinations Board.
+            examinations and certifications remain under the exclusive
+            jurisdiction of the National Examinations Board.
           </p>
         </section>
 
@@ -103,15 +105,15 @@ export const TermsOfService: React.FC = () => {
           </div>
           <p>
             Academic integrity is central to our learning community. When taking
-            timed examinations and competing on the national or college leaderboards,
-            you agree to:
+            timed examinations and competing on the national or college
+            leaderboards, you agree to:
           </p>
           <ul className="space-y-2.5 pl-2">
             <li className="flex items-start gap-2.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-1" />
               <span>
-                Attempt mock tests independently without automated scripts, answer
-                scrapers, or cheating software.
+                Attempt mock tests independently without automated scripts,
+                answer scrapers, or cheating software.
               </span>
             </li>
             <li className="flex items-start gap-2.5">
@@ -173,14 +175,14 @@ export const TermsOfService: React.FC = () => {
             </h2>
           </div>
           <p>
-            The software, user interface design, diagnostic algorithms, and step-by-step
-            derivations created by Nepal MCQ are the intellectual property of the
-            platform.
+            The software, user interface design, diagnostic algorithms, and
+            step-by-step derivations created by Nepal MCQ are the intellectual
+            property of the platform.
           </p>
           <p>
             Official curriculum specification grids and standard past board
-            problem patterns are referenced in accordance with fair educational use
-            to help students navigate the prescribed national curriculum.
+            problem patterns are referenced in accordance with fair educational
+            use to help students navigate the prescribed national curriculum.
           </p>
         </section>
 
@@ -193,17 +195,18 @@ export const TermsOfService: React.FC = () => {
             </h2>
           </div>
           <p>
-            The platform and its content are provided on an &quot;as is&quot; and &quot;as
-            available&quot; basis for educational study. While we strive for absolute
-            pedagogical accuracy across all physics, chemistry, mathematics, and
-            management solutions, we do not guarantee that every question or
-            explanation is entirely free of typographical errors.
+            The platform and its content are provided on an &quot;as is&quot;
+            and &quot;as available&quot; basis for educational study. While we
+            strive for absolute pedagogical accuracy across all physics,
+            chemistry, mathematics, and management solutions, we do not
+            guarantee that every question or explanation is entirely free of
+            typographical errors.
           </p>
           <p>
             Nepal MCQ and its team shall not be liable for any indirect,
-            consequential, or exam-related outcomes resulting from reliance on the
-            service. Students are encouraged to cross-reference with official CDC
-            textbooks and teacher instruction.
+            consequential, or exam-related outcomes resulting from reliance on
+            the service. Students are encouraged to cross-reference with
+            official CDC textbooks and teacher instruction.
           </p>
         </section>
 
@@ -216,9 +219,10 @@ export const TermsOfService: React.FC = () => {
             </h2>
           </div>
           <p>
-            These Terms shall be governed by and construed in accordance with the
-            laws of Nepal. Any disputes arising in connection with these Terms
-            shall be subject to the exclusive jurisdiction of the courts of Nepal.
+            These Terms shall be governed by and construed in accordance with
+            the laws of Nepal. Any disputes arising in connection with these
+            Terms shall be subject to the exclusive jurisdiction of the courts
+            of Nepal.
           </p>
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1 text-xs sm:text-sm font-mono">
             <p>

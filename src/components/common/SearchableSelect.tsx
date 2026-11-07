@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ChevronDown, Search, Check, X } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { ChevronDown, Search, Check, X } from "lucide-react";
 
 export interface SearchableSelectOption {
   value: string | number;
@@ -25,23 +25,23 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   options,
   value,
   onChange,
-  placeholder = 'Select an option...',
-  searchPlaceholder = 'Search options...',
+  placeholder = "Select an option...",
+  searchPlaceholder = "Search options...",
   disabled = false,
-  className = '',
-  buttonClassName = '',
+  className = "",
+  buttonClassName = "",
   icon,
   allowClear = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Normalize options to object format
   const normalizedOptions = useMemo<SearchableSelectOption[]>(() => {
     return options.map((opt) => {
-      if (typeof opt === 'string') {
+      if (typeof opt === "string") {
         return { value: opt, label: opt };
       }
       return opt;
@@ -60,14 +60,14 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
     return normalizedOptions.filter(
       (opt) =>
         opt.label.toLowerCase().includes(q) ||
-        (opt.description && opt.description.toLowerCase().includes(q))
+        (opt.description && opt.description.toLowerCase().includes(q)),
     );
   }, [normalizedOptions, search]);
 
   // Auto-focus search input when opened
   useEffect(() => {
     if (isOpen) {
-      setSearch('');
+      setSearch("");
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 50);
@@ -86,21 +86,21 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
@@ -111,7 +111,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange('');
+    onChange("");
   };
 
   return (
@@ -126,8 +126,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className={`w-full flex items-center justify-between gap-2 text-left transition-all ${
           buttonClassName ||
-          'px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500'
-        } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          "px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
@@ -154,7 +154,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           )}
           <ChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${
-              isOpen ? 'rotate-180 text-indigo-500' : ''
+              isOpen ? "rotate-180 text-indigo-500" : ""
             }`}
           />
         </div>
@@ -178,7 +178,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
               {search && (
                 <button
                   type="button"
-                  onClick={() => setSearch('')}
+                  onClick={() => setSearch("")}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 >
                   <X className="w-3 h-3" />
@@ -208,8 +208,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     onClick={() => handleSelect(opt.value)}
                     className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-xs rounded-xl transition-colors text-left ${
                       isSelected
-                        ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                        ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/60"
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate min-w-0">
@@ -239,4 +239,3 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
 };
 
 export default SearchableSelect;
-

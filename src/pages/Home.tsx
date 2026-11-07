@@ -56,7 +56,9 @@ export const Home: React.FC = () => {
               <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
                 <span>National Examinations Board (NEB)</span>
                 <span>·</span>
-                <span>Grade 11 &amp; 12 Science &amp; Management Curriculum</span>
+                <span>
+                  Grade 11 &amp; 12 Science &amp; Management Curriculum
+                </span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] text-balance">
@@ -64,7 +66,11 @@ export const Home: React.FC = () => {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Nepal’s centralized curriculum syllabus and computer-based examination platform for NEB Grade 11 &amp; 12 Science and Management streams. Master your subjects with authentic timed mocks, chapter mastery tracking, high-yield formula cheatsheets, and step-by-step model derivations.
+                Nepal’s centralized curriculum syllabus and computer-based
+                examination platform for NEB Grade 11 &amp; 12 Science and
+                Management streams. Master your subjects with authentic timed
+                mocks, chapter mastery tracking, high-yield formula cheatsheets,
+                and step-by-step model derivations.
               </p>
 
               {/* CTAs */}

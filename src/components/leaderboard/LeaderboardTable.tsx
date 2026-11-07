@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Flame,
-  Target,
-  Trophy,
-  ChevronDown,
-  ChevronUp,
-  Award,
-  BookOpen,
-} from 'lucide-react';
-import { LeaderboardStudent } from '../../types/leaderboard';
-import { SubjectName } from '../../types/question';
+import React, { useState } from "react";
+import { Flame, Trophy, ChevronDown, ChevronUp } from "lucide-react";
+import { LeaderboardStudent } from "../../types/leaderboard";
+import { SubjectName } from "../../types/question";
 
 interface LeaderboardTableProps {
   students: LeaderboardStudent[];
-  subjectFilter: 'All' | SubjectName;
+  subjectFilter: "All" | SubjectName;
   onEditProfile?: () => void;
 }
 
@@ -36,7 +28,8 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
           No students found matching your filters
         </h4>
         <p className="text-xs text-slate-500 max-w-sm mx-auto">
-          Try expanding your grade, subject, or school search filters to see all active test-takers across Nepal.
+          Try expanding your grade, subject, or school search filters to see all
+          active test-takers across Nepal.
         </p>
       </div>
     );
@@ -64,12 +57,13 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
               const isExpanded = expandedId === student.id;
               const isTopThree = rank <= 3;
               const displayXp =
-                subjectFilter !== 'All'
+                subjectFilter !== "All"
                   ? student.subjectXp[subjectFilter] || 0
                   : student.totalXp;
               const displayAccuracy =
-                subjectFilter !== 'All'
-                  ? student.subjectAccuracy[subjectFilter] || student.overallAccuracy
+                subjectFilter !== "All"
+                  ? student.subjectAccuracy[subjectFilter] ||
+                    student.overallAccuracy
                   : student.overallAccuracy;
 
               return (
@@ -78,8 +72,8 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                     onClick={() => toggleExpand(student.id)}
                     className={`cursor-pointer transition-colors ${
                       student.isCurrentUser
-                        ? 'bg-indigo-50/70 dark:bg-indigo-950/30 font-medium'
-                        : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40'
+                        ? "bg-indigo-50/70 dark:bg-indigo-950/30 font-medium"
+                        : "hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
                     }`}
                   >
                     {/* Rank */}
@@ -137,7 +131,9 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                     {/* Top Subject */}
                     <td className="py-4 px-4 text-slate-600 dark:text-slate-300">
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {subjectFilter !== 'All' ? subjectFilter : student.topSubject}
+                        {subjectFilter !== "All"
+                          ? subjectFilter
+                          : student.topSubject}
                       </span>
                     </td>
 
@@ -156,7 +152,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
 
                     {/* XP Points */}
                     <td className="py-4 px-4 sm:px-6 text-right font-mono font-bold text-slate-900 dark:text-white text-sm">
-                      {displayXp.toLocaleString()}{' '}
+                      {displayXp.toLocaleString()}{" "}
                       <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
                         XP
                       </span>
@@ -175,19 +171,22 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                   {/* Expanded detail row */}
                   {isExpanded && (
                     <tr className="bg-slate-50/60 dark:bg-slate-800/30">
-                      <td colSpan={8} className="p-4 sm:p-6 border-y border-slate-100 dark:border-slate-800">
+                      <td
+                        colSpan={8}
+                        className="p-4 sm:p-6 border-y border-slate-100 dark:border-slate-800"
+                      >
                         <div className="space-y-4">
                           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
                             <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
                               <span>
-                                Exams Completed:{' '}
+                                Exams Completed:{" "}
                                 <strong className="text-slate-900 dark:text-white font-mono">
                                   {student.examsCompleted}
                                 </strong>
                               </span>
                               <span>·</span>
                               <span>
-                                Badges Unlocked:{' '}
+                                Badges Unlocked:{" "}
                                 <strong className="text-indigo-600 dark:text-indigo-400 font-mono">
                                   {student.badgesCount}
                                 </strong>
@@ -216,13 +215,13 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
                               {(
                                 [
-                                  'Physics',
-                                  'Chemistry',
-                                  'Biology',
-                                  'Mathematics',
-                                  'English',
-                                  'Nepali',
-                                  'Computer Science',
+                                  "Physics",
+                                  "Chemistry",
+                                  "Biology",
+                                  "Mathematics",
+                                  "English",
+                                  "Nepali",
+                                  "Computer Science",
                                 ] as SubjectName[]
                               ).map((sub) => {
                                 const acc = student.subjectAccuracy[sub] || 0;
@@ -239,7 +238,9 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
                                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                                         {acc}%
                                       </span>
-                                      <span className="text-slate-400">{xp} XP</span>
+                                      <span className="text-slate-400">
+                                        {xp} XP
+                                      </span>
                                     </div>
                                   </div>
                                 );

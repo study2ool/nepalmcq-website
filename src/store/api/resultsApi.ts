@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from './baseApi';
-import type { QuizResult } from '../../types/results';
-import { storage } from '../../utils/storage';
-import { progressApiSlice } from './progressApi';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { apiSlice } from "./baseApi";
+import type { QuizResult } from "../../types/results";
+import { storage } from "../../utils/storage";
+import { progressApiSlice } from "./progressApi";
 
 export interface ResultsState {
   currentResult: QuizResult | null;
@@ -17,19 +17,23 @@ const initialState: ResultsState = {
 };
 
 export const fetchResultsHistory = createAsyncThunk(
-  'results/fetchHistory',
+  "results/fetchHistory",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const backendHistory = await dispatch(progressApiSlice.endpoints.getUserHistory.initiate()).unwrap();
+      const backendHistory = await dispatch(
+        progressApiSlice.endpoints.getUserHistory.initiate(),
+      ).unwrap();
       return backendHistory;
     } catch (err: any) {
-      return rejectWithValue(err?.data?.error || err?.message || 'Failed to fetch history');
+      return rejectWithValue(
+        err?.data?.error || err?.message || "Failed to fetch history",
+      );
     }
-  }
+  },
 );
 
 export const resultsSlice = createSlice({
-  name: 'results',
+  name: "results",
   initialState,
   reducers: {
     setLatestResult: (state, action: PayloadAction<QuizResult>) => {
@@ -46,7 +50,7 @@ export const resultsSlice = createSlice({
     },
     clearHistory: (state) => {
       state.history = [];
-      localStorage.removeItem('nepal_mcq_quiz_history_v1');
+      localStorage.removeItem("nepal_mcq_quiz_history_v1");
     },
   },
   extraReducers: (builder) => {
@@ -75,4 +79,3 @@ export const {
 
 export const resultsReducer = resultsSlice.reducer;
 export default resultsReducer;
-

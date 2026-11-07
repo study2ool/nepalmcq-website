@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Menu, X, ArrowRight, LogIn } from 'lucide-react';
-import { ThemeToggle } from '../common/ThemeToggle';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { openAuthModal } from '../../store/api/authApi';
-import { UserDropdown } from '../auth/UserDropdown';
-import { GoogleIcon } from '../auth/GoogleIcon';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { BookOpen, Menu, X, ArrowRight, LogIn } from "lucide-react";
+import { ThemeToggle } from "../common/ThemeToggle";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { openAuthModal } from "../../store/api/authApi";
+import { UserDropdown } from "../auth/UserDropdown";
+import { GoogleIcon } from "../auth/GoogleIcon";
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,16 +15,17 @@ export const Navbar: React.FC = () => {
   const isAdmin =
     isAuthenticated &&
     user &&
-    (user.role === 'admin' || user.email.toLowerCase() === 'study2ool.nepal@gmail.com');
+    (user.role === "admin" ||
+      user.email.toLowerCase() === "study2ool.nepal@gmail.com");
 
   const navLinks = [
-    { label: 'Practice', path: '/practice' },
-    { label: 'Subjects', path: '/subjects' },
-    { label: 'Leaderboard', path: '/leaderboard' },
-    { label: 'Saved', path: '/saved' },
-    ...(isAuthenticated ? [{ label: 'Dashboard', path: '/dashboard' }] : []),
-    ...(isAuthenticated ? [{ label: 'History', path: '/history' }] : []),
-    ...(isAdmin ? [{ label: 'Admin', path: '/admin' }] : []),
+    { label: "Practice", path: "/practice" },
+    { label: "Subjects", path: "/subjects" },
+    { label: "Leaderboard", path: "/leaderboard" },
+    { label: "Saved", path: "/saved" },
+    ...(isAuthenticated ? [{ label: "Dashboard", path: "/dashboard" }] : []),
+    ...(isAuthenticated ? [{ label: "History", path: "/history" }] : []),
+    ...(isAdmin ? [{ label: "Admin", path: "/admin" }] : []),
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -41,7 +42,8 @@ export const Navbar: React.FC = () => {
             <BookOpen className="w-4 h-4" />
           </div>
           <span className="font-bold">
-            Nepal <span className="text-indigo-600 dark:text-indigo-400">MCQ</span>
+            Nepal{" "}
+            <span className="text-indigo-600 dark:text-indigo-400">MCQ</span>
           </span>
         </Link>
 
@@ -53,8 +55,8 @@ export const Navbar: React.FC = () => {
               to={link.path}
               className={`transition-colors whitespace-nowrap shrink-0 hover:text-indigo-600 dark:hover:text-indigo-400 ${
                 isActive(link.path)
-                  ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
-                  : 'text-slate-600 dark:text-slate-300'
+                  ? "text-indigo-600 dark:text-indigo-400 font-semibold"
+                  : "text-slate-600 dark:text-slate-300"
               }`}
             >
               {link.label}
@@ -97,7 +99,11 @@ export const Navbar: React.FC = () => {
             className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </button>
         </div>
       </div>
@@ -112,8 +118,8 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isActive(link.path)
-                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
               {link.label}
@@ -123,9 +129,9 @@ export const Navbar: React.FC = () => {
             to="/contact"
             onClick={() => setMobileMenuOpen(false)}
             className={`block px-3 py-2 rounded-md text-base font-medium ${
-              isActive('/contact')
-                ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold'
-                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+              isActive("/contact")
+                ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
             }`}
           >
             Contact &amp; Support

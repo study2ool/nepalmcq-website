@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { closeAuthModal } from '../../store/api/authApi';
-import { GoogleSignInButton } from './GoogleSignInButton';
-import { BookOpen, X, CheckCircle, ShieldCheck } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { closeAuthModal } from "../../store/api/authApi";
+import { GoogleSignInButton } from "./GoogleSignInButton";
+import { BookOpen, X, CheckCircle, ShieldCheck } from "lucide-react";
 
 export const AuthModal: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,10 +37,12 @@ export const AuthModal: React.FC = () => {
             <BookOpen className="w-6 h-6" />
           </div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-            Welcome to Nepal <span className="text-indigo-600 dark:text-indigo-400">MCQ</span>
+            Welcome to Nepal{" "}
+            <span className="text-indigo-600 dark:text-indigo-400">MCQ</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Sign in to access personalized practice, save test history, and track CDC grid mastery.
+            Sign in to access personalized practice, save test history, and
+            track CDC grid mastery.
           </p>
         </div>
 
@@ -72,15 +74,15 @@ export const AuthModal: React.FC = () => {
 
         {/* Footer note */}
         <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-6 leading-relaxed">
-          By signing in, you agree to our{' '}
+          By signing in, you agree to our{" "}
           <Link
             to="/terms"
             onClick={() => dispatch(closeAuthModal())}
             className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
           >
             Terms of Service
-          </Link>{' '}
-          and{' '}
+          </Link>{" "}
+          and{" "}
           <Link
             to="/privacy"
             onClick={() => dispatch(closeAuthModal())}
@@ -94,4 +96,3 @@ export const AuthModal: React.FC = () => {
     </div>
   );
 };
-

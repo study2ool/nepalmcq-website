@@ -1,12 +1,26 @@
-import { QuizSession } from '../types/quiz';
-import { QuizResult, QuestionResult, SubjectBreakdown, TopicBreakdown } from '../types/results';
-import { SubjectName } from '../types/question';
+import { QuizSession } from "../types/quiz";
+import {
+  QuizResult,
+  QuestionResult,
+  SubjectBreakdown,
+  TopicBreakdown,
+} from "../types/results";
+import { SubjectName } from "../types/question";
 
 export function calculateQuizResult(
   session: QuizSession,
-  markingScheme: { correctMarks: number; incorrectPenalty: number } = { correctMarks: 1, incorrectPenalty: 0 }
+  markingScheme: { correctMarks: number; incorrectPenalty: number } = {
+    correctMarks: 1,
+    incorrectPenalty: 0,
+  },
 ): QuizResult {
-  const { questions, selectedAnswers, questionTimeRemaining, config, startTime } = session;
+  const {
+    questions,
+    selectedAnswers,
+    questionTimeRemaining,
+    config,
+    startTime,
+  } = session;
 
   const totalQuestions = questions.length;
   let attemptedQuestions = 0;
@@ -17,8 +31,14 @@ export function calculateQuizResult(
   const questionResults: QuestionResult[] = [];
 
   // Subject and topic map trackers
-  const subjectMap = new Map<SubjectName, { total: number; attempted: number; correct: number; score: number }>();
-  const topicMap = new Map<string, { subject: SubjectName; total: number; attempted: number; correct: number }>();
+  const subjectMap = new Map<
+    SubjectName,
+    { total: number; attempted: number; correct: number; score: number }
+  >();
+  const topicMap = new Map<
+    string,
+    { subject: SubjectName; total: number; attempted: number; correct: number }
+  >();
 
   questions.forEach((q) => {
     const selected = selectedAnswers[q.id];
@@ -40,7 +60,11 @@ export function calculateQuizResult(
       }
     }
 
-    const status = !isAttempted ? 'unattempted' : isCorrect ? 'correct' : 'incorrect';
+    const status = !isAttempted
+      ? "unattempted"
+      : isCorrect
+        ? "correct"
+        : "incorrect";
 
     questionResults.push({
       question: q,
@@ -52,7 +76,12 @@ export function calculateQuizResult(
 
     // Subject stats
     if (!subjectMap.has(q.subject)) {
-      subjectMap.set(q.subject, { total: 0, attempted: 0, correct: 0, score: 0 });
+      subjectMap.set(q.subject, {
+        total: 0,
+        attempted: 0,
+        correct: 0,
+        score: 0,
+      });
     }
     const subStat = subjectMap.get(q.subject)!;
     subStat.total += 1;
@@ -68,7 +97,12 @@ export function calculateQuizResult(
 
     // Topic stats
     if (!topicMap.has(q.topic)) {
-      topicMap.set(q.topic, { subject: q.subject, total: 0, attempted: 0, correct: 0 });
+      topicMap.set(q.topic, {
+        subject: q.subject,
+        total: 0,
+        attempted: 0,
+        correct: 0,
+      });
     }
     const topStat = topicMap.get(q.topic)!;
     topStat.total += 1;
@@ -81,30 +115,45 @@ export function calculateQuizResult(
   });
 
   const unattemptedQuestions = totalQuestions - attemptedQuestions;
-  const accuracy = attemptedQuestions > 0 ? Math.round((correctAnswers / attemptedQuestions) * 100 * 10) / 10 : 0;
+  const accuracy =
+    attemptedQuestions > 0
+      ? Math.round((correctAnswers / attemptedQuestions) * 100 * 10) / 10
+      : 0;
   const totalPossibleMarks = totalQuestions * markingScheme.correctMarks;
 
   const now = Date.now();
   const timeTakenSeconds = Math.max(1, Math.round((now - startTime) / 1000));
-  const averageTimePerQuestionSeconds = Math.round(timeTakenSeconds / totalQuestions);
+  const averageTimePerQuestionSeconds = Math.round(
+    timeTakenSeconds / totalQuestions,
+  );
 
-  const subjectBreakdown: SubjectBreakdown[] = Array.from(subjectMap.entries()).map(([subject, stats]) => ({
+  const subjectBreakdown: SubjectBreakdown[] = Array.from(
+    subjectMap.entries(),
+  ).map(([subject, stats]) => ({
     subject,
     total: stats.total,
     attempted: stats.attempted,
     correct: stats.correct,
-    accuracy: stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0,
+    accuracy:
+      stats.attempted > 0
+        ? Math.round((stats.correct / stats.attempted) * 100)
+        : 0,
     score: stats.score,
   }));
 
-  const topicBreakdown: TopicBreakdown[] = Array.from(topicMap.entries()).map(([topic, stats]) => ({
-    topic,
-    subject: stats.subject,
-    total: stats.total,
-    attempted: stats.attempted,
-    correct: stats.correct,
-    accuracy: stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0,
-  }));
+  const topicBreakdown: TopicBreakdown[] = Array.from(topicMap.entries()).map(
+    ([topic, stats]) => ({
+      topic,
+      subject: stats.subject,
+      total: stats.total,
+      attempted: stats.attempted,
+      correct: stats.correct,
+      accuracy:
+        stats.attempted > 0
+          ? Math.round((stats.correct / stats.attempted) * 100)
+          : 0,
+    }),
+  );
 
   return {
     id: session.quizId,

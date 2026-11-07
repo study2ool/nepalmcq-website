@@ -1,13 +1,17 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../store';
-import { ShieldAlert, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAppSelector } from "../../store";
+import { ShieldAlert, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const ADMIN_EMAIL = 'study2ool.nepal@gmail.com';
+const ADMIN_EMAIL = "study2ool.nepal@gmail.com";
 
-export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { user, isAuthenticated, isLoading } = useAppSelector(
+    (state) => state.auth,
+  );
 
   if (isLoading) {
     return (
@@ -20,7 +24,8 @@ export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }
   const isAdmin =
     isAuthenticated &&
     user &&
-    (user.role === 'admin' || user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+    (user.role === "admin" ||
+      user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
   if (!isAdmin) {
     return (
@@ -33,7 +38,8 @@ export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }
             Administrator Access Required
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            This administrative control panel is restricted to verified administrators of Study2ool Nepal.
+            This administrative control panel is restricted to verified
+            administrators of Study2ool Nepal.
           </p>
           <div className="pt-2">
             <Link
@@ -51,4 +57,3 @@ export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }
 
   return <>{children}</>;
 };
-

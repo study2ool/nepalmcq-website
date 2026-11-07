@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,20 +10,20 @@ import {
   XCircle,
   Lightbulb,
   Scroll,
-} from 'lucide-react';
-import { Question } from '../../types/question';
-import MathRenderer from '../common/MathRenderer';
-import QuestionReactionButtons from '../common/QuestionReactionButtons';
+} from "lucide-react";
+import { Question } from "../../types/question";
+import MathRenderer from "../common/MathRenderer";
+import QuestionReactionButtons from "../common/QuestionReactionButtons";
 
 interface QuestionCardProps {
   question: Question;
   currentIndex: number;
   totalQuestions: number;
-  selectedOption?: 'A' | 'B' | 'C' | 'D';
+  selectedOption?: "A" | "B" | "C" | "D";
   isMarkedForReview: boolean;
   isBookmarked: boolean;
   isStudyMode?: boolean;
-  onSelectOption: (optionId: 'A' | 'B' | 'C' | 'D') => void;
+  onSelectOption: (optionId: "A" | "B" | "C" | "D") => void;
   onClearOption: () => void;
   onToggleReview: () => void;
   onToggleBookmark: () => void;
@@ -53,21 +53,21 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   // Dynamically determine 1x1 vs 2x2 layout based on option content length and complexity
   const optionsGridClass = useMemo(() => {
     const options = question.options || [];
-    if (options.length === 0) return 'grid-cols-1';
+    if (options.length === 0) return "grid-cols-1";
 
     let maxLen = 0;
     let hasMultilineOrBlock = false;
 
     for (const opt of options) {
-      const text = (opt.text || '').trim();
+      const text = (opt.text || "").trim();
       if (text.length > maxLen) {
         maxLen = text.length;
       }
       if (
-        text.includes('\n') ||
-        text.includes('$$') ||
-        text.includes('\\[') ||
-        text.includes('\\begin')
+        text.includes("\n") ||
+        text.includes("$$") ||
+        text.includes("\\[") ||
+        text.includes("\\begin")
       ) {
         hasMultilineOrBlock = true;
       }
@@ -75,16 +75,16 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
     // Long options, paragraph text, or multiline block formulas: 1x1 full width everywhere
     if (hasMultilineOrBlock || maxLen > 55) {
-      return 'grid-cols-1';
+      return "grid-cols-1";
     }
 
     // Short options (<= 28 chars, e.g. single words, numbers, units, short terms): 2x2 everywhere
     if (maxLen <= 28) {
-      return 'grid-cols-2';
+      return "grid-cols-2";
     }
 
     // Medium-length options (29-55 chars): 1x1 on mobile to prevent cramped text, 2x2 on desktop/tablet
-    return 'grid-cols-1 sm:grid-cols-2';
+    return "grid-cols-1 sm:grid-cols-2";
   }, [question.options]);
 
   return (
@@ -97,11 +97,17 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               Question {currentIndex + 1} of {totalQuestions}
             </span>
             <span>·</span>
-            <span className="font-medium text-slate-700 dark:text-slate-300">{question.subject}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-300">
+              {question.subject}
+            </span>
             <span className="hidden sm:inline">·</span>
-            <span className="hidden sm:inline truncate max-w-[200px]">{question.topic}</span>
+            <span className="hidden sm:inline truncate max-w-[200px]">
+              {question.topic}
+            </span>
             <span>·</span>
-            <span className="font-mono text-slate-500">+{question.marks}.0 Mark</span>
+            <span className="font-mono text-slate-500">
+              +{question.marks}.0 Mark
+            </span>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
@@ -116,11 +122,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             {/* Difficulty badge */}
             <span
               className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md ${
-                question.difficulty === 'Easy'
-                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'
-                  : question.difficulty === 'Medium'
-                  ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400'
-                  : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400'
+                question.difficulty === "Easy"
+                  ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400"
+                  : question.difficulty === "Medium"
+                    ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400"
+                    : "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400"
               }`}
             >
               {question.difficulty}
@@ -133,7 +139,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             <button
               type="button"
               onClick={onToggleBookmark}
-              title={isBookmarked ? 'Remove Bookmark' : 'Bookmark this question'}
+              title={
+                isBookmarked ? "Remove Bookmark" : "Bookmark this question"
+              }
               className="p-1 sm:p-1.5 rounded-md text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               {isBookmarked ? (
@@ -158,28 +166,29 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             const hasAnswered = Boolean(selectedOption);
 
             let cardStyle =
-              'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200';
+              "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200";
             let badgeStyle =
-              'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700';
+              "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700";
 
             if (isStudyMode && hasAnswered) {
               if (isCorrectOption) {
                 cardStyle =
-                  'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/80 shadow-xs';
-                badgeStyle = 'bg-emerald-600 text-white shadow-xs';
+                  "border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-950 dark:text-emerald-100 ring-2 ring-emerald-500/80 shadow-xs";
+                badgeStyle = "bg-emerald-600 text-white shadow-xs";
               } else if (isSelected && !isCorrectOption) {
                 cardStyle =
-                  'border-rose-500 bg-rose-50/70 dark:bg-rose-950/30 text-rose-950 dark:text-rose-100 ring-2 ring-rose-500/80 shadow-xs';
-                badgeStyle = 'bg-rose-600 text-white shadow-xs';
+                  "border-rose-500 bg-rose-50/70 dark:bg-rose-950/30 text-rose-950 dark:text-rose-100 ring-2 ring-rose-500/80 shadow-xs";
+                badgeStyle = "bg-rose-600 text-white shadow-xs";
               } else {
                 cardStyle =
-                  'border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/40 text-slate-400 dark:text-slate-500 opacity-60';
-                badgeStyle = 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600';
+                  "border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/40 text-slate-400 dark:text-slate-500 opacity-60";
+                badgeStyle =
+                  "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600";
               }
             } else if (isSelected) {
               cardStyle =
-                'border-indigo-600 dark:border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30 ring-1 ring-indigo-600 dark:ring-indigo-500 text-slate-900 dark:text-white';
-              badgeStyle = 'bg-indigo-600 text-white shadow-xs';
+                "border-indigo-600 dark:border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30 ring-1 ring-indigo-600 dark:ring-indigo-500 text-slate-900 dark:text-white";
+              badgeStyle = "bg-indigo-600 text-white shadow-xs";
             }
 
             return (
@@ -195,7 +204,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                 >
                   {isStudyMode && hasAnswered && isCorrectOption ? (
                     <CheckCircle2 className="w-4 h-4 text-white" />
-                  ) : isStudyMode && hasAnswered && isSelected && !isCorrectOption ? (
+                  ) : isStudyMode &&
+                    hasAnswered &&
+                    isSelected &&
+                    !isCorrectOption ? (
                     <XCircle className="w-4 h-4 text-white" />
                   ) : (
                     option.id
@@ -213,11 +225,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                     Correct
                   </span>
                 )}
-                {isStudyMode && hasAnswered && isSelected && !isCorrectOption && (
-                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100/80 dark:bg-rose-900/60 px-2 py-0.5 rounded-md shrink-0">
-                    Your Choice
-                  </span>
-                )}
+                {isStudyMode &&
+                  hasAnswered &&
+                  isSelected &&
+                  !isCorrectOption && (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100/80 dark:bg-rose-900/60 px-2 py-0.5 rounded-md shrink-0">
+                      Your Choice
+                    </span>
+                  )}
               </button>
             );
           })}
@@ -257,7 +272,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
             {question.source && (
               <div className="pt-1 flex items-center gap-2 text-[11px] text-slate-500">
-                <span className="font-medium text-slate-500 dark:text-slate-400">Curriculum Source:</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">
+                  Curriculum Source:
+                </span>
                 <span className="px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[10px] text-indigo-600 dark:text-indigo-400">
                   {question.source}
                 </span>
@@ -276,12 +293,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             onClick={onToggleReview}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 text-[11px] sm:text-xs font-semibold rounded-lg border transition-colors ${
               isMarkedForReview
-                ? 'bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800'
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? "bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800"
+                : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
             }`}
           >
-            <Flag className={`w-3.5 h-3.5 ${isMarkedForReview ? 'fill-current' : ''}`} />
-            <span>{isMarkedForReview ? 'Marked' : 'Mark for Review'}</span>
+            <Flag
+              className={`w-3.5 h-3.5 ${isMarkedForReview ? "fill-current" : ""}`}
+            />
+            <span>{isMarkedForReview ? "Marked" : "Mark for Review"}</span>
           </button>
 
           {selectedOption && (
@@ -304,8 +323,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             onClick={onPrev}
             className={`flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg border transition-colors ${
               hasPrev
-                ? 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                : 'border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed opacity-50'
+                ? "border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                : "border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed opacity-50"
             }`}
           >
             <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -318,8 +337,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             onClick={onNext}
             className={`flex items-center gap-1 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg transition-colors ${
               hasNext
-                ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs'
-                : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs"
+                : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
             }`}
           >
             <span>Next</span>

@@ -37,22 +37,40 @@
   }
 
   * {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family:
+      "Plus Jakarta Sans",
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
     /* Universal scrollbar hiding across Firefox, IE, and Edge */
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
   }
-  
-  .font-mono, pre, code {
-    font-family: 'JetBrains Mono', monospace;
+
+  .font-mono,
+  pre,
+  code {
+    font-family: "JetBrains Mono", monospace;
   }
 
   /* Balanced typography on all screen sizes */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     text-wrap: balance;
   }
 
-  p, li {
+  p,
+  li {
     text-wrap: pretty;
   }
 

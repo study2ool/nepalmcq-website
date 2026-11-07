@@ -1,17 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import {
-  X,
-  Search,
-  BookOpen,
-  Copy,
-  Check,
-  Sparkles,
-  ExternalLink,
-  Layers,
-  Info,
-} from 'lucide-react';
-import { SubjectFormulaSheet } from '../../data/syllabus/formulaSheets';
-import MathRenderer from '../common/MathRenderer';
+import React, { useState, useMemo } from "react";
+import { X, Search, Copy, Check, Sparkles, Layers, Info } from "lucide-react";
+import { SubjectFormulaSheet } from "../../data/syllabus/formulaSheets";
+import MathRenderer from "../common/MathRenderer";
 
 interface FormulaSheetModalProps {
   formulaSheet: SubjectFormulaSheet;
@@ -26,13 +16,15 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
   onClose,
   initialUnit,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedUnit, setSelectedUnit] = useState<string>(initialUnit || 'all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState<string>(
+    initialUnit || "all",
+  );
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopyFormula = (id: string, text: string) => {
     // Strip KaTeX delimiters for plain text copying if needed, or copy raw formula
-    const cleanText = text.replace(/\$\$/g, '').replace(/\$/g, '').trim();
+    const cleanText = text.replace(/\$\$/g, "").replace(/\$/g, "").trim();
     navigator.clipboard.writeText(cleanText);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -42,7 +34,7 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
   const filteredUnits = useMemo(() => {
     return formulaSheet.units
       .map((unit) => {
-        if (selectedUnit !== 'all' && unit.unitName !== selectedUnit) {
+        if (selectedUnit !== "all" && unit.unitName !== selectedUnit) {
           return null;
         }
 
@@ -53,7 +45,8 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
             f.name.toLowerCase().includes(q) ||
             (f.description && f.description.toLowerCase().includes(q)) ||
             (f.keyApplication && f.keyApplication.toLowerCase().includes(q)) ||
-            (unit.chapterNames && unit.chapterNames.some((c) => c.toLowerCase().includes(q)))
+            (unit.chapterNames &&
+              unit.chapterNames.some((c) => c.toLowerCase().includes(q)))
           );
         });
 
@@ -64,7 +57,7 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
           formulas: matchingFormulas,
         };
       })
-      .filter((u): u is typeof formulaSheet.units[number] => u !== null);
+      .filter((u): u is (typeof formulaSheet.units)[number] => u !== null);
   }, [formulaSheet, selectedUnit, searchQuery]);
 
   const totalFormulaCount = useMemo(() => {
@@ -129,7 +122,7 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
+                onClick={() => setSearchQuery("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 Clear
@@ -141,11 +134,11 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
             <button
               type="button"
-              onClick={() => setSelectedUnit('all')}
+              onClick={() => setSelectedUnit("all")}
               className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                selectedUnit === 'all'
-                  ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                selectedUnit === "all"
+                  ? "bg-indigo-600 text-white font-semibold shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               All Units ({totalFormulaCount})
@@ -157,8 +150,8 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
                 onClick={() => setSelectedUnit(unit.unitName)}
                 className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors ${
                   selectedUnit === unit.unitName
-                    ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    ? "bg-indigo-600 text-white font-semibold shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 {unit.unitName} ({unit.formulas.length})
@@ -172,8 +165,12 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
           {filteredUnits.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
               <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-semibold">No formulas matched your search</p>
-              <p className="text-xs text-slate-500 mt-1">Try searching another keyword or clear the filter.</p>
+              <p className="text-sm font-semibold">
+                No formulas matched your search
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                Try searching another keyword or clear the filter.
+              </p>
             </div>
           ) : (
             filteredUnits.map((unit) => (
@@ -205,14 +202,18 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
 
                         <button
                           type="button"
-                          onClick={() => handleCopyFormula(item.id, item.formula)}
+                          onClick={() =>
+                            handleCopyFormula(item.id, item.formula)
+                          }
                           className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition-colors shrink-0"
                           title="Copy formula text"
                         >
                           {copiedId === item.id ? (
                             <>
                               <Check className="w-3.5 h-3.5 text-emerald-500" />
-                              <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
+                              <span className="text-emerald-600 dark:text-emerald-400">
+                                Copied
+                              </span>
                             </>
                           ) : (
                             <>
@@ -235,7 +236,7 @@ export const FormulaSheetModal: React.FC<FormulaSheetModalProps> = ({
                           <div>
                             <span className="font-semibold text-indigo-950 dark:text-indigo-300">
                               NEB Application:
-                            </span>{' '}
+                            </span>{" "}
                             <span>{item.keyApplication}</span>
                           </div>
                         </div>

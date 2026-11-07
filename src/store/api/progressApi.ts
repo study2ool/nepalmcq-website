@@ -1,6 +1,9 @@
-import { apiSlice } from './baseApi';
-import type { QuizResult } from '../../types/results';
-import type { LeaderboardStudent, SchoolStanding } from '../../types/leaderboard';
+import { apiSlice } from "./baseApi";
+import type { QuizResult } from "../../types/results";
+import type {
+  LeaderboardStudent,
+  SchoolStanding,
+} from "../../types/leaderboard";
 
 export interface UserStatsSummary {
   userId: string;
@@ -67,13 +70,13 @@ export function mapBackendAttemptToQuizResult(a: any): QuizResult {
   return {
     id: a.id,
     config: {
-      subject: a.subject || 'All Subjects',
+      subject: a.subject || "All Subjects",
       grade: a.grade || 11,
-      topic: a.config?.topic || 'All Topics',
+      topic: a.config?.topic || "All Topics",
       questionCount: a.config?.totalQuestions || a.metrics?.totalPossible || 10,
       durationMinutes: a.config?.timeLimitMinutes || 20,
-      difficulty: a.config?.difficulty || 'All Levels',
-      questionMode: a.config?.questionMode || 'random',
+      difficulty: a.config?.difficulty || "All Levels",
+      questionMode: a.config?.questionMode || "random",
     },
     completedAt: new Date(a.completedAt).getTime(),
     totalQuestions: a.metrics?.totalPossible || 10,
@@ -91,16 +94,16 @@ export function mapBackendAttemptToQuizResult(a: any): QuizResult {
         id: qr.questionId,
         class: a.grade,
         subject: qr.subject || a.subject,
-        topic: qr.topic || '',
-        question: '',
+        topic: qr.topic || "",
+        question: "",
         options: [],
-        correct_options: [qr.correctAnswer || 'A'],
+        correct_options: [qr.correctAnswer || "A"],
         is_multi_select: false,
-        explanation: '',
-        difficulty: 'Medium',
-        question_type: 'MCQ',
+        explanation: "",
+        difficulty: "Medium",
+        question_type: "MCQ",
         marks: 1,
-        curriculum_note: '',
+        curriculum_note: "",
       },
       selectedAnswer: qr.selectedKey,
       isCorrect: qr.isCorrect,
@@ -115,15 +118,16 @@ export function mapBackendAttemptToQuizResult(a: any): QuizResult {
 export const progressApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardSummary: builder.query<UserStatsSummary | null, void>({
-      query: () => '/dashboard/me',
+      query: () => "/dashboard/me",
       transformResponse: (res: any) => (res.data as UserStatsSummary) || null,
-      providesTags: ['Dashboard'],
+      providesTags: ["Dashboard"],
     }),
 
     getUserHistory: builder.query<QuizResult[], number | void>({
       query: (limit = 50) => `/attempts/history?limit=${limit}`,
-      transformResponse: (res: any) => (res.data || []).map(mapBackendAttemptToQuizResult),
-      providesTags: ['History'],
+      transformResponse: (res: any) =>
+        (res.data || []).map(mapBackendAttemptToQuizResult),
+      providesTags: ["History"],
     }),
 
     getLeaderboard: builder.query<
@@ -132,27 +136,32 @@ export const progressApiSlice = apiSlice.injectEndpoints({
         schools: SchoolStanding[];
         currentUserRank?: number;
       },
-      { timeframe?: 'all-time' | 'weekly'; grade?: string; subject?: string } | void
+      {
+        timeframe?: "all-time" | "weekly";
+        grade?: string;
+        subject?: string;
+      } | void
     >({
       query: (params) => {
         const q = new URLSearchParams();
-        if (params?.timeframe) q.set('timeframe', params.timeframe);
-        if (params?.grade) q.set('grade', params.grade);
-        if (params?.subject) q.set('subject', params.subject);
+        if (params?.timeframe) q.set("timeframe", params.timeframe);
+        if (params?.grade) q.set("grade", params.grade);
+        if (params?.subject) q.set("subject", params.subject);
         return `/leaderboard?${q.toString()}`;
       },
-      transformResponse: (res: any) => res.data || { students: [], schools: [] },
-      providesTags: ['Leaderboard'],
+      transformResponse: (res: any) =>
+        res.data || { students: [], schools: [] },
+      providesTags: ["Leaderboard"],
     }),
 
     submitAttempt: builder.mutation<SubmitAttemptResponse, QuizResult>({
       query: (result) => ({
-        url: '/attempts',
-        method: 'POST',
+        url: "/attempts",
+        method: "POST",
         body: result,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['Dashboard', 'History', 'Leaderboard', 'AdminStats'],
+      invalidatesTags: ["Dashboard", "History", "Leaderboard", "AdminStats"],
     }),
   }),
 });
@@ -166,4 +175,3 @@ export const {
   useLazyGetLeaderboardQuery,
   useSubmitAttemptMutation,
 } = progressApiSlice;
-

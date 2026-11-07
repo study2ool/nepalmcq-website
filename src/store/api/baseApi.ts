@@ -7,17 +7,17 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const API_BASE = (() => {
   // 1. If VITE_API_BASE_URL is an absolute URL (e.g. https://.../api/v1), use it directly
   if (rawBase && /^https?:\/\//i.test(rawBase)) {
-    return rawBase.replace(/\/+$/, '');
+    return rawBase.replace(/\/+$/, "");
   }
   // 2. If VITE_BACKEND_URL is provided (e.g. https://nepalmcq-backend.onrender.com),
   // combine backend domain with relative API prefix (/api/v1)
   if (backendUrl && /^https?:\/\//i.test(backendUrl)) {
-    const cleanBackend = backendUrl.replace(/\/+$/, '');
-    const cleanPrefix = (rawBase || '/api/v1').replace(/^\/+/, '');
+    const cleanBackend = backendUrl.replace(/\/+$/, "");
+    const cleanPrefix = (rawBase || "/api/v1").replace(/^\/+/, "");
     return `${cleanBackend}/${cleanPrefix}`;
   }
   // 3. Fallback to relative path (for local Vite dev proxy or Cloudflare Pages _redirects proxy)
-  return rawBase || '/api/v1';
+  return rawBase || "/api/v1";
 })();
 
 export const apiSlice = createApi({

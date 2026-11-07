@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   X,
   Trophy,
@@ -11,8 +11,8 @@ import {
   Flame,
   CheckCircle2,
   Lock,
-} from 'lucide-react';
-import { Badge } from '../../types/leaderboard';
+} from "lucide-react";
+import { Badge } from "../../types/leaderboard";
 
 interface BadgesShowcaseProps {
   isOpen: boolean;
@@ -29,24 +29,24 @@ export const BadgesShowcase: React.FC<BadgesShowcaseProps> = ({
 
   const unlockedCount = badges.filter((b) => b.unlocked).length;
 
-  const getBadgeIcon = (iconName: Badge['icon'], isUnlocked: boolean) => {
-    const iconClass = `w-5 h-5 ${isUnlocked ? 'text-amber-500' : 'text-slate-400'}`;
+  const getBadgeIcon = (iconName: Badge["icon"], isUnlocked: boolean) => {
+    const iconClass = `w-5 h-5 ${isUnlocked ? "text-amber-500" : "text-slate-400"}`;
     switch (iconName) {
-      case 'trophy':
+      case "trophy":
         return <Trophy className={iconClass} />;
-      case 'target':
+      case "target":
         return <Target className={iconClass} />;
-      case 'zap':
+      case "zap":
         return <Zap className={iconClass} />;
-      case 'star':
+      case "star":
         return <Star className={iconClass} />;
-      case 'flame':
+      case "flame":
         return <Flame className={iconClass} />;
-      case 'book':
+      case "book":
         return <Book className={iconClass} />;
-      case 'cpu':
+      case "cpu":
         return <Cpu className={iconClass} />;
-      case 'award':
+      case "award":
       default:
         return <Award className={iconClass} />;
     }
@@ -67,7 +67,8 @@ export const BadgesShowcase: React.FC<BadgesShowcaseProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Complete mock exams, achieve high accuracy, and maintain study streaks to unlock achievements
+              Complete mock exams, achieve high accuracy, and maintain study
+              streaks to unlock achievements
             </p>
           </div>
           <button
@@ -86,15 +87,15 @@ export const BadgesShowcase: React.FC<BadgesShowcaseProps> = ({
               key={badge.id}
               className={`p-4 rounded-2xl border transition-all flex items-start gap-3.5 ${
                 badge.unlocked
-                  ? 'border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20'
-                  : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 opacity-80'
+                  ? "border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20"
+                  : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 opacity-80"
               }`}
             >
               <div
                 className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
                   badge.unlocked
-                    ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-600'
-                    : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
+                    ? "bg-amber-100 dark:bg-amber-900/50 text-amber-600"
+                    : "bg-slate-200 dark:bg-slate-800 text-slate-400"
                 }`}
               >
                 {getBadgeIcon(badge.icon, badge.unlocked)}

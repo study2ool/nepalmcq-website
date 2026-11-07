@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { X, User, School, MapPin, Check, GraduationCap } from 'lucide-react';
-import { StudentProfile } from '../../types/leaderboard';
-import { GradeLevel } from '../../types/question';
-import { useGetCollegesQuery, CollegeItem } from '../../store/api/apiSlice';
+import React, { useState } from "react";
+import { X, User, School, MapPin, Check, GraduationCap } from "lucide-react";
+import { StudentProfile } from "../../types/leaderboard";
+import { GradeLevel } from "../../types/question";
+import { useGetCollegesQuery, CollegeItem } from "../../store/api/apiSlice";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -12,13 +12,13 @@ interface ProfileModalProps {
 }
 
 const AVATAR_COLORS = [
-  { name: 'Indigo', bg: 'bg-indigo-600' },
-  { name: 'Emerald', bg: 'bg-emerald-600' },
-  { name: 'Violet', bg: 'bg-violet-600' },
-  { name: 'Sky', bg: 'bg-sky-600' },
-  { name: 'Amber', bg: 'bg-amber-600' },
-  { name: 'Rose', bg: 'bg-rose-600' },
-  { name: 'Teal', bg: 'bg-teal-600' },
+  { name: "Indigo", bg: "bg-indigo-600" },
+  { name: "Emerald", bg: "bg-emerald-600" },
+  { name: "Violet", bg: "bg-violet-600" },
+  { name: "Sky", bg: "bg-sky-600" },
+  { name: "Amber", bg: "bg-amber-600" },
+  { name: "Rose", bg: "bg-rose-600" },
+  { name: "Teal", bg: "bg-teal-600" },
 ];
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -32,16 +32,18 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   const [city, setCity] = useState(profile.city);
   const [grade, setGrade] = useState<GradeLevel>(profile.grade);
   const [avatarBg, setAvatarBg] = useState(profile.avatarBg);
-  const { data: colleges = [] } = useGetCollegesQuery(undefined, { skip: !isOpen });
+  const { data: colleges = [] } = useGetCollegesQuery(undefined, {
+    skip: !isOpen,
+  });
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
-      name: name.trim() || 'Student',
+      name: name.trim() || "Student",
       school: school.trim() || "College",
-      city: city.trim() || 'Nepal',
+      city: city.trim() || "Nepal",
       grade,
       avatarBg,
     });
@@ -63,7 +65,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               Student Leaderboard Profile
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Personalize your name and college to represent your institution on Nepal MCQ
+              Personalize your name and college to represent your institution on
+              Nepal MCQ
             </p>
           </div>
           <button
@@ -85,7 +88,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               <div
                 className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-sm shadow-sm ${avatarBg}`}
               >
-                {name ? name.slice(0, 2).toUpperCase() : 'ME'}
+                {name ? name.slice(0, 2).toUpperCase() : "ME"}
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {AVATAR_COLORS.map((c) => (
@@ -94,7 +97,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                     type="button"
                     onClick={() => setAvatarBg(c.bg)}
                     className={`w-7 h-7 rounded-xl ${c.bg} flex items-center justify-center text-white transition-transform ${
-                      avatarBg === c.bg ? 'scale-110 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900' : 'opacity-80 hover:opacity-100'
+                      avatarBg === c.bg
+                        ? "scale-110 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900"
+                        : "opacity-80 hover:opacity-100"
                     }`}
                   >
                     {avatarBg === c.bg && <Check className="w-3.5 h-3.5" />}
@@ -135,8 +140,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   onClick={() => setGrade(g as GradeLevel)}
                   className={`py-2 px-4 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
                     grade === g
-                      ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
+                      : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                   }`}
                 >
                   <GraduationCap className="w-4 h-4" />
@@ -152,7 +157,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Secondary School / +2 College
               </label>
-              <span className="text-[10px] text-slate-400">Type or select below</span>
+              <span className="text-[10px] text-slate-400">
+                Type or select below
+              </span>
             </div>
             <div className="relative">
               <School className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

@@ -103,11 +103,11 @@ export const Practice: React.FC = () => {
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Quiz",
-      "name": "NEB Grade 11 & 12 Practice Tests & Board Examination Center",
-      "description":
+      name: "NEB Grade 11 & 12 Practice Tests & Board Examination Center",
+      description:
         "Computer-based tests, instant study mode with derivations, and past paper drills for secondary education students in Nepal.",
-      "educationalLevel": "Secondary Education (NEB Grade 11-12)",
-      "isAccessibleForFree": true,
+      educationalLevel: "Secondary Education (NEB Grade 11-12)",
+      isAccessibleForFree: true,
     },
   });
 
@@ -198,8 +198,8 @@ export const Practice: React.FC = () => {
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
           Customize your syllabus scope, duration, difficulty, and question
-          pool. Practice specific chapters, past NEB board papers ("Old is Gold"),
-          or simulate real examination conditions.
+          pool. Practice specific chapters, past NEB board papers ("Old is
+          Gold"), or simulate real examination conditions.
         </p>
       </div>
 
@@ -220,7 +220,9 @@ export const Practice: React.FC = () => {
             })
           }
           className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
-            config.questionCount === 20 && config.year === "All" && !config.negativeMarking
+            config.questionCount === 20 &&
+            config.year === "All" &&
+            !config.negativeMarking
               ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 ring-1 ring-indigo-500 text-slate-900 dark:text-white"
               : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
           }`}
@@ -254,7 +256,9 @@ export const Practice: React.FC = () => {
             })
           }
           className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
-            config.questionCount === 30 && config.year === "All" && !config.negativeMarking
+            config.questionCount === 30 &&
+            config.year === "All" &&
+            !config.negativeMarking
               ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 ring-1 ring-indigo-500 text-slate-900 dark:text-white"
               : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
           }`}
@@ -356,7 +360,8 @@ export const Practice: React.FC = () => {
             })
           }
           className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
-            config.examPreset === "cee_medical" || (config.negativeMarking && config.questionCount === 100)
+            config.examPreset === "cee_medical" ||
+            (config.negativeMarking && config.questionCount === 100)
               ? "border-rose-500 bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-rose-500 text-slate-900 dark:text-white"
               : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
           }`}
@@ -417,7 +422,8 @@ export const Practice: React.FC = () => {
           <div className="space-y-3 pb-6 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Practice Experience Mode <span className="text-rose-500">*</span>
+                Practice Experience Mode{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                 {config.mode === "study"
@@ -446,7 +452,8 @@ export const Practice: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Immediate answer reveals, comprehensive derivations, and concept notes after each question. No timer panic.
+                    Immediate answer reveals, comprehensive derivations, and
+                    concept notes after each question. No timer panic.
                   </p>
                 </div>
               </button>
@@ -471,7 +478,8 @@ export const Practice: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Strict time countdown, question palette tracking, and final scorecard review upon complete submission.
+                    Strict time countdown, question palette tracking, and final
+                    scorecard review upon complete submission.
                   </p>
                 </div>
               </button>
@@ -615,9 +623,21 @@ export const Practice: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               {[
                 { id: "all", label: "All Questions", year: "All" },
-                { id: "past_papers", label: "2080 NEB Board", year: "2080 NEB" },
-                { id: "past_papers", label: "2079 NEB Board", year: "2079 NEB" },
-                { id: "model_questions", label: "CDC Model Sets", year: "CDC Model Set" },
+                {
+                  id: "past_papers",
+                  label: "2080 NEB Board",
+                  year: "2080 NEB",
+                },
+                {
+                  id: "past_papers",
+                  label: "2079 NEB Board",
+                  year: "2079 NEB",
+                },
+                {
+                  id: "model_questions",
+                  label: "CDC Model Sets",
+                  year: "CDC Model Set",
+                },
               ].map((src) => {
                 const isSelected =
                   src.id === "all"

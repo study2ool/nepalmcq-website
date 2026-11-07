@@ -1,6 +1,6 @@
-import React from 'react';
-import { Crown, Medal, Award, Flame, Target } from 'lucide-react';
-import { LeaderboardStudent } from '../../types/leaderboard';
+import React from "react";
+import { Crown, Medal, Award, Flame, Target } from "lucide-react";
+import { LeaderboardStudent } from "../../types/leaderboard";
 
 interface LeaderboardPodiumProps {
   topStudents: LeaderboardStudent[];
@@ -24,12 +24,12 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
     borderClass: string,
     badgeBg: string,
     icon: React.ReactNode,
-    heightClass: string
+    heightClass: string,
   ) => {
     return (
       <div
         className={`flex-1 flex flex-col items-center justify-end relative transition-all ${
-          student.isCurrentUser ? 'scale-[1.02]' : ''
+          student.isCurrentUser ? "scale-[1.02]" : ""
         }`}
       >
         {/* Crown/Medal Badge */}
@@ -49,8 +49,8 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
           <div
             className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white text-lg sm:text-xl font-black shadow-md ${student.avatarBg} ${
               student.isCurrentUser
-                ? 'ring-4 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900'
-                : ''
+                ? "ring-4 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900"
+                : ""
             }`}
           >
             {student.avatarInitials}
@@ -83,7 +83,7 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
         >
           <div className="text-center space-y-1">
             <div className="font-mono text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              {student.totalXp.toLocaleString()}{' '}
+              {student.totalXp.toLocaleString()}{" "}
               <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
                 XP
               </span>
@@ -100,7 +100,10 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
               </span>
             </div>
             <div className="text-[11px] text-slate-400 pt-1">
-              Top: <span className="font-semibold text-slate-700 dark:text-slate-300">{student.topSubject}</span>
+              Top:{" "}
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                {student.topSubject}
+              </span>
             </div>
           </div>
         </div>
@@ -116,7 +119,9 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
           <span>National Top Achievers Podium</span>
         </div>
         <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-          {subjectFilter === 'All' ? 'Overall National Honors' : `${subjectFilter} Excellence`}
+          {subjectFilter === "All"
+            ? "Overall National Honors"
+            : `${subjectFilter} Excellence`}
         </h2>
       </div>
 
@@ -125,33 +130,33 @@ export const LeaderboardPodium: React.FC<LeaderboardPodiumProps> = ({
         {renderStudentCard(
           second,
           2,
-          'text-slate-400',
-          'border-slate-300 dark:border-slate-700',
-          'bg-slate-400',
+          "text-slate-400",
+          "border-slate-300 dark:border-slate-700",
+          "bg-slate-400",
           <Award className="w-5 h-5" />,
-          'min-h-[140px]'
+          "min-h-[140px]",
         )}
 
         {/* Rank 1 - Gold (Elevated) */}
         {renderStudentCard(
           first,
           1,
-          'text-amber-500',
-          'border-amber-400 dark:border-amber-600',
-          'bg-amber-500',
+          "text-amber-500",
+          "border-amber-400 dark:border-amber-600",
+          "bg-amber-500",
           <Crown className="w-6 h-6" />,
-          'min-h-[180px]'
+          "min-h-[180px]",
         )}
 
         {/* Rank 3 - Bronze */}
         {renderStudentCard(
           third,
           3,
-          'text-amber-700',
-          'border-amber-700/60 dark:border-amber-700/60',
-          'bg-amber-700',
+          "text-amber-700",
+          "border-amber-700/60 dark:border-amber-700/60",
+          "bg-amber-700",
           <Medal className="w-5 h-5" />,
-          'min-h-[120px]'
+          "min-h-[120px]",
         )}
       </div>
     </div>

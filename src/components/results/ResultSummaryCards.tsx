@@ -1,20 +1,29 @@
-import React from 'react';
-import { CheckCircle2, XCircle, HelpCircle, Target, Award, Clock } from 'lucide-react';
-import { QuizResult } from '../../types/results';
-import { formatTimeMMSS } from '../../utils/timer';
+import React from "react";
+import {
+  CheckCircle2,
+  XCircle,
+  HelpCircle,
+  Target,
+  Award,
+  Clock,
+} from "lucide-react";
+import { QuizResult } from "../../types/results";
+import { formatTimeMMSS } from "../../utils/timer";
 
 interface ResultSummaryCardsProps {
   result: QuizResult;
 }
 
-export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }) => {
+export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({
+  result,
+}) => {
   const isPass = result.accuracy >= 50;
   const isNegativeMarking = !!result.config.negativeMarking;
   const penaltyDeduction = isNegativeMarking
     ? Math.round(result.incorrectAnswers * 0.25 * 100) / 100
     : 0;
   const formattedMarks = Number(
-    (Math.round(result.totalMarksObtained * 100) / 100).toFixed(2)
+    (Math.round(result.totalMarksObtained * 100) / 100).toFixed(2),
   );
 
   return (
@@ -34,8 +43,8 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {isPass
-              ? 'Great performance! Your score indicates strong mastery of core concepts.'
-              : 'Review your incorrect and unattempted questions below to reinforce weak areas.'}
+              ? "Great performance! Your score indicates strong mastery of core concepts."
+              : "Review your incorrect and unattempted questions below to reinforce weak areas."}
           </p>
         </div>
 
@@ -47,7 +56,9 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
             </span>
             <div className="text-3xl font-extrabold font-mono text-indigo-600 dark:text-indigo-400">
               {formattedMarks}
-              <span className="text-sm font-normal text-slate-400">/{result.totalPossibleMarks}</span>
+              <span className="text-sm font-normal text-slate-400">
+                /{result.totalPossibleMarks}
+              </span>
             </div>
             {isNegativeMarking && (
               <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 block mt-0.5">
@@ -78,7 +89,9 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
           <div className="text-xl font-bold font-mono text-slate-900 dark:text-white">
             {result.totalQuestions}
           </div>
-          <span className="text-[11px] text-slate-400 block mt-0.5">Total Exam Set</span>
+          <span className="text-[11px] text-slate-400 block mt-0.5">
+            Total Exam Set
+          </span>
         </div>
 
         {/* Attempted */}
@@ -91,7 +104,10 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
             {result.attemptedQuestions}
           </div>
           <span className="text-[11px] text-slate-400 block mt-0.5">
-            {Math.round((result.attemptedQuestions / result.totalQuestions) * 100)}% coverage
+            {Math.round(
+              (result.attemptedQuestions / result.totalQuestions) * 100,
+            )}
+            % coverage
           </span>
         </div>
 
@@ -121,7 +137,7 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
           <span className="text-[11px] text-rose-500/80 block mt-0.5">
             {isNegativeMarking && penaltyDeduction > 0
               ? `-${penaltyDeduction} penalty (-0.25/Q)`
-              : 'Review solutions'}
+              : "Review solutions"}
           </span>
         </div>
 
@@ -134,7 +150,9 @@ export const ResultSummaryCards: React.FC<ResultSummaryCardsProps> = ({ result }
           <div className="text-xl font-bold font-mono text-slate-700 dark:text-slate-300">
             {result.unattemptedQuestions}
           </div>
-          <span className="text-[11px] text-slate-400 block mt-0.5">No negative deduction</span>
+          <span className="text-[11px] text-slate-400 block mt-0.5">
+            No negative deduction
+          </span>
         </div>
 
         {/* Total Time & Speed */}

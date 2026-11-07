@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 export const GoogleIcon: React.FC<{ className?: string }> = ({
-  className = 'w-5 h-5',
+  className = "w-5 h-5",
 }) => (
   <svg
     className={className}
@@ -26,4 +26,3 @@ export const GoogleIcon: React.FC<{ className?: string }> = ({
     />
   </svg>
 );
-

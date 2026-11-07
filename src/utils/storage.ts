@@ -1,13 +1,13 @@
-import { QuizSession } from '../types/quiz';
-import { QuizResult } from '../types/results';
+import { QuizSession } from "../types/quiz";
+import { QuizResult } from "../types/results";
 
-const ACTIVE_QUIZ_KEY = 'nepal_mcq_active_session_v1';
-const QUIZ_HISTORY_KEY = 'nepal_mcq_quiz_history_v1';
-const BOOKMARKS_KEY = 'nepal_mcq_bookmarks_v1';
-const THEME_KEY = 'nepal_mcq_theme_v1';
-const USER_REACTIONS_KEY = 'nepal_mcq_user_reactions_v1';
-const REACTION_COUNTS_KEY = 'nepal_mcq_reaction_counts_v1';
-const GUEST_ID_KEY = 'nepal_mcq_guest_id_v1';
+const ACTIVE_QUIZ_KEY = "nepal_mcq_active_session_v1";
+const QUIZ_HISTORY_KEY = "nepal_mcq_quiz_history_v1";
+const BOOKMARKS_KEY = "nepal_mcq_bookmarks_v1";
+const THEME_KEY = "nepal_mcq_theme_v1";
+const USER_REACTIONS_KEY = "nepal_mcq_user_reactions_v1";
+const REACTION_COUNTS_KEY = "nepal_mcq_reaction_counts_v1";
+const GUEST_ID_KEY = "nepal_mcq_guest_id_v1";
 
 export const storage = {
   // Active session
@@ -15,7 +15,7 @@ export const storage = {
     try {
       localStorage.setItem(ACTIVE_QUIZ_KEY, JSON.stringify(session));
     } catch (e) {
-      console.warn('Failed to save active quiz session', e);
+      console.warn("Failed to save active quiz session", e);
     }
   },
 
@@ -32,7 +32,7 @@ export const storage = {
     try {
       localStorage.removeItem(ACTIVE_QUIZ_KEY);
     } catch (e) {
-      console.warn('Failed to clear active session', e);
+      console.warn("Failed to clear active session", e);
     }
   },
 
@@ -50,9 +50,12 @@ export const storage = {
     try {
       const current = storage.getResultsHistory();
       const updated = [result, ...current.filter((r) => r.id !== result.id)];
-      localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(updated.slice(0, 50))); // Keep last 50
+      localStorage.setItem(
+        QUIZ_HISTORY_KEY,
+        JSON.stringify(updated.slice(0, 50)),
+      ); // Keep last 50
     } catch (e) {
-      console.warn('Failed to save quiz result', e);
+      console.warn("Failed to save quiz result", e);
     }
   },
 
@@ -85,21 +88,23 @@ export const storage = {
   },
 
   // Theme
-  getTheme: (): 'light' | 'dark' => {
+  getTheme: (): "light" | "dark" => {
     try {
       const val = localStorage.getItem(THEME_KEY);
-      if (val === 'light' || val === 'dark') return val;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (val === "light" || val === "dark") return val;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     } catch {
-      return 'light';
+      return "light";
     }
   },
 
-  setTheme: (theme: 'light' | 'dark'): void => {
+  setTheme: (theme: "light" | "dark"): void => {
     try {
       localStorage.setItem(THEME_KEY, theme);
     } catch (e) {
-      console.warn('Failed to save theme', e);
+      console.warn("Failed to save theme", e);
     }
   },
 
@@ -113,11 +118,11 @@ export const storage = {
       }
       return guestId;
     } catch {
-      return 'guest_fallback_anon';
+      return "guest_fallback_anon";
     }
   },
 
-  getUserReactions: (): Record<string, 'like' | 'dislike'> => {
+  getUserReactions: (): Record<string, "like" | "dislike"> => {
     try {
       const data = localStorage.getItem(USER_REACTIONS_KEY);
       return data ? JSON.parse(data) : {};
@@ -128,8 +133,8 @@ export const storage = {
 
   setUserReaction: (
     questionId: string,
-    reaction: 'like' | 'dislike' | null,
-  ): Record<string, 'like' | 'dislike'> => {
+    reaction: "like" | "dislike" | null,
+  ): Record<string, "like" | "dislike"> => {
     try {
       const reactions = storage.getUserReactions();
       if (reaction === null) {
@@ -144,7 +149,10 @@ export const storage = {
     }
   },
 
-  getReactionCounts: (): Record<string, { likesCount: number; dislikesCount: number }> => {
+  getReactionCounts: (): Record<
+    string,
+    { likesCount: number; dislikesCount: number }
+  > => {
     try {
       const data = localStorage.getItem(REACTION_COUNTS_KEY);
       return data ? JSON.parse(data) : {};
@@ -165,7 +173,7 @@ export const storage = {
       };
       localStorage.setItem(REACTION_COUNTS_KEY, JSON.stringify(allCounts));
     } catch (e) {
-      console.warn('Failed to save reaction counts', e);
+      console.warn("Failed to save reaction counts", e);
     }
   },
 
@@ -182,7 +190,7 @@ export const storage = {
       });
       localStorage.setItem(REACTION_COUNTS_KEY, JSON.stringify(allCounts));
     } catch (e) {
-      console.warn('Failed to save batch reaction counts', e);
+      console.warn("Failed to save batch reaction counts", e);
     }
   },
 };

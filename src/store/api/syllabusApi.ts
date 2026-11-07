@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiSlice } from './baseApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { apiSlice } from "./baseApi";
 import type {
   SubjectSummary,
   SyllabusFile,
@@ -7,7 +7,7 @@ import type {
   SyllabusBranch,
   SyllabusChapter,
   SyllabusTopic,
-} from '../../types/syllabus';
+} from "../../types/syllabus";
 
 export type {
   SubjectSummary,
@@ -26,29 +26,35 @@ export interface SyllabusOverviewData {
 export const syllabusApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSubjects: builder.query<SubjectSummary[], string | void>({
-      query: (category = 'science') => `/subjects?category=${category || 'science'}`,
+      query: (category = "science") =>
+        `/subjects?category=${category || "science"}`,
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['Syllabus'],
+      providesTags: ["Syllabus"],
     }),
 
-    getTopicsByGrade: builder.query<Record<number, Record<string, string[]>>, void>({
-      query: () => '/syllabus/topics',
+    getTopicsByGrade: builder.query<
+      Record<number, Record<string, string[]>>,
+      void
+    >({
+      query: () => "/syllabus/topics",
       transformResponse: (res: any) => res.data || { 11: {}, 12: {} },
-      providesTags: ['Syllabus'],
+      providesTags: ["Syllabus"],
     }),
 
     getSyllabusOverview: builder.query<SyllabusOverviewData, void>({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
         const [subRes, topRes] = await Promise.all([
-          fetchWithBQ('/subjects?category=science'),
-          fetchWithBQ('/syllabus/topics'),
+          fetchWithBQ("/subjects?category=science"),
+          fetchWithBQ("/syllabus/topics"),
         ]);
 
         if (subRes.error) return { error: subRes.error };
         if (topRes.error) return { error: topRes.error };
 
         const subjects: SubjectSummary[] = (subRes.data as any)?.data || [];
-        const topics: Record<number, Record<string, string[]>> = (topRes.data as any)?.data || {};
+        const topics: Record<number, Record<string, string[]>> = (
+          topRes.data as any
+        )?.data || {};
 
         const scienceSubjectNames = new Set(subjects.map((s) => s.name));
         const filteredTopics: Record<number, Record<string, string[]>> = {
@@ -67,13 +73,15 @@ export const syllabusApiSlice = apiSlice.injectEndpoints({
 
         return { data: { subjects, topicsByGrade: filteredTopics } };
       },
-      providesTags: ['Syllabus'],
+      providesTags: ["Syllabus"],
     }),
 
     getSyllabusBySubject: builder.query<SyllabusFile, string>({
       query: (subject) => `/syllabus/${encodeURIComponent(subject)}`,
       transformResponse: (res: any) => res.data,
-      providesTags: (_res, _err, subject) => [{ type: 'Syllabus', id: subject }],
+      providesTags: (_res, _err, subject) => [
+        { type: "Syllabus", id: subject },
+      ],
     }),
   }),
 });
@@ -105,35 +113,39 @@ const initialState: SyllabusState = {
 };
 
 export const fetchSyllabusOverview = createAsyncThunk(
-  'syllabus/fetchOverview',
+  "syllabus/fetchOverview",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const data = await dispatch(syllabusApiSlice.endpoints.getSyllabusOverview.initiate()).unwrap();
+      const data = await dispatch(
+        syllabusApiSlice.endpoints.getSyllabusOverview.initiate(),
+      ).unwrap();
       return { subjects: data.subjects, topics: data.topicsByGrade };
     } catch (err: any) {
       return rejectWithValue(
-        err?.message || 'Failed to fetch science syllabus data',
+        err?.message || "Failed to fetch science syllabus data",
       );
     }
-  }
+  },
 );
 
 export const fetchSubjectDetails = createAsyncThunk(
-  'syllabus/fetchSubjectDetails',
+  "syllabus/fetchSubjectDetails",
   async (subject: string, { dispatch, rejectWithValue }) => {
     try {
-      const syllabus = await dispatch(syllabusApiSlice.endpoints.getSyllabusBySubject.initiate(subject)).unwrap();
+      const syllabus = await dispatch(
+        syllabusApiSlice.endpoints.getSyllabusBySubject.initiate(subject),
+      ).unwrap();
       return { subject, syllabus };
     } catch (err: any) {
       return rejectWithValue(
         err?.message || `Failed to fetch syllabus details for ${subject}`,
       );
     }
-  }
+  },
 );
 
 export const syllabusSlice = createSlice({
-  name: 'syllabus',
+  name: "syllabus",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

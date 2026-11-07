@@ -10,9 +10,6 @@ import {
   MessageSquare,
   Sparkles,
   ChevronDown,
-  Building2,
-  GraduationCap,
-  ShieldCheck,
   AlertCircle,
 } from "lucide-react";
 import { useSEO } from "../hooks/useSEO";
@@ -47,7 +44,8 @@ const FAQS = [
       "You can submit feedback right here selecting 'Question Bank & Answer Key Feedback' with the Question ID (found on every question card), or write to us directly. Our academic review team verifies every report against CDC textbooks and NEB answer keys.",
   },
   {
-    question: "Can our college or +2 school be added to the National Leaderboard?",
+    question:
+      "Can our college or +2 school be added to the National Leaderboard?",
     answer:
       "Yes! When students sign in and select their college during onboarding, their examination scores automatically aggregate to their institution's points. If your institution is not listed, choose 'Other Institution' or contact us to officially register your college profile.",
   },
@@ -57,7 +55,8 @@ const FAQS = [
       "Yes. Nepal MCQ is 100% free for all students across Nepal. All practice questions, NEB mock examinations, timer simulations, and syllabus maps are accessible without any subscription fees.",
   },
   {
-    question: "How are the questions aligned with the latest NEB specification grid?",
+    question:
+      "How are the questions aligned with the latest NEB specification grid?",
     answer:
       "All 1,700+ questions are strictly categorized by NEB Grade 11 & 12 CDC curriculum units, chapters, and subtopics, mirroring official board question formats, difficulty weighting, and marking schemes (+1.0 mark per correct answer).",
   },
@@ -74,10 +73,10 @@ export const Contact: React.FC = () => {
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "ContactPage",
-      "name": "Contact Nepal MCQ Academic Team",
-      "description":
+      name: "Contact Nepal MCQ Academic Team",
+      description:
         "Contact academic support, report question feedback, or register secondary schools on Nepal's National Leaderboard.",
-      "url": "https://nepalmcq.edu.np/contact",
+      url: "https://nepalmcq.edu.np/contact",
     },
   });
 
@@ -90,14 +89,15 @@ export const Contact: React.FC = () => {
     currentUser?.grade === 11
       ? "student_11"
       : currentUser?.grade === 12
-      ? "student_12"
-      : "student_12",
+        ? "student_12"
+        : "student_12",
   );
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submittedInquiry, setSubmittedInquiry] = useState<ContactInquiry | null>(null);
+  const [submittedInquiry, setSubmittedInquiry] =
+    useState<ContactInquiry | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
 
   const [submitContactInquiry, { isLoading: isSubmitting }] =
@@ -112,7 +112,8 @@ export const Contact: React.FC = () => {
     setSubmitError(null);
     try {
       const selectedCatLabel =
-        INQUIRY_CATEGORIES.find((c) => c.value === category)?.label || "General Inquiry";
+        INQUIRY_CATEGORIES.find((c) => c.value === category)?.label ||
+        "General Inquiry";
       const resolvedSubject =
         subject.trim() || `[${selectedCatLabel}] Inquiry from ${name.trim()}`;
 
@@ -265,7 +266,16 @@ export const Contact: React.FC = () => {
                 Inquiry Received!
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
-                Thank you, <strong className="text-slate-900 dark:text-white">{name}</strong>. Our academic review team has logged your message and will reach out to <strong className="text-slate-900 dark:text-white">{email}</strong> if follow-up is needed.
+                Thank you,{" "}
+                <strong className="text-slate-900 dark:text-white">
+                  {name}
+                </strong>
+                . Our academic review team has logged your message and will
+                reach out to{" "}
+                <strong className="text-slate-900 dark:text-white">
+                  {email}
+                </strong>{" "}
+                if follow-up is needed.
               </p>
 
               {submittedInquiry && (
@@ -316,7 +326,8 @@ export const Contact: React.FC = () => {
                   Send a Message
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Fill out the form below. We appreciate all constructive feedback on questions and the curriculum.
+                  Fill out the form below. We appreciate all constructive
+                  feedback on questions and the curriculum.
                 </p>
               </div>
 
@@ -466,7 +477,8 @@ export const Contact: React.FC = () => {
               Instant Academic Resources
             </h3>
             <p className="text-xs text-indigo-200/90 leading-relaxed">
-              Before submitting, you might find the answers or study tools you need in our dedicated resource centers:
+              Before submitting, you might find the answers or study tools you
+              need in our dedicated resource centers:
             </p>
             <div className="space-y-2 pt-1">
               <Link
@@ -536,4 +548,3 @@ export const Contact: React.FC = () => {
 };
 
 export default Contact;
-

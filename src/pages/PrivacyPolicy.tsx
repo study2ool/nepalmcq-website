@@ -10,7 +10,6 @@ import {
   Mail,
   ArrowLeft,
   CheckCircle2,
-  FileText,
 } from "lucide-react";
 import { useSEO } from "../hooks/useSEO";
 
@@ -27,7 +26,8 @@ export const PrivacyPolicy: React.FC = () => {
       "@type": "WebPage",
       name: "Privacy Policy – Nepal MCQ",
       url: "https://nepalmcq.edu.np/privacy",
-      description: "Official Privacy Policy for Nepal MCQ educational platform.",
+      description:
+        "Official Privacy Policy for Nepal MCQ educational platform.",
       datePublished: "2026-01-01",
       dateModified: new Date().toISOString().split("T")[0],
     },
@@ -56,9 +56,10 @@ export const PrivacyPolicy: React.FC = () => {
           Privacy Policy
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
-          At Nepal MCQ, we respect student privacy and are committed to protecting
-          your personal and academic diagnostic records. This policy outlines our
-          transparent practices regarding data collection, storage, and rights.
+          At Nepal MCQ, we respect student privacy and are committed to
+          protecting your personal and academic diagnostic records. This policy
+          outlines our transparent practices regarding data collection, storage,
+          and rights.
         </p>
         <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200/60 dark:border-slate-800">
           <span>Effective Date: November 2026</span>
@@ -102,8 +103,9 @@ export const PrivacyPolicy: React.FC = () => {
                 <strong className="text-slate-900 dark:text-white">
                   Academic Preferences &amp; School Affiliation
                 </strong>
-                : Your selected class grade (Grade 11 or Grade 12), academic stream
-                (Science or Management), and optional college or school name.
+                : Your selected class grade (Grade 11 or Grade 12), academic
+                stream (Science or Management), and optional college or school
+                name.
               </span>
             </li>
             <li className="flex items-start gap-2.5">
@@ -165,8 +167,8 @@ export const PrivacyPolicy: React.FC = () => {
             </li>
           </ul>
           <p className="font-semibold text-slate-900 dark:text-white pt-2">
-            We never sell, rent, monetize, or broker student personal information
-            to third-party advertisers or data brokers.
+            We never sell, rent, monetize, or broker student personal
+            information to third-party advertisers or data brokers.
           </p>
         </section>
 
@@ -183,19 +185,19 @@ export const PrivacyPolicy: React.FC = () => {
           </p>
           <ul className="space-y-2 pl-2 list-disc list-inside">
             <li>
-              <strong>Encryption in Transit</strong>: All data transmitted between
-              your browser and our servers uses modern TLS/HTTPS encryption with
-              strict HSTS enforcement.
+              <strong>Encryption in Transit</strong>: All data transmitted
+              between your browser and our servers uses modern TLS/HTTPS
+              encryption with strict HSTS enforcement.
             </li>
             <li>
-              <strong>Enterprise Cloud Infrastructure</strong>: Production databases
-              run on managed cloud services with role-based access control and
-              continuous automated security patching.
+              <strong>Enterprise Cloud Infrastructure</strong>: Production
+              databases run on managed cloud services with role-based access
+              control and continuous automated security patching.
             </li>
             <li>
               <strong>Token Security</strong>: User authentication tokens are
-              cryptographically signed and support instant server-side revocation
-              upon sign-out.
+              cryptographically signed and support instant server-side
+              revocation upon sign-out.
             </li>
           </ul>
         </section>
@@ -209,10 +211,10 @@ export const PrivacyPolicy: React.FC = () => {
             </h2>
           </div>
           <p>
-            Nepal MCQ uses standard browser storage mechanisms exclusively to maintain
-            your user session, theme preferences (Dark vs. Light mode), and offline
-            practice session continuity. We do not use intrusive cross-site tracking
-            cookies or third-party advertising pixels.
+            Nepal MCQ uses standard browser storage mechanisms exclusively to
+            maintain your user session, theme preferences (Dark vs. Light mode),
+            and offline practice session continuity. We do not use intrusive
+            cross-site tracking cookies or third-party advertising pixels.
           </p>
         </section>
 
@@ -225,8 +227,8 @@ export const PrivacyPolicy: React.FC = () => {
             </h2>
           </div>
           <p>
-            You retain absolute ownership of your personal data. At any time, you
-            have the right to:
+            You retain absolute ownership of your personal data. At any time,
+            you have the right to:
           </p>
           <ul className="space-y-2 pl-2 list-disc list-inside">
             <li>Review and modify your registered profile information.</li>
@@ -247,8 +249,8 @@ export const PrivacyPolicy: React.FC = () => {
             </h2>
           </div>
           <p>
-            If you have questions, privacy inquiries, or data compliance requests,
-            please reach out directly to our team:
+            If you have questions, privacy inquiries, or data compliance
+            requests, please reach out directly to our team:
           </p>
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1 text-xs sm:text-sm font-mono">
             <p>

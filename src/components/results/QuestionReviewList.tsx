@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
-import { CheckCircle2, XCircle, HelpCircle, Clock } from 'lucide-react';
-import { QuestionResult } from '../../types/results';
-import MathRenderer from '../common/MathRenderer';
-import QuestionReactionButtons from '../common/QuestionReactionButtons';
+import React, { useState } from "react";
+import { CheckCircle2, XCircle, HelpCircle, Clock } from "lucide-react";
+import { QuestionResult } from "../../types/results";
+import MathRenderer from "../common/MathRenderer";
+import QuestionReactionButtons from "../common/QuestionReactionButtons";
 
 interface QuestionReviewListProps {
   results: QuestionResult[];
 }
 
-export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results }) => {
-  const [filter, setFilter] = useState<'all' | 'correct' | 'incorrect' | 'unattempted'>('all');
+export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({
+  results,
+}) => {
+  const [filter, setFilter] = useState<
+    "all" | "correct" | "incorrect" | "unattempted"
+  >("all");
 
   const filtered = results.filter((item) => {
-    if (filter === 'all') return true;
+    if (filter === "all") return true;
     return item.status === filter;
   });
 
   const counts = {
     all: results.length,
-    correct: results.filter((r) => r.status === 'correct').length,
-    incorrect: results.filter((r) => r.status === 'incorrect').length,
-    unattempted: results.filter((r) => r.status === 'unattempted').length,
+    correct: results.filter((r) => r.status === "correct").length,
+    incorrect: results.filter((r) => r.status === "incorrect").length,
+    unattempted: results.filter((r) => r.status === "unattempted").length,
   };
 
   return (
@@ -38,30 +42,32 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
 
         {/* Filter Segmented Control (§1.A functional filter tabs) */}
         <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl shrink-0 self-start sm:self-auto overflow-x-auto max-w-full">
-          {(['all', 'correct', 'incorrect', 'unattempted'] as const).map((tabKey) => {
-            const isActive = filter === tabKey;
-            const labelMap = {
-              all: `All (${counts.all})`,
-              correct: `Correct (${counts.correct})`,
-              incorrect: `Incorrect (${counts.incorrect})`,
-              unattempted: `Skipped (${counts.unattempted})`,
-            };
+          {(["all", "correct", "incorrect", "unattempted"] as const).map(
+            (tabKey) => {
+              const isActive = filter === tabKey;
+              const labelMap = {
+                all: `All (${counts.all})`,
+                correct: `Correct (${counts.correct})`,
+                incorrect: `Incorrect (${counts.incorrect})`,
+                unattempted: `Skipped (${counts.unattempted})`,
+              };
 
-            return (
-              <button
-                key={tabKey}
-                type="button"
-                onClick={() => setFilter(tabKey)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
-                  isActive
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                {labelMap[tabKey]}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={tabKey}
+                  type="button"
+                  onClick={() => setFilter(tabKey)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                  }`}
+                >
+                  {labelMap[tabKey]}
+                </button>
+              );
+            },
+          )}
         </div>
       </div>
 
@@ -74,9 +80,9 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
         <div className="space-y-6">
           {filtered.map((item, index) => {
             const { question, selectedAnswer, status, timeSpentSeconds } = item;
-            const isCorrect = status === 'correct';
-            const isIncorrect = status === 'incorrect';
-            const isUnattempted = status === 'unattempted';
+            const isCorrect = status === "correct";
+            const isIncorrect = status === "incorrect";
+            const isUnattempted = status === "unattempted";
 
             return (
               <div
@@ -104,7 +110,10 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
 
                   {/* Status indicator & Reactions */}
                   <div className="flex items-center gap-2">
-                    <QuestionReactionButtons questionId={question.id} size="xs" />
+                    <QuestionReactionButtons
+                      questionId={question.id}
+                      size="xs"
+                    />
 
                     {isCorrect && (
                       <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-md">
@@ -138,15 +147,19 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
                     const isOptionCorrect = opt.id === question.correctAnswer;
                     const isStudentChoice = opt.id === selectedAnswer;
 
-                    let optBg = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300';
-                    let badgeBg = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+                    let optBg =
+                      "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300";
+                    let badgeBg =
+                      "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400";
 
                     if (isOptionCorrect) {
-                      optBg = 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500';
-                      badgeBg = 'bg-emerald-600 text-white font-bold';
+                      optBg =
+                        "bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500";
+                      badgeBg = "bg-emerald-600 text-white font-bold";
                     } else if (isStudentChoice && !isOptionCorrect) {
-                      optBg = 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100 ring-1 ring-rose-500';
-                      badgeBg = 'bg-rose-600 text-white font-bold';
+                      optBg =
+                        "bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-950 dark:text-rose-100 ring-1 ring-rose-500";
+                      badgeBg = "bg-rose-600 text-white font-bold";
                     }
 
                     return (
@@ -163,7 +176,9 @@ export const QuestionReviewList: React.FC<QuestionReviewListProps> = ({ results 
                           <MathRenderer content={opt.text} />
                           {isStudentChoice && (
                             <span className="block text-[11px] font-semibold mt-1 opacity-80">
-                              {isOptionCorrect ? '✓ Your Answer (Correct)' : '✗ Your Answer (Incorrect)'}
+                              {isOptionCorrect
+                                ? "✓ Your Answer (Correct)"
+                                : "✗ Your Answer (Incorrect)"}
                             </span>
                           )}
                           {!isStudentChoice && isOptionCorrect && (

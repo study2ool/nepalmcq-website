@@ -1,4 +1,4 @@
-import { apiSlice } from './baseApi';
+import { apiSlice } from "./baseApi";
 
 export interface AccountDeletionPayload {
   email?: string;
@@ -12,7 +12,7 @@ export interface AccountDeletionResponse {
   email: string;
   reason: string;
   feedback?: string;
-  status: 'pending' | 'completed' | 'cancelled';
+  status: "pending" | "completed" | "cancelled";
   source: string;
   requestedAt: string;
 }
@@ -33,14 +33,9 @@ export const accountDeletionApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["AccountDeletions"],
     }),
-    getAccountDeletionById: builder.query<
-      AccountDeletionResponse,
-      string
-    >({
+    getAccountDeletionById: builder.query<AccountDeletionResponse, string>({
       query: (id) => `/account-deletions/${encodeURIComponent(id)}`,
-      providesTags: (_result, _error, id) => [
-        { type: "AccountDeletions", id },
-      ],
+      providesTags: (_result, _error, id) => [{ type: "AccountDeletions", id }],
     }),
   }),
 });
@@ -49,4 +44,3 @@ export const {
   useCreateAccountDeletionMutation,
   useGetAccountDeletionByIdQuery,
 } = accountDeletionApi;
-

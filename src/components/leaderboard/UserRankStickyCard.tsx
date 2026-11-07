@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Trophy, Flame, Target, ArrowRight, UserCheck, Sparkles } from 'lucide-react';
-import { LeaderboardStudent } from '../../types/leaderboard';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Trophy, Flame, ArrowRight, UserCheck } from "lucide-react";
+import { LeaderboardStudent } from "../../types/leaderboard";
 
 interface UserRankStickyCardProps {
   currentUser: LeaderboardStudent;
@@ -62,7 +62,7 @@ export const UserRankStickyCard: React.FC<UserRankStickyCardProps> = ({
             National Rank
           </span>
           <div className="font-mono text-sm sm:text-base font-black text-amber-400">
-            #{userRank}{' '}
+            #{userRank}{" "}
             <span className="text-[11px] font-normal text-slate-400">
               / {totalStudents}
             </span>

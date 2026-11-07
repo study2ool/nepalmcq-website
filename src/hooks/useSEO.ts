@@ -77,7 +77,9 @@ export function useSEO({
     // 7. Inject Dynamic Page-Specific JSON-LD Structured Data
     if (jsonLd) {
       const scriptId = "dynamic-page-jsonld";
-      let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+      let script = document.getElementById(
+        scriptId,
+      ) as HTMLScriptElement | null;
       if (!script) {
         script = document.createElement("script");
         script.id = scriptId;

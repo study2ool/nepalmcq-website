@@ -1,5 +1,5 @@
-import { apiSlice } from './baseApi';
-import type { User } from './authApi';
+import { apiSlice } from "./baseApi";
+import type { User } from "./authApi";
 
 export interface GenderBreakdown {
   male: number;
@@ -92,50 +92,62 @@ export interface AdminSchool {
 export const adminApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAdminStats: builder.query<AdminStats, void>({
-      query: () => '/admin/stats',
+      query: () => "/admin/stats",
       transformResponse: (res: any) => res.data,
-      providesTags: ['AdminStats'],
+      providesTags: ["AdminStats"],
     }),
 
-    getAdminUsers: builder.query<User[], { search?: string; role?: string; grade?: number } | void>({
+    getAdminUsers: builder.query<
+      User[],
+      { search?: string; role?: string; grade?: number } | void
+    >({
       query: (params) => {
         const sp = new URLSearchParams();
-        if (params?.search) sp.set('search', params.search);
-        if (params?.role && params.role !== 'all') sp.set('role', params.role);
-        if (params?.grade) sp.set('grade', String(params.grade));
-        return `/admin/users${sp.toString() ? `?${sp.toString()}` : ''}`;
+        if (params?.search) sp.set("search", params.search);
+        if (params?.role && params.role !== "all") sp.set("role", params.role);
+        if (params?.grade) sp.set("grade", String(params.grade));
+        return `/admin/users${sp.toString() ? `?${sp.toString()}` : ""}`;
       },
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['AdminUsers'],
+      providesTags: ["AdminUsers"],
     }),
 
-    getAdminUserById: builder.query<{ user: User; stats: any; attempts: any[] }, string>({
+    getAdminUserById: builder.query<
+      { user: User; stats: any; attempts: any[] },
+      string
+    >({
       query: (id) => `/admin/users/${id}`,
       transformResponse: (res: any) => res.data,
     }),
 
-    updateAdminUser: builder.mutation<User, { id: string; updates: Partial<User> }>({
+    updateAdminUser: builder.mutation<
+      User,
+      { id: string; updates: Partial<User> }
+    >({
       query: ({ id, updates }) => ({
         url: `/admin/users/${id}`,
-        method: 'PATCH',
+        method: "PATCH",
         body: updates,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['AdminUsers', 'AdminStats'],
+      invalidatesTags: ["AdminUsers", "AdminStats"],
     }),
 
     deleteAdminUser: builder.mutation<void, string>({
       query: (id) => ({
         url: `/admin/users/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['AdminUsers', 'AdminStats'],
+      invalidatesTags: ["AdminUsers", "AdminStats"],
     }),
 
     getAdminSchools: builder.query<AdminSchool[], string | void>({
-      query: (search) => (search ? `/admin/schools?search=${encodeURIComponent(search)}` : '/admin/schools'),
+      query: (search) =>
+        search
+          ? `/admin/schools?search=${encodeURIComponent(search)}`
+          : "/admin/schools",
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['AdminSchools'],
+      providesTags: ["AdminSchools"],
     }),
 
     createAdminSchool: builder.mutation<
@@ -143,48 +155,51 @@ export const adminApiSlice = apiSlice.injectEndpoints({
       { name: string; city: string; isPopular?: boolean }
     >({
       query: (payload) => ({
-        url: '/admin/schools',
-        method: 'POST',
+        url: "/admin/schools",
+        method: "POST",
         body: payload,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['AdminSchools', 'Colleges', 'AdminStats'],
+      invalidatesTags: ["AdminSchools", "Colleges", "AdminStats"],
     }),
 
     updateAdminSchool: builder.mutation<
       AdminSchool,
-      { id: string; payload: Partial<{ name: string; city: string; isPopular: boolean }> }
+      {
+        id: string;
+        payload: Partial<{ name: string; city: string; isPopular: boolean }>;
+      }
     >({
       query: ({ id, payload }) => ({
         url: `/admin/schools/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body: payload,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['AdminSchools', 'Colleges', 'AdminStats'],
+      invalidatesTags: ["AdminSchools", "Colleges", "AdminStats"],
     }),
 
     deleteAdminSchool: builder.mutation<void, string>({
       query: (id) => ({
         url: `/admin/schools/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['AdminSchools', 'Colleges', 'AdminStats'],
+      invalidatesTags: ["AdminSchools", "Colleges", "AdminStats"],
     }),
 
     getPlatformAnalytics: builder.query<PlatformAnalytics, void>({
-      query: () => '/admin/analytics',
+      query: () => "/admin/analytics",
       transformResponse: (res: any) => res.data,
-      providesTags: ['AdminStats'],
+      providesTags: ["AdminStats"],
     }),
 
     syncPlatformAnalytics: builder.mutation<PlatformAnalytics, void>({
       query: () => ({
-        url: '/admin/analytics/sync',
-        method: 'POST',
+        url: "/admin/analytics/sync",
+        method: "POST",
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['AdminStats', 'Colleges', 'Leaderboard'],
+      invalidatesTags: ["AdminStats", "Colleges", "Leaderboard"],
     }),
   }),
 });
@@ -202,4 +217,3 @@ export const {
   useGetPlatformAnalyticsQuery,
   useSyncPlatformAnalyticsMutation,
 } = adminApiSlice;
-

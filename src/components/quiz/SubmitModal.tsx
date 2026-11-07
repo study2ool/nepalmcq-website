@@ -1,6 +1,6 @@
-import React from 'react';
-import { AlertTriangle, CheckCircle, HelpCircle, Flag } from 'lucide-react';
-import { QuizSession } from '../../types/quiz';
+import React from "react";
+import { AlertTriangle, CheckCircle, HelpCircle, Flag } from "lucide-react";
+import { QuizSession } from "../../types/quiz";
 
 interface SubmitModalProps {
   session: QuizSession;
@@ -20,7 +20,9 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
   const total = session.questions.length;
   const attempted = Object.keys(session.selectedAnswers).length;
   const unattempted = total - attempted;
-  const reviewCount = Object.values(session.markedForReview).filter(Boolean).length;
+  const reviewCount = Object.values(session.markedForReview).filter(
+    Boolean,
+  ).length;
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150">
@@ -34,7 +36,8 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
               Submit Examination?
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Are you sure you want to finish? You cannot modify answers after submission.
+              Are you sure you want to finish? You cannot modify answers after
+              submission.
             </p>
           </div>
         </div>
@@ -74,7 +77,9 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({
 
         {unattempted > 0 && (
           <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded-lg border border-amber-200 dark:border-amber-900/40">
-            Note: You still have {unattempted} unanswered question{unattempted > 1 ? 's' : ''}. Unanswered questions will receive 0 marks.
+            Note: You still have {unattempted} unanswered question
+            {unattempted > 1 ? "s" : ""}. Unanswered questions will receive 0
+            marks.
           </p>
         )}
 

@@ -1,7 +1,7 @@
 export interface SubjectSummary {
   name: string;
   code: string;
-  category: 'science' | 'commerce' | string;
+  category: "science" | "commerce" | string;
   isNepaliLang: boolean;
   grades: number[];
   totalChapters: number;
@@ -59,9 +59,24 @@ export interface NebSpecificationGrid {
   teachingHours: number;
   examDurationMinutes: number;
   questionFormat: {
-    groupA: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
-    groupB: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
-    groupC: { count: number; marksPerQuestion: number; totalMarks: number; type: string };
+    groupA: {
+      count: number;
+      marksPerQuestion: number;
+      totalMarks: number;
+      type: string;
+    };
+    groupB: {
+      count: number;
+      marksPerQuestion: number;
+      totalMarks: number;
+      type: string;
+    };
+    groupC: {
+      count: number;
+      marksPerQuestion: number;
+      totalMarks: number;
+      type: string;
+    };
   };
   bloomTaxonomy: BloomTaxonomy;
   units: UnitWeightageItem[];
@@ -83,8 +98,7 @@ export interface SyllabusFile {
     description?: string;
   };
   grades: {
-    '11': SyllabusGrade;
-    '12': SyllabusGrade;
+    "11": SyllabusGrade;
+    "12": SyllabusGrade;
   };
 }
-

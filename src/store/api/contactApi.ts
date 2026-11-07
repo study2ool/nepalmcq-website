@@ -1,4 +1,4 @@
-import { apiSlice } from './baseApi';
+import { apiSlice } from "./baseApi";
 
 export interface ContactInquiry {
   id: string;
@@ -8,7 +8,7 @@ export interface ContactInquiry {
   role: string;
   subject: string;
   message: string;
-  status: 'pending' | 'reviewed' | 'resolved' | 'archived';
+  status: "pending" | "reviewed" | "resolved" | "archived";
   source: string;
   userId?: string;
   adminNotes?: string;
@@ -28,7 +28,7 @@ export interface CreateContactInquiryPayload {
 
 export interface UpdateContactInquiryPayload {
   id: string;
-  status?: 'pending' | 'reviewed' | 'resolved' | 'archived';
+  status?: "pending" | "reviewed" | "resolved" | "archived";
   adminNotes?: string;
 }
 
@@ -48,15 +48,15 @@ export const contactApiSlice = apiSlice.injectEndpoints({
       CreateContactInquiryPayload
     >({
       query: (body) => ({
-        url: '/contact',
-        method: 'POST',
+        url: "/contact",
+        method: "POST",
         body: {
           ...body,
-          source: body.source || 'website',
+          source: body.source || "website",
         },
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['ContactInquiries', 'AdminStats'],
+      invalidatesTags: ["ContactInquiries", "AdminStats"],
     }),
 
     getAdminInquiries: builder.query<
@@ -65,27 +65,27 @@ export const contactApiSlice = apiSlice.injectEndpoints({
     >({
       query: (params) => {
         const sp = new URLSearchParams();
-        if (params?.search) sp.set('search', params.search);
-        if (params?.category && params.category !== 'all')
-          sp.set('category', params.category);
-        if (params?.status && params.status !== 'all')
-          sp.set('status', params.status);
-        return `/admin/inquiries${sp.toString() ? `?${sp.toString()}` : ''}`;
+        if (params?.search) sp.set("search", params.search);
+        if (params?.category && params.category !== "all")
+          sp.set("category", params.category);
+        if (params?.status && params.status !== "all")
+          sp.set("status", params.status);
+        return `/admin/inquiries${sp.toString() ? `?${sp.toString()}` : ""}`;
       },
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['ContactInquiries'],
+      providesTags: ["ContactInquiries"],
     }),
 
     getAdminInquiryStats: builder.query<ContactInquiryStats, void>({
-      query: () => '/admin/inquiries/stats',
+      query: () => "/admin/inquiries/stats",
       transformResponse: (res: any) => res.data,
-      providesTags: ['ContactInquiries'],
+      providesTags: ["ContactInquiries"],
     }),
 
     getAdminInquiryById: builder.query<ContactInquiry, string>({
       query: (id) => `/admin/inquiries/${id}`,
       transformResponse: (res: any) => res.data,
-      providesTags: (_res, _err, id) => [{ type: 'ContactInquiries', id }],
+      providesTags: (_res, _err, id) => [{ type: "ContactInquiries", id }],
     }),
 
     updateAdminInquiry: builder.mutation<
@@ -94,20 +94,23 @@ export const contactApiSlice = apiSlice.injectEndpoints({
     >({
       query: ({ id, ...body }) => ({
         url: `/admin/inquiries/${id}`,
-        method: 'PATCH',
+        method: "PATCH",
         body,
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['ContactInquiries', 'AdminStats'],
+      invalidatesTags: ["ContactInquiries", "AdminStats"],
     }),
 
-    deleteAdminInquiry: builder.mutation<{ id: string; deleted: boolean }, string>({
+    deleteAdminInquiry: builder.mutation<
+      { id: string; deleted: boolean },
+      string
+    >({
       query: (id) => ({
         url: `/admin/inquiries/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
       transformResponse: (res: any) => res.data,
-      invalidatesTags: ['ContactInquiries', 'AdminStats'],
+      invalidatesTags: ["ContactInquiries", "AdminStats"],
     }),
   }),
 });
@@ -120,4 +123,3 @@ export const {
   useUpdateAdminInquiryMutation,
   useDeleteAdminInquiryMutation,
 } = contactApiSlice;
-

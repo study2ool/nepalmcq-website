@@ -1,5 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 
 interface Props {
   children: ReactNode;
@@ -21,12 +21,12 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error caught by ErrorBoundary:', error, errorInfo);
+    console.error("Uncaught error caught by ErrorBoundary:", error, errorInfo);
   }
 
   private handleReset = () => {
     this.setState({ hasError: false, error: null });
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   private handleReload = () => {
@@ -45,7 +45,8 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="space-y-1">
               <h2 className="text-xl font-bold">Something went wrong</h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                An unexpected interface error occurred. Your saved examination records and answers remain safe in your local storage.
+                An unexpected interface error occurred. Your saved examination
+                records and answers remain safe in your local storage.
               </p>
             </div>
 

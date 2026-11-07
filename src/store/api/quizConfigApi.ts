@@ -1,34 +1,37 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { QuizConfig } from '../../types/quiz';
-import { GradeLevel, SubjectName, DifficultyLevel } from '../../types/question';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { QuizConfig } from "../../types/quiz";
+import { GradeLevel, SubjectName, DifficultyLevel } from "../../types/question";
 
 const initialState: QuizConfig = {
   grade: 12,
-  subject: 'All Subjects',
-  topic: 'All Topics',
+  subject: "All Subjects",
+  topic: "All Topics",
   questionCount: 60,
   durationMinutes: 60,
-  difficulty: 'All Levels',
-  questionMode: 'random',
-  mode: 'study',
-  sourceFilter: 'all',
-  year: 'All',
+  difficulty: "All Levels",
+  questionMode: "random",
+  mode: "study",
+  sourceFilter: "all",
+  year: "All",
   negativeMarking: false,
   markingScheme: { correctMarks: 1, incorrectPenalty: 0 },
-  examPreset: 'custom',
+  examPreset: "custom",
 };
 
 export const quizConfigSlice = createSlice({
-  name: 'quizConfig',
+  name: "quizConfig",
   initialState,
   reducers: {
     setGrade: (state, action: PayloadAction<GradeLevel>) => {
       state.grade = action.payload;
-      state.topic = 'All Topics';
+      state.topic = "All Topics";
     },
-    setSubject: (state, action: PayloadAction<SubjectName | 'All Subjects'>) => {
+    setSubject: (
+      state,
+      action: PayloadAction<SubjectName | "All Subjects">,
+    ) => {
       state.subject = action.payload;
-      state.topic = 'All Topics';
+      state.topic = "All Topics";
     },
     setTopic: (state, action: PayloadAction<string>) => {
       state.topic = action.payload;
@@ -40,18 +43,24 @@ export const quizConfigSlice = createSlice({
     setDurationMinutes: (state, action: PayloadAction<number>) => {
       state.durationMinutes = action.payload;
     },
-    setDifficulty: (state, action: PayloadAction<DifficultyLevel | 'All Levels'>) => {
+    setDifficulty: (
+      state,
+      action: PayloadAction<DifficultyLevel | "All Levels">,
+    ) => {
       state.difficulty = action.payload;
     },
-    setQuestionMode: (state, action: PayloadAction<'random' | 'sequential'>) => {
+    setQuestionMode: (
+      state,
+      action: PayloadAction<"random" | "sequential">,
+    ) => {
       state.questionMode = action.payload;
     },
-    setPracticeMode: (state, action: PayloadAction<'exam' | 'study'>) => {
+    setPracticeMode: (state, action: PayloadAction<"exam" | "study">) => {
       state.mode = action.payload;
     },
     setSourceFilter: (
       state,
-      action: PayloadAction<'all' | 'past_papers' | 'model_questions'>,
+      action: PayloadAction<"all" | "past_papers" | "model_questions">,
     ) => {
       state.sourceFilter = action.payload;
     },
@@ -67,7 +76,9 @@ export const quizConfigSlice = createSlice({
     },
     setExamPreset: (
       state,
-      action: PayloadAction<'custom' | 'neb_board' | 'cee_medical' | 'ioe_engineering'>,
+      action: PayloadAction<
+        "custom" | "neb_board" | "cee_medical" | "ioe_engineering"
+      >,
     ) => {
       state.examPreset = action.payload;
     },
@@ -95,4 +106,3 @@ export const {
 
 export const quizConfigReducer = quizConfigSlice.reducer;
 export default quizConfigReducer;
-

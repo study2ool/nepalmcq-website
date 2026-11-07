@@ -1,5 +1,5 @@
-import React from 'react';
-import { QuizSession } from '../../types/quiz';
+import React from "react";
+import { QuizSession } from "../../types/quiz";
 
 interface QuestionPaletteProps {
   session: QuizSession;
@@ -10,7 +10,13 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
   session,
   onSelectQuestion,
 }) => {
-  const { questions, currentQuestionIndex, selectedAnswers, markedForReview, questionTimeRemaining } = session;
+  const {
+    questions,
+    currentQuestionIndex,
+    selectedAnswers,
+    markedForReview,
+    questionTimeRemaining,
+  } = session;
 
   const total = questions.length;
   let attempted = 0;
@@ -42,10 +48,14 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
       <div className="grid grid-cols-2 gap-2 text-xs mb-4">
         <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-800">
           <span className="text-slate-500 block text-[11px]">Total</span>
-          <span className="text-base font-bold font-mono text-slate-900 dark:text-white">{total}</span>
+          <span className="text-base font-bold font-mono text-slate-900 dark:text-white">
+            {total}
+          </span>
         </div>
         <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40">
-          <span className="text-emerald-700 dark:text-emerald-400 block text-[11px]">Attempted</span>
+          <span className="text-emerald-700 dark:text-emerald-400 block text-[11px]">
+            Attempted
+          </span>
           <span className="text-base font-bold font-mono text-emerald-700 dark:text-emerald-300">
             {totalAttempted}
           </span>
@@ -57,7 +67,9 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
           </span>
         </div>
         <div className="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40">
-          <span className="text-purple-700 dark:text-purple-400 block text-[11px]">Review</span>
+          <span className="text-purple-700 dark:text-purple-400 block text-[11px]">
+            Review
+          </span>
           <span className="text-base font-bold font-mono text-purple-700 dark:text-purple-300">
             {marked + attemptedAndMarked}
           </span>
@@ -73,16 +85,21 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
           const isTimeExpired = (questionTimeRemaining[q.id] ?? 60) <= 0;
 
           // Compute style
-          let buttonStyle = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+          let buttonStyle =
+            "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
 
           if (hasAnswer && isMarked) {
-            buttonStyle = 'bg-amber-500 text-white border-amber-600 font-semibold';
+            buttonStyle =
+              "bg-amber-500 text-white border-amber-600 font-semibold";
           } else if (hasAnswer) {
-            buttonStyle = 'bg-emerald-600 text-white border-emerald-700 font-semibold';
+            buttonStyle =
+              "bg-emerald-600 text-white border-emerald-700 font-semibold";
           } else if (isMarked) {
-            buttonStyle = 'bg-purple-600 text-white border-purple-700 font-semibold';
+            buttonStyle =
+              "bg-purple-600 text-white border-purple-700 font-semibold";
           } else if (isTimeExpired) {
-            buttonStyle = 'bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800';
+            buttonStyle =
+              "bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800";
           }
 
           return (
@@ -91,9 +108,11 @@ export const QuestionPalette: React.FC<QuestionPaletteProps> = ({
               type="button"
               onClick={() => onSelectQuestion(idx)}
               className={`h-9 rounded-lg text-xs font-mono transition-all flex items-center justify-center relative border cursor-pointer hover:opacity-90 ${buttonStyle} ${
-                isCurrent ? 'ring-2 ring-indigo-500 dark:ring-indigo-400 ring-offset-2 dark:ring-offset-slate-900 font-bold scale-105 z-10' : ''
+                isCurrent
+                  ? "ring-2 ring-indigo-500 dark:ring-indigo-400 ring-offset-2 dark:ring-offset-slate-900 font-bold scale-105 z-10"
+                  : ""
               }`}
-              title={`Question ${idx + 1}: ${hasAnswer ? 'Answered' : 'Not answered'}${isMarked ? ' (Marked for review)' : ''}${isTimeExpired ? ' (Time expired)' : ''}`}
+              title={`Question ${idx + 1}: ${hasAnswer ? "Answered" : "Not answered"}${isMarked ? " (Marked for review)" : ""}${isTimeExpired ? " (Time expired)" : ""}`}
             >
               {idx + 1}
               {isTimeExpired && !hasAnswer && (

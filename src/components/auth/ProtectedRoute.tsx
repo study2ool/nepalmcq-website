@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { openAuthModal } from '../../store/api/authApi';
+import React, { useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { openAuthModal } from "../../store/api/authApi";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  redirectTo = '/practice',
+  redirectTo = "/practice",
   triggerAuthModal = true,
 }) => {
   const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
@@ -39,4 +39,3 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 export default ProtectedRoute;
-

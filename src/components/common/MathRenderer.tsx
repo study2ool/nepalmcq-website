@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import katex from 'katex';
+import React, { useMemo } from "react";
+import katex from "katex";
 
 interface MathRendererProps {
   content: string;
@@ -13,7 +13,7 @@ interface MathRendererProps {
  */
 export const MathRenderer: React.FC<MathRendererProps> = ({
   content,
-  className = '',
+  className = "",
   inline = true,
 }) => {
   const renderedElements = useMemo(() => {
@@ -24,7 +24,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({
     const parts = content.split(regex);
 
     return parts.map((part, index) => {
-      if (part.startsWith('$$') && part.endsWith('$$')) {
+      if (part.startsWith("$$") && part.endsWith("$$")) {
         const math = part.slice(2, -2).trim();
         try {
           const html = katex.renderToString(math, {
@@ -41,7 +41,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({
         } catch {
           return <span key={index}>{part}</span>;
         }
-      } else if (part.startsWith('$') && part.endsWith('$')) {
+      } else if (part.startsWith("$") && part.endsWith("$")) {
         const math = part.slice(1, -1).trim();
         try {
           const html = katex.renderToString(math, {

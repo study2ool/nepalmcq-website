@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { logout } from '../../store/api/authApi';
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { logout } from "../../store/api/authApi";
 import {
   User as UserIcon,
   LogOut,
@@ -13,9 +13,9 @@ import {
   Sparkles,
   ShieldCheck,
   BookmarkCheck,
-} from 'lucide-react';
+} from "lucide-react";
 
-const ADMIN_EMAIL = 'study2ool.nepal@gmail.com';
+const ADMIN_EMAIL = "study2ool.nepal@gmail.com";
 
 export const UserDropdown: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -33,20 +33,20 @@ export const UserDropdown: React.FC = () => {
         setIsOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   if (!user) return null;
 
   const initials = user.name
     ? user.name
-        .split(' ')
+        .split(" ")
         .map((n) => n[0])
         .slice(0, 2)
-        .join('')
+        .join("")
         .toUpperCase()
-    : 'U';
+    : "U";
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -70,7 +70,7 @@ export const UserDropdown: React.FC = () => {
           </div>
         )}
         <span className="hidden lg:inline text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[120px] truncate">
-          {user.name.split(' ')[0]}
+          {user.name.split(" ")[0]}
         </span>
         <ChevronDown className="w-3.5 h-3.5 text-slate-500 hidden lg:block" />
       </button>
@@ -97,13 +97,15 @@ export const UserDropdown: React.FC = () => {
             <div className="flex flex-wrap items-center gap-1.5 mt-2">
               <span
                 className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full ${
-                  user.role === 'admin' || user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
-                    ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800'
-                    : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                  user.role === "admin" ||
+                  user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+                    ? "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800"
+                    : "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400"
                 }`}
               >
-                {user.role === 'admin' || user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
-                  ? 'Administrator'
+                {user.role === "admin" ||
+                user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+                  ? "Administrator"
                   : user.role}
               </span>
               {user.grade && (
@@ -121,7 +123,8 @@ export const UserDropdown: React.FC = () => {
 
           {/* Links */}
           <div className="py-1">
-            {(user.role === 'admin' || user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) && (
+            {(user.role === "admin" ||
+              user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) && (
               <Link
                 to="/admin"
                 onClick={() => setIsOpen(false)}
@@ -188,5 +191,3 @@ export const UserDropdown: React.FC = () => {
     </div>
   );
 };
-
-

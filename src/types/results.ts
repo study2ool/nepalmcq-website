@@ -1,11 +1,11 @@
-import { Question, SubjectName } from './question';
-import { QuizConfig } from './quiz';
+import { Question, SubjectName } from "./question";
+import { QuizConfig } from "./quiz";
 
 export interface QuestionResult {
   question: Question;
-  selectedAnswer?: 'A' | 'B' | 'C' | 'D';
+  selectedAnswer?: "A" | "B" | "C" | "D";
   isCorrect: boolean;
-  status: 'correct' | 'incorrect' | 'unattempted';
+  status: "correct" | "incorrect" | "unattempted";
   timeSpentSeconds: number;
 }
 

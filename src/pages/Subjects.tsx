@@ -60,9 +60,13 @@ export const Subjects: React.FC = () => {
     useState<SyllabusChapter | null>(null);
   const [isSpecGridOpen, setIsSpecGridOpen] = useState(false);
   const [isFormulaSheetOpen, setIsFormulaSheetOpen] = useState(false);
-  const [formulaTargetUnit, setFormulaTargetUnit] = useState<string | undefined>(undefined);
+  const [formulaTargetUnit, setFormulaTargetUnit] = useState<
+    string | undefined
+  >(undefined);
   const [isSubjectiveModalOpen, setIsSubjectiveModalOpen] = useState(false);
-  const [subjectiveTargetChapter, setSubjectiveTargetChapter] = useState<string | undefined>(undefined);
+  const [subjectiveTargetChapter, setSubjectiveTargetChapter] = useState<
+    string | undefined
+  >(undefined);
   const [masteryFilter, setMasteryFilter] = useState<
     "all" | "mastered" | "proficient" | "needs_revision" | "unattempted"
   >("all");
@@ -88,7 +92,8 @@ export const Subjects: React.FC = () => {
   );
 
   useSEO({
-    title: "NEB Curriculum Syllabus, Specification Grids & Formulas – Grade 11 & 12",
+    title:
+      "NEB Curriculum Syllabus, Specification Grids & Formulas – Grade 11 & 12",
     description:
       "Explore official CDC and NEB syllabus chapters, specification grids, mark distributions, high-yield formula cheatsheets, and Group B (5M) & Group C (8M) model derivations across Science and Management streams.",
     canonicalPath: "/subjects",
@@ -97,15 +102,16 @@ export const Subjects: React.FC = () => {
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Course",
-      "name": "NEB Grade 11 & 12 Official Curriculum Syllabus",
-      "description":
+      name: "NEB Grade 11 & 12 Official Curriculum Syllabus",
+      description:
         "Complete curriculum specifications, chapter objectives, formula cheatsheets, and question weightage grids for Grade 11 and 12 in Nepal.",
-      "provider": {
+      provider: {
         "@type": "EducationalOrganization",
-        "name": "Nepal MCQ",
-        "url": "https://nepalmcq.edu.np",
+        name: "Nepal MCQ",
+        url: "https://nepalmcq.edu.np",
       },
-      "educationalCredentialAwarded": "National Examinations Board (NEB) Certification Preparation",
+      educationalCredentialAwarded:
+        "National Examinations Board (NEB) Certification Preparation",
     },
   });
 
@@ -556,7 +562,8 @@ export const Subjects: React.FC = () => {
               </span>
               {specGrid && (
                 <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
-                  {specGrid.theoryMarks} Th + {specGrid.practicalMarks} Pr (Full: {specGrid.theoryMarks + specGrid.practicalMarks})
+                  {specGrid.theoryMarks} Th + {specGrid.practicalMarks} Pr
+                  (Full: {specGrid.theoryMarks + specGrid.practicalMarks})
                 </span>
               )}
             </div>
@@ -564,7 +571,8 @@ export const Subjects: React.FC = () => {
               {activeBranches.length > 0
                 ? `${totalFilteredChapters} chapters across ${filteredBranches.length} units`
                 : `${gradeTopics.length} chapters loaded from curriculum syllabus`}
-              {specGrid && ` · ${Math.round(specGrid.examDurationMinutes / 60)}hr NEB Exam · ${specGrid.creditHours} Credit Hours`}
+              {specGrid &&
+                ` · ${Math.round(specGrid.examDurationMinutes / 60)}hr NEB Exam · ${specGrid.creditHours} Credit Hours`}
             </p>
 
             {/* Student Syllabus Coverage & Performance Tracker */}
@@ -584,7 +592,8 @@ export const Subjects: React.FC = () => {
                     {syllabusProgress.coveragePercent}%
                   </span>
                   <span className="text-slate-400 text-[11px]">
-                    ({syllabusProgress.practicedChaptersCount}/{syllabusProgress.totalChaptersCount} chapters practiced)
+                    ({syllabusProgress.practicedChaptersCount}/
+                    {syllabusProgress.totalChaptersCount} chapters practiced)
                   </span>
                 </div>
 
@@ -741,7 +750,9 @@ export const Subjects: React.FC = () => {
           {filteredBranches.map((branch) => {
             const unitWeightage = specGrid?.units.find((u) => {
               const normU = u.unitName.toLowerCase().replace(/[^a-z0-9]/g, "");
-              const normB = branch.branchName.toLowerCase().replace(/[^a-z0-9]/g, "");
+              const normB = branch.branchName
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
               return normU.includes(normB) || normB.includes(normU);
             });
 
@@ -925,10 +936,13 @@ export const Subjects: React.FC = () => {
                     <div className="flex items-center gap-2 text-xs font-mono text-indigo-600 dark:text-indigo-400">
                       <span>{inspectingChapter.id}</span>
                       <span>·</span>
-                      <span>Grade {selectedGrade} {activeSubject}</span>
+                      <span>
+                        Grade {selectedGrade} {activeSubject}
+                      </span>
                       {modalMastery.attempted > 0 ? (
                         <span className="font-bold text-emerald-600 dark:text-emerald-400 font-sans">
-                          · {modalMastery.accuracy}% Mastery ({modalMastery.correct}/{modalMastery.attempted} Qs)
+                          · {modalMastery.accuracy}% Mastery (
+                          {modalMastery.correct}/{modalMastery.attempted} Qs)
                         </span>
                       ) : (
                         <span className="text-slate-400 font-sans font-normal">
@@ -954,9 +968,11 @@ export const Subjects: React.FC = () => {
             {/* Subtopics List */}
             <div className="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
               <div className="text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
-                Prescribed Topics &amp; Learning Objectives ({inspectingChapter.topics?.length || 0})
+                Prescribed Topics &amp; Learning Objectives (
+                {inspectingChapter.topics?.length || 0})
               </div>
-              {inspectingChapter.topics && inspectingChapter.topics.length > 0 ? (
+              {inspectingChapter.topics &&
+              inspectingChapter.topics.length > 0 ? (
                 inspectingChapter.topics.map((t) => (
                   <div
                     key={t.id || t.topicNumber}
@@ -1001,7 +1017,8 @@ export const Subjects: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      const chapName = inspectingChapter.chapterName.toLowerCase();
+                      const chapName =
+                        inspectingChapter.chapterName.toLowerCase();
                       const matchingUnit = formulaSheet.units.find(
                         (u) =>
                           u.unitName.toLowerCase().includes(chapName) ||

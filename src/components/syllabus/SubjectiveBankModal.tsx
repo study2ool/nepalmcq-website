@@ -1,19 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 import {
   X,
   Search,
-  BookOpen,
   ChevronDown,
   ChevronUp,
   Award,
-  Layers,
   FileText,
   CheckCircle2,
-  ListOrdered,
-  HelpCircle,
-} from 'lucide-react';
-import { SubjectSubjectiveBank, SubjectiveQuestion } from '../../data/syllabus/subjectiveQuestions';
-import MathRenderer from '../common/MathRenderer';
+} from "lucide-react";
+import { SubjectSubjectiveBank } from "../../data/syllabus/subjectiveQuestions";
+import MathRenderer from "../common/MathRenderer";
 
 interface SubjectiveBankModalProps {
   bank: SubjectSubjectiveBank;
@@ -28,9 +24,11 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
   onClose,
   initialChapter,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [groupFilter, setGroupFilter] = useState<'all' | 'B' | 'C'>('all');
-  const [expandedSolutions, setExpandedSolutions] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [groupFilter, setGroupFilter] = useState<"all" | "B" | "C">("all");
+  const [expandedSolutions, setExpandedSolutions] = useState<
+    Record<string, boolean>
+  >({});
 
   const toggleSolution = (id: string) => {
     setExpandedSolutions((prev) => ({
@@ -41,7 +39,7 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
 
   const filteredQuestions = useMemo(() => {
     return bank.questions.filter((q) => {
-      if (groupFilter !== 'all' && q.group !== groupFilter) {
+      if (groupFilter !== "all" && q.group !== groupFilter) {
         return false;
       }
 
@@ -49,7 +47,7 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
         const matchesInitial =
           q.chapterName.toLowerCase().includes(initialChapter.toLowerCase()) ||
           initialChapter.toLowerCase().includes(q.chapterName.toLowerCase());
-        if (!matchesInitial && groupFilter === 'all') {
+        if (!matchesInitial && groupFilter === "all") {
           // If filtering initially by chapter, let search override
         }
       }
@@ -61,7 +59,8 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
         q.question.toLowerCase().includes(query) ||
         q.chapterName.toLowerCase().includes(query) ||
         q.unitName.toLowerCase().includes(query) ||
-        (q.subparts && q.subparts.some((s) => s.toLowerCase().includes(query))) ||
+        (q.subparts &&
+          q.subparts.some((s) => s.toLowerCase().includes(query))) ||
         (q.examSource && q.examSource.toLowerCase().includes(query))
       );
     });
@@ -127,33 +126,33 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
           <div className="flex items-center gap-1 text-xs">
             <button
               type="button"
-              onClick={() => setGroupFilter('all')}
+              onClick={() => setGroupFilter("all")}
               className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                groupFilter === 'all'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                groupFilter === "all"
+                  ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               All Groups ({bank.questions.length})
             </button>
             <button
               type="button"
-              onClick={() => setGroupFilter('B')}
+              onClick={() => setGroupFilter("B")}
               className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                groupFilter === 'B'
-                  ? 'bg-indigo-600 text-white font-semibold'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                groupFilter === "B"
+                  ? "bg-indigo-600 text-white font-semibold"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               Group B (5 Marks)
             </button>
             <button
               type="button"
-              onClick={() => setGroupFilter('C')}
+              onClick={() => setGroupFilter("C")}
               className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                groupFilter === 'C'
-                  ? 'bg-indigo-600 text-white font-semibold'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                groupFilter === "C"
+                  ? "bg-indigo-600 text-white font-semibold"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               Group C (8 Marks)
@@ -166,8 +165,12 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
           {filteredQuestions.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
               <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-semibold">No questions matched your search filter</p>
-              <p className="text-xs text-slate-500 mt-1">Try searching another term or switch question group.</p>
+              <p className="text-sm font-semibold">
+                No questions matched your search filter
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                Try searching another term or switch question group.
+              </p>
             </div>
           ) : (
             filteredQuestions.map((q, idx) => {
@@ -182,9 +185,9 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
                     <div className="flex items-center gap-2">
                       <span
                         className={`px-2.5 py-1 text-xs font-bold rounded-lg ${
-                          q.group === 'C'
-                            ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
-                            : 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                          q.group === "C"
+                            ? "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
+                            : "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
                         }`}
                       >
                         Group {q.group} · {q.marks} Marks
@@ -221,7 +224,9 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
                   <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
                       <Award className="w-3.5 h-3.5 text-amber-500" />
-                      <span>NEB Board Official Marking Rubric ({q.marks}M Total):</span>
+                      <span>
+                        NEB Board Official Marking Rubric ({q.marks}M Total):
+                      </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                       {q.markingScheme.map((step, sIdx) => (
@@ -229,7 +234,9 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
                           key={sIdx}
                           className="flex items-center justify-between p-2 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40 text-slate-700 dark:text-slate-300"
                         >
-                          <span className="truncate pr-2">{step.component}</span>
+                          <span className="truncate pr-2">
+                            {step.component}
+                          </span>
                           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
                             +{step.marks}M
                           </span>
@@ -249,8 +256,8 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
                         <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                         <span>
                           {isExpanded
-                            ? 'Hide Model Solution Outline & Derivations'
-                            : 'View Step-by-Step Model Solution & Derivation Outline'}
+                            ? "Hide Model Solution Outline & Derivations"
+                            : "View Step-by-Step Model Solution & Derivation Outline"}
                         </span>
                       </span>
                       {isExpanded ? (
@@ -263,7 +270,10 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
                     {isExpanded && (
                       <div className="mt-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-200 space-y-2.5 animate-fadeIn">
                         {q.modelSolutionOutline.map((step, stepIdx) => (
-                          <div key={stepIdx} className="flex items-start gap-2.5 leading-relaxed">
+                          <div
+                            key={stepIdx}
+                            className="flex items-start gap-2.5 leading-relaxed"
+                          >
                             <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
                               {stepIdx + 1}
                             </span>
@@ -283,7 +293,10 @@ export const SubjectiveBankModal: React.FC<SubjectiveBankModalProps> = ({
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between text-xs text-slate-500">
-          <span>Curriculum Development Centre (CDC) &amp; NEB Specification Grid Standard</span>
+          <span>
+            Curriculum Development Centre (CDC) &amp; NEB Specification Grid
+            Standard
+          </span>
           <button
             type="button"
             onClick={onClose}

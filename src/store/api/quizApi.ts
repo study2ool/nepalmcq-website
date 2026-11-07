@@ -1,12 +1,18 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from './baseApi';
-import type { Question, QuestionOption, GradeLevel, SubjectName, DifficultyLevel } from '../../types/question';
-import type { QuizConfig, QuizSession } from '../../types/quiz';
-import { selectQuestionsForQuiz } from '../../utils/questionSelection';
-import { storage } from '../../utils/storage';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { apiSlice } from "./baseApi";
+import type {
+  Question,
+  QuestionOption,
+  GradeLevel,
+  SubjectName,
+  DifficultyLevel,
+} from "../../types/question";
+import type { QuizConfig, QuizSession } from "../../types/quiz";
+import { selectQuestionsForQuiz } from "../../utils/questionSelection";
+import { storage } from "../../utils/storage";
 
 export interface BackendHealthResponse {
-  status: 'ok' | 'error';
+  status: "ok" | "error";
   timestamp: string;
   uptime: number;
   version: string;
@@ -27,48 +33,56 @@ export interface QuizSubjectSummary {
  */
 export function mapBackendQuestionToFrontend(bq: any): Question {
   const options: QuestionOption[] = (bq.options || []).map((opt: any) => ({
-    id: (opt.key || opt.id || 'A') as 'A' | 'B' | 'C' | 'D',
-    text: opt.text || '',
+    id: (opt.key || opt.id || "A") as "A" | "B" | "C" | "D",
+    text: opt.text || "",
   }));
 
   const correct =
     Array.isArray(bq.correct_options) && bq.correct_options.length > 0
       ? bq.correct_options[0]
-      : bq.correctAnswer || 'A';
+      : bq.correctAnswer || "A";
 
   const validDiff: DifficultyLevel =
-    bq.difficulty === 'Easy' || bq.difficulty === 'Hard' ? bq.difficulty : 'Medium';
+    bq.difficulty === "Easy" || bq.difficulty === "Hard"
+      ? bq.difficulty
+      : "Medium";
 
-  const qId = String(bq.id || '');
-  const idNum = parseInt(qId.replace(/\D/g, ''), 10) || 0;
+  const qId = String(bq.id || "");
+  const idNum = parseInt(qId.replace(/\D/g, ""), 10) || 0;
   let computedYear = bq.year;
-  let computedSourceType: 'past_paper' | 'model_question' | 'chapter_practice' | 'all' =
-    bq.sourceType || 'all';
+  let computedSourceType:
+    | "past_paper"
+    | "model_question"
+    | "chapter_practice"
+    | "all" = bq.sourceType || "all";
 
   if (!computedYear) {
-    if (bq.curriculum_note?.includes('NEB Model') || bq.source === 'NEB Model') {
-      computedYear = 'CDC Model Set';
-      computedSourceType = 'model_question';
-    } else if (
-      bq.curriculum_note?.includes('Entrance Standard') ||
-      bq.source === 'Entrance Standard'
+    if (
+      bq.curriculum_note?.includes("NEB Model") ||
+      bq.source === "NEB Model"
     ) {
-      computedYear = 'Entrance Standard';
-      computedSourceType = 'chapter_practice';
+      computedYear = "CDC Model Set";
+      computedSourceType = "model_question";
+    } else if (
+      bq.curriculum_note?.includes("Entrance Standard") ||
+      bq.source === "Entrance Standard"
+    ) {
+      computedYear = "Entrance Standard";
+      computedSourceType = "chapter_practice";
     } else {
       const yearSlot = idNum % 10;
       if (yearSlot <= 3) {
-        computedYear = '2080 NEB';
-        computedSourceType = 'past_paper';
+        computedYear = "2080 NEB";
+        computedSourceType = "past_paper";
       } else if (yearSlot <= 6) {
-        computedYear = '2079 NEB';
-        computedSourceType = 'past_paper';
+        computedYear = "2079 NEB";
+        computedSourceType = "past_paper";
       } else if (yearSlot <= 8) {
-        computedYear = '2078 NEB';
-        computedSourceType = 'past_paper';
+        computedYear = "2078 NEB";
+        computedSourceType = "past_paper";
       } else {
-        computedYear = 'CDC Model Set';
-        computedSourceType = 'model_question';
+        computedYear = "CDC Model Set";
+        computedSourceType = "model_question";
       }
     }
   }
@@ -77,22 +91,24 @@ export function mapBackendQuestionToFrontend(bq: any): Question {
     id: String(bq.id || `q-${Math.random().toString(36).substring(2, 8)}`),
     grade: (Number(bq.class || bq.grade) === 11 ? 11 : 12) as GradeLevel,
     subject: bq.subject as SubjectName,
-    topic: bq.topic || 'General',
+    topic: bq.topic || "General",
     difficulty: validDiff,
-    question: bq.question || '',
+    question: bq.question || "",
     options:
       options.length > 0
         ? options
         : [
-            { id: 'A', text: 'Option A' },
-            { id: 'B', text: 'Option B' },
-            { id: 'C', text: 'Option C' },
-            { id: 'D', text: 'Option D' },
+            { id: "A", text: "Option A" },
+            { id: "B", text: "Option B" },
+            { id: "C", text: "Option C" },
+            { id: "D", text: "Option D" },
           ],
-    correctAnswer: (['A', 'B', 'C', 'D'].includes(correct)
-      ? correct
-      : 'A') as 'A' | 'B' | 'C' | 'D',
-    explanation: bq.explanation || '',
+    correctAnswer: (["A", "B", "C", "D"].includes(correct) ? correct : "A") as
+      | "A"
+      | "B"
+      | "C"
+      | "D",
+    explanation: bq.explanation || "",
     marks: Number(bq.marks) || 1,
     source: computedYear,
     year: computedYear,
@@ -104,43 +120,54 @@ export function mapBackendQuestionToFrontend(bq: any): Question {
 export const quizApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getHealth: builder.query<BackendHealthResponse, void>({
-      query: () => '/health',
+      query: () => "/health",
       transformResponse: (res: any) => res.data,
     }),
 
     getQuizSubjects: builder.query<QuizSubjectSummary[], void>({
-      query: () => '/quiz/subjects',
+      query: () => "/quiz/subjects",
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['QuizSubjects'],
+      providesTags: ["QuizSubjects"],
     }),
 
     getQuestions: builder.query<Question[], QuizConfig>({
       query: (config) => {
         const params = new URLSearchParams();
-        if (config.subject && config.subject !== 'All Subjects') {
-          params.append('subject', config.subject);
+        if (config.subject && config.subject !== "All Subjects") {
+          params.append("subject", config.subject);
         }
         if (config.grade) {
-          params.append('classLevel', String(config.grade));
+          params.append("classLevel", String(config.grade));
         }
-        if (config.topic && config.topic !== 'All Topics') {
-          params.append('topic', config.topic);
+        if (config.topic && config.topic !== "All Topics") {
+          params.append("topic", config.topic);
         }
-        if (config.difficulty && config.difficulty !== 'All Levels') {
-          params.append('difficulty', config.difficulty);
+        if (config.difficulty && config.difficulty !== "All Levels") {
+          params.append("difficulty", config.difficulty);
         }
-        if (config.sourceFilter && config.sourceFilter !== 'all') {
-          params.append('sourceType', config.sourceFilter);
+        if (config.sourceFilter && config.sourceFilter !== "all") {
+          params.append("sourceType", config.sourceFilter);
         }
-        if (config.year && config.year !== 'All' && config.year !== 'All Years') {
-          params.append('year', config.year);
+        if (
+          config.year &&
+          config.year !== "All" &&
+          config.year !== "All Years"
+        ) {
+          params.append("year", config.year);
         }
-        params.append('limit', String(Math.min(100, Math.max(config.questionCount, 20))));
-        params.append('random', config.questionMode === 'random' ? 'true' : 'false');
+        params.append(
+          "limit",
+          String(Math.min(100, Math.max(config.questionCount, 20))),
+        );
+        params.append(
+          "random",
+          config.questionMode === "random" ? "true" : "false",
+        );
 
         return `/quiz/questions?${params.toString()}`;
       },
-      transformResponse: (res: any) => (res.data?.questions || []).map(mapBackendQuestionToFrontend),
+      transformResponse: (res: any) =>
+        (res.data?.questions || []).map(mapBackendQuestionToFrontend),
     }),
 
     generateQuiz: builder.mutation<
@@ -151,18 +178,19 @@ export const quizApiSlice = apiSlice.injectEndpoints({
         count?: number;
         chapterId?: string;
         topic?: string;
-        difficulty?: 'Easy' | 'Medium' | 'Hard';
+        difficulty?: "Easy" | "Medium" | "Hard";
       }
     >({
       query: (payload) => ({
-        url: '/quiz/generate',
-        method: 'POST',
+        url: "/quiz/generate",
+        method: "POST",
         body: {
           ...payload,
           persist: false,
         },
       }),
-      transformResponse: (res: any) => (res.data?.questions || []).map(mapBackendQuestionToFrontend),
+      transformResponse: (res: any) =>
+        (res.data?.questions || []).map(mapBackendQuestionToFrontend),
     }),
   }),
 });
@@ -191,30 +219,35 @@ const initialState: QuizState = {
 };
 
 export const prepareAndStartQuiz = createAsyncThunk(
-  'quiz/prepareAndStartQuiz',
+  "quiz/prepareAndStartQuiz",
   async (payload: { config: QuizConfig; useAi?: boolean }, { dispatch }) => {
     const { config, useAi } = payload;
     let questions: Question[] = [];
 
     try {
-      if (useAi && config.subject !== 'All Subjects') {
+      if (useAi && config.subject !== "All Subjects") {
         questions = await dispatch(
           quizApiSlice.endpoints.generateQuiz.initiate({
             subject: config.subject,
             classLevel: config.grade,
             count: Math.min(config.questionCount, 15),
-            topic: config.topic !== 'All Topics' ? config.topic : undefined,
+            topic: config.topic !== "All Topics" ? config.topic : undefined,
             difficulty:
-              config.difficulty !== 'All Levels'
-                ? (config.difficulty as 'Easy' | 'Medium' | 'Hard')
+              config.difficulty !== "All Levels"
+                ? (config.difficulty as "Easy" | "Medium" | "Hard")
                 : undefined,
-          })
+          }),
         ).unwrap();
       } else {
-        questions = await dispatch(quizApiSlice.endpoints.getQuestions.initiate(config)).unwrap();
+        questions = await dispatch(
+          quizApiSlice.endpoints.getQuestions.initiate(config),
+        ).unwrap();
       }
     } catch (err: any) {
-      console.warn('Backend question fetch failed, falling back to local dataset:', err);
+      console.warn(
+        "Backend question fetch failed, falling back to local dataset:",
+        err,
+      );
     }
 
     if (!questions || questions.length === 0) {
@@ -233,18 +266,19 @@ export const prepareAndStartQuiz = createAsyncThunk(
 
     questions = questions.slice(0, config.questionCount);
     return { config, questions };
-  }
+  },
 );
 
 export const quizSlice = createSlice({
-  name: 'quiz',
+  name: "quiz",
   initialState,
   reducers: {
     startQuiz: (state, action: PayloadAction<QuizConfig>) => {
       const config = action.payload;
       const questions = selectQuestionsForQuiz(config);
       const quizId = `exam-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-      const totalSeconds = (config.durationMinutes || config.questionCount) * 60;
+      const totalSeconds =
+        (config.durationMinutes || config.questionCount) * 60;
 
       const timeRemaining: Record<string, number> = {};
       questions.forEach((q) => {
@@ -276,7 +310,8 @@ export const quizSlice = createSlice({
     ) => {
       const { config, questions } = action.payload;
       const quizId = `exam-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-      const totalSeconds = (config.durationMinutes || config.questionCount) * 60;
+      const totalSeconds =
+        (config.durationMinutes || config.questionCount) * 60;
 
       const timeRemaining: Record<string, number> = {};
       questions.forEach((q) => {
@@ -314,7 +349,10 @@ export const quizSlice = createSlice({
 
     selectAnswer: (
       state,
-      action: PayloadAction<{ questionId: string; optionId: 'A' | 'B' | 'C' | 'D' }>
+      action: PayloadAction<{
+        questionId: string;
+        optionId: "A" | "B" | "C" | "D";
+      }>,
     ) => {
       if (!state.session || state.session.isSubmitted) return;
       const { questionId, optionId } = action.payload;
@@ -332,23 +370,25 @@ export const quizSlice = createSlice({
     toggleMarkForReview: (state, action: PayloadAction<string>) => {
       if (!state.session || state.session.isSubmitted) return;
       const questionId = action.payload;
-      state.session.markedForReview[questionId] = !state.session.markedForReview[questionId];
+      state.session.markedForReview[questionId] =
+        !state.session.markedForReview[questionId];
       storage.saveActiveSession(state.session);
     },
 
     updateTimers: (
       state,
-      action: PayloadAction<{ deltaSeconds: number; activeQuestionId: string }>
+      action: PayloadAction<{ deltaSeconds: number; activeQuestionId: string }>,
     ) => {
       if (!state.session || state.session.isSubmitted) return;
       const { deltaSeconds, activeQuestionId } = action.payload;
 
       state.session.overallTimeRemaining = Math.max(
         0,
-        state.session.overallTimeRemaining - deltaSeconds
+        state.session.overallTimeRemaining - deltaSeconds,
       );
 
-      const currentQuestionTime = state.session.questionTimeRemaining[activeQuestionId] ?? 60;
+      const currentQuestionTime =
+        state.session.questionTimeRemaining[activeQuestionId] ?? 60;
       const newQuestionTime = Math.max(0, currentQuestionTime - deltaSeconds);
       state.session.questionTimeRemaining[activeQuestionId] = newQuestionTime;
 
@@ -357,7 +397,10 @@ export const quizSlice = createSlice({
 
     autoAdvanceQuestion: (state) => {
       if (!state.session || state.session.isSubmitted) return;
-      if (state.session.currentQuestionIndex < state.session.questions.length - 1) {
+      if (
+        state.session.currentQuestionIndex <
+        state.session.questions.length - 1
+      ) {
         state.session.currentQuestionIndex += 1;
         state.session.lastActiveTimestamp = Date.now();
         storage.saveActiveSession(state.session);
@@ -387,7 +430,8 @@ export const quizSlice = createSlice({
       .addCase(prepareAndStartQuiz.fulfilled, (state, action) => {
         const { config, questions } = action.payload;
         const quizId = `exam-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-        const totalSeconds = (config.durationMinutes || config.questionCount) * 60;
+        const totalSeconds =
+          (config.durationMinutes || config.questionCount) * 60;
 
         const timeRemaining: Record<string, number> = {};
         questions.forEach((q) => {
@@ -416,7 +460,7 @@ export const quizSlice = createSlice({
       })
       .addCase(prepareAndStartQuiz.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to initialize exam';
+        state.error = action.error.message || "Failed to initialize exam";
       });
   },
 });

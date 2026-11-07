@@ -1,5 +1,5 @@
-import React from 'react';
-import { Clock, AlertTriangle } from 'lucide-react';
+import React from "react";
+import { Clock, AlertTriangle } from "lucide-react";
 
 interface TimeWarningModalProps {
   isOpen: boolean;
@@ -32,7 +32,9 @@ export const TimeWarningModal: React.FC<TimeWarningModalProps> = ({
         </div>
 
         <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          The overall examination timer is nearing completion. Please review your answered questions and ensure your responses are marked before the system auto-submits.
+          The overall examination timer is nearing completion. Please review
+          your answered questions and ensure your responses are marked before
+          the system auto-submits.
         </p>
 
         <div className="pt-2 flex justify-end">

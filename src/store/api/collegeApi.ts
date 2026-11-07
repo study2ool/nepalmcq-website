@@ -1,4 +1,4 @@
-import { apiSlice } from './baseApi';
+import { apiSlice } from "./baseApi";
 
 export interface CollegeItem {
   id: string;
@@ -10,12 +10,12 @@ export interface CollegeItem {
 export const collegeApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getColleges: builder.query<CollegeItem[], string | void>({
-      query: (search) => (search ? `/colleges?search=${encodeURIComponent(search)}` : '/colleges'),
+      query: (search) =>
+        search ? `/colleges?search=${encodeURIComponent(search)}` : "/colleges",
       transformResponse: (res: any) => res.data || [],
-      providesTags: ['Colleges'],
+      providesTags: ["Colleges"],
     }),
   }),
 });
 
 export const { useGetCollegesQuery, useLazyGetCollegesQuery } = collegeApiSlice;
-

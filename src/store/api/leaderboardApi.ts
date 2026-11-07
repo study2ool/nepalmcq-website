@@ -1,42 +1,45 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { SubjectName, GradeLevel } from '../../types/question';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { SubjectName, GradeLevel } from "../../types/question";
 import {
   StudentProfile,
   LeaderboardScope,
   TimeframeFilter,
-} from '../../types/leaderboard';
+} from "../../types/leaderboard";
 import {
   getStoredUserProfile,
   saveStoredUserProfile,
   DEFAULT_USER_PROFILE,
-} from '../../utils/leaderboardUtils';
-import { fetchCurrentUser, authApiSlice } from './authApi';
+} from "../../utils/leaderboardUtils";
+import { fetchCurrentUser, authApiSlice } from "./authApi";
 
 export const saveUserProfile = createAsyncThunk(
-  'leaderboard/saveUserProfile',
+  "leaderboard/saveUserProfile",
   async (
-    updates: Partial<Omit<StudentProfile, 'id' | 'joinDate'>>,
-    { dispatch }
+    updates: Partial<Omit<StudentProfile, "id" | "joinDate">>,
+    { dispatch },
   ) => {
     dispatch(updateProfile(updates));
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
     if (token) {
       try {
-        await dispatch(authApiSlice.endpoints.updateProfile.initiate(updates)).unwrap();
+        await dispatch(
+          authApiSlice.endpoints.updateProfile.initiate(updates),
+        ).unwrap();
         dispatch(fetchCurrentUser());
       } catch (err) {
-        console.warn('Backend profile update failed:', err);
+        console.warn("Backend profile update failed:", err);
       }
     }
     return updates;
-  }
+  },
 );
 
 export interface LeaderboardState {
   profile: StudentProfile;
   scope: LeaderboardScope;
-  gradeFilter: 'All' | GradeLevel;
-  subjectFilter: 'All' | SubjectName;
+  gradeFilter: "All" | GradeLevel;
+  subjectFilter: "All" | SubjectName;
   timeframe: TimeframeFilter;
   schoolFilter: string;
   searchQuery: string;
@@ -48,23 +51,23 @@ const initialProfile = getStoredUserProfile() || DEFAULT_USER_PROFILE;
 
 const initialState: LeaderboardState = {
   profile: initialProfile,
-  scope: 'students',
-  gradeFilter: 'All',
-  subjectFilter: 'All',
-  timeframe: 'all-time',
-  schoolFilter: 'All Schools',
-  searchQuery: '',
+  scope: "students",
+  gradeFilter: "All",
+  subjectFilter: "All",
+  timeframe: "all-time",
+  schoolFilter: "All Schools",
+  searchQuery: "",
   isProfileModalOpen: false,
   isBadgesModalOpen: false,
 };
 
 export const leaderboardSlice = createSlice({
-  name: 'leaderboard',
+  name: "leaderboard",
   initialState,
   reducers: {
     updateProfile: (
       state,
-      action: PayloadAction<Partial<Omit<StudentProfile, 'id' | 'joinDate'>>>
+      action: PayloadAction<Partial<Omit<StudentProfile, "id" | "joinDate">>>,
     ) => {
       state.profile = {
         ...state.profile,
@@ -75,10 +78,10 @@ export const leaderboardSlice = createSlice({
     setScope: (state, action: PayloadAction<LeaderboardScope>) => {
       state.scope = action.payload;
     },
-    setGradeFilter: (state, action: PayloadAction<'All' | GradeLevel>) => {
+    setGradeFilter: (state, action: PayloadAction<"All" | GradeLevel>) => {
       state.gradeFilter = action.payload;
     },
-    setSubjectFilter: (state, action: PayloadAction<'All' | SubjectName>) => {
+    setSubjectFilter: (state, action: PayloadAction<"All" | SubjectName>) => {
       state.subjectFilter = action.payload;
     },
     setTimeframe: (state, action: PayloadAction<TimeframeFilter>) => {
@@ -113,4 +116,3 @@ export const {
 
 export const leaderboardReducer = leaderboardSlice.reducer;
 export default leaderboardReducer;
-

@@ -12,7 +12,6 @@ import {
   X,
   Sparkles,
   CheckCircle2,
-  HelpCircle,
   Cloud,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../store";
@@ -72,7 +71,8 @@ export const Bookmarks: React.FC = () => {
   // Filtered saved questions
   const filteredQuestions = useMemo(() => {
     return savedQuestions.filter((q) => {
-      if (selectedSubject !== "All" && q.subject !== selectedSubject) return false;
+      if (selectedSubject !== "All" && q.subject !== selectedSubject)
+        return false;
       if (selectedGrade !== "All" && q.grade !== selectedGrade) return false;
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -150,7 +150,9 @@ export const Bookmarks: React.FC = () => {
                 </span>
               </p>
               <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-                Your bookmarks are preserved in this browser. Sign in with Google to sync them securely across your phone and PC, and never lose your revision drills.
+                Your bookmarks are preserved in this browser. Sign in with
+                Google to sync them securely across your phone and PC, and never
+                lose your revision drills.
               </p>
             </div>
           </div>
@@ -174,7 +176,8 @@ export const Bookmarks: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                {bookmarks.length} Saved {bookmarks.length === 1 ? "Question" : "Questions"}
+                {bookmarks.length} Saved{" "}
+                {bookmarks.length === 1 ? "Question" : "Questions"}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {savedQuestions.length > 0
@@ -406,8 +409,8 @@ export const Bookmarks: React.FC = () => {
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Whenever you encounter a tricky question or an important board
-              problem while practicing, tap the bookmark icon on the question card
-              to save it here for targeted revision.
+              problem while practicing, tap the bookmark icon on the question
+              card to save it here for targeted revision.
             </p>
           </div>
           <div className="pt-2">

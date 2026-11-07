@@ -1,24 +1,28 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from './baseApi';
-import { storage } from '../../utils/storage';
-import type { QuestionReactionStats, ReactionType } from '../../types/reaction';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { apiSlice } from "./baseApi";
+import { storage } from "../../utils/storage";
+import type { QuestionReactionStats, ReactionType } from "../../types/reaction";
 
 export const questionReactionApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getQuestionReaction: builder.query<QuestionReactionStats, string>({
-      query: (questionId) => `/questions/reactions/${encodeURIComponent(questionId)}`,
+      query: (questionId) =>
+        `/questions/reactions/${encodeURIComponent(questionId)}`,
       transformResponse: (res: any) => res.data,
-      providesTags: (_result, _err, id) => [{ type: 'Reactions', id }],
+      providesTags: (_result, _err, id) => [{ type: "Reactions", id }],
     }),
 
-    getBatchReactions: builder.query<Record<string, QuestionReactionStats>, string[]>({
+    getBatchReactions: builder.query<
+      Record<string, QuestionReactionStats>,
+      string[]
+    >({
       query: (questionIds) => ({
-        url: '/questions/reactions/batch',
-        method: 'POST',
+        url: "/questions/reactions/batch",
+        method: "POST",
         body: { questionIds },
       }),
       transformResponse: (res: any) => res.data || {},
-      providesTags: ['Reactions'],
+      providesTags: ["Reactions"],
     }),
 
     setReaction: builder.mutation<
@@ -27,12 +31,12 @@ export const questionReactionApiSlice = apiSlice.injectEndpoints({
     >({
       query: ({ questionId, reaction }) => ({
         url: `/questions/reactions/${encodeURIComponent(questionId)}`,
-        method: 'POST',
+        method: "POST",
         body: { reaction },
       }),
       transformResponse: (res: any) => res.data,
       invalidatesTags: (_result, _err, { questionId }) => [
-        { type: 'Reactions', id: questionId },
+        { type: "Reactions", id: questionId },
       ],
     }),
   }),
@@ -68,8 +72,8 @@ const loadInitialState = (): QuestionReactionState => {
     if (!initialMap[qId]) {
       initialMap[qId] = {
         questionId: qId,
-        likesCount: reaction === 'like' ? 1 : 0,
-        dislikesCount: reaction === 'dislike' ? 1 : 0,
+        likesCount: reaction === "like" ? 1 : 0,
+        dislikesCount: reaction === "dislike" ? 1 : 0,
         userReaction: reaction,
       };
     } else {
@@ -83,7 +87,7 @@ const loadInitialState = (): QuestionReactionState => {
 const initialState: QuestionReactionState = loadInitialState();
 
 export const questionReactionSlice = createSlice({
-  name: 'questionReactions',
+  name: "questionReactions",
   initialState,
   reducers: {
     optimisticReact: (
@@ -101,42 +105,42 @@ export const questionReactionSlice = createSlice({
       let likes = current.likesCount;
       let dislikes = current.dislikesCount;
       const prev = current.userReaction;
-      let next: 'like' | 'dislike' | null = null;
+      let next: "like" | "dislike" | null = null;
 
-      if (reaction === 'like') {
-        if (prev === 'like') {
+      if (reaction === "like") {
+        if (prev === "like") {
           // Toggle off
           next = null;
           likes = Math.max(0, likes - 1);
-        } else if (prev === 'dislike') {
+        } else if (prev === "dislike") {
           // Switch to like
-          next = 'like';
+          next = "like";
           dislikes = Math.max(0, dislikes - 1);
           likes += 1;
         } else {
           // First time like
-          next = 'like';
+          next = "like";
           likes += 1;
         }
-      } else if (reaction === 'dislike') {
-        if (prev === 'dislike') {
+      } else if (reaction === "dislike") {
+        if (prev === "dislike") {
           // Toggle off
           next = null;
           dislikes = Math.max(0, dislikes - 1);
-        } else if (prev === 'like') {
+        } else if (prev === "like") {
           // Switch to dislike
-          next = 'dislike';
+          next = "dislike";
           likes = Math.max(0, likes - 1);
           dislikes += 1;
         } else {
           // First time dislike
-          next = 'dislike';
+          next = "dislike";
           dislikes += 1;
         }
       } else {
         // 'none'
-        if (prev === 'like') likes = Math.max(0, likes - 1);
-        if (prev === 'dislike') dislikes = Math.max(0, dislikes - 1);
+        if (prev === "like") likes = Math.max(0, likes - 1);
+        if (prev === "dislike") dislikes = Math.max(0, dislikes - 1);
         next = null;
       }
 
@@ -165,7 +169,8 @@ export const questionReactionSlice = createSlice({
         const local = state.reactions[qId];
         // Retain local user reaction if present and server userReaction is empty (e.g. for guest)
         const userReaction =
-          serverStats.userReaction !== undefined && serverStats.userReaction !== null
+          serverStats.userReaction !== undefined &&
+          serverStats.userReaction !== null
             ? serverStats.userReaction
             : local?.userReaction || null;
 
@@ -180,15 +185,16 @@ export const questionReactionSlice = createSlice({
   },
 });
 
-export const { optimisticReact, syncBatchStats } = questionReactionSlice.actions;
+export const { optimisticReact, syncBatchStats } =
+  questionReactionSlice.actions;
 
 /**
  * Async thunk to optimistically apply the reaction and trigger backend sync
  */
 export const toggleReactionThunk = createAsyncThunk(
-  'questionReactions/toggle',
+  "questionReactions/toggle",
   async (
-    { questionId, target }: { questionId: string; target: 'like' | 'dislike' },
+    { questionId, target }: { questionId: string; target: "like" | "dislike" },
     { dispatch },
   ) => {
     // 1. Instant optimistic update

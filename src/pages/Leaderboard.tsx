@@ -61,11 +61,11 @@ export const Leaderboard: React.FC = () => {
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      "name": "Nepal National NEB Student & College Leaderboard",
-      "description":
+      name: "Nepal National NEB Student & College Leaderboard",
+      description:
         "National academic rankings of Grade 11 & 12 students and secondary schools across Nepal based on NEB curriculum examination performance.",
-      "url": "https://nepalmcq.edu.np/leaderboard",
-      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      url: "https://nepalmcq.edu.np/leaderboard",
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
     },
   });
 
@@ -234,13 +234,17 @@ export const Leaderboard: React.FC = () => {
               <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-amber-400 text-slate-900">
                 National Standings
               </span>
-              <span className="text-xs text-indigo-300 font-medium">Public Nepal-wide Rankings</span>
+              <span className="text-xs text-indigo-300 font-medium">
+                Public Nepal-wide Rankings
+              </span>
             </div>
             <h3 className="text-base sm:text-lg font-bold text-white">
               Publicly Ranked Secondary Schools &amp; Top Students
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Explore live benchmarks across Grade 11 &amp; 12. To see your personal rank, accumulate XP, and represent your college on the national board, start a practice test or sign in.
+              Explore live benchmarks across Grade 11 &amp; 12. To see your
+              personal rank, accumulate XP, and represent your college on the
+              national board, start a practice test or sign in.
             </p>
           </div>
 

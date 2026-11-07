@@ -1,28 +1,28 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store';
-import Layout from './components/layout/Layout';
-import ErrorBoundary from './components/common/ErrorBoundary';
-import LoadingSkeleton from './components/common/LoadingSkeleton';
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import Layout from "./components/layout/Layout";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import LoadingSkeleton from "./components/common/LoadingSkeleton";
 
-const Home = lazy(() => import('./pages/Home'));
-const ExamPage = lazy(() => import('./pages/ExamPage'));
-const ResultPage = lazy(() => import('./pages/ResultPage'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Subjects = lazy(() => import('./pages/Subjects'));
-const Practice = lazy(() => import('./pages/Practice'));
-const History = lazy(() => import('./pages/History'));
-const Bookmarks = lazy(() => import('./pages/Bookmarks'));
-const Leaderboard = lazy(() => import('./pages/Leaderboard'));
-const Contact = lazy(() => import('./pages/Contact'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-const AuthCallback = lazy(() => import('./pages/AuthCallback'));
-const AdminPage = lazy(() => import('./pages/AdminPage'));
-import { AdminRoute } from './components/auth/AdminRoute';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
+const Home = lazy(() => import("./pages/Home"));
+const ExamPage = lazy(() => import("./pages/ExamPage"));
+const ResultPage = lazy(() => import("./pages/ResultPage"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Subjects = lazy(() => import("./pages/Subjects"));
+const Practice = lazy(() => import("./pages/Practice"));
+const History = lazy(() => import("./pages/History"));
+const Bookmarks = lazy(() => import("./pages/Bookmarks"));
+const Leaderboard = lazy(() => import("./pages/Leaderboard"));
+const Contact = lazy(() => import("./pages/Contact"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+import { AdminRoute } from "./components/auth/AdminRoute";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -33,7 +33,10 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
-                <Route path="configure" element={<Navigate to="/practice" replace />} />
+                <Route
+                  path="configure"
+                  element={<Navigate to="/practice" replace />}
+                />
                 <Route path="exam/:quizId" element={<ExamPage />} />
                 <Route path="result/:resultId" element={<ResultPage />} />
                 <Route
@@ -56,12 +59,21 @@ export default function App() {
                   }
                 />
                 <Route path="saved" element={<Bookmarks />} />
-                <Route path="bookmarks" element={<Navigate to="/saved" replace />} />
+                <Route
+                  path="bookmarks"
+                  element={<Navigate to="/saved" replace />}
+                />
                 <Route path="contact" element={<Contact />} />
                 <Route path="privacy" element={<PrivacyPolicy />} />
-                <Route path="privacy-policy" element={<Navigate to="/privacy" replace />} />
+                <Route
+                  path="privacy-policy"
+                  element={<Navigate to="/privacy" replace />}
+                />
                 <Route path="terms" element={<TermsOfService />} />
-                <Route path="terms-of-service" element={<Navigate to="/terms" replace />} />
+                <Route
+                  path="terms-of-service"
+                  element={<Navigate to="/terms" replace />}
+                />
                 <Route path="auth/callback" element={<AuthCallback />} />
                 <Route
                   path="admin"

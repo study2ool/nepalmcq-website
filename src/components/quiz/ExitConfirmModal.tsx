@@ -34,13 +34,15 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
               Exit Active Examination?
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Your test is currently in progress ({attempted}/{total} attempted).
+              Your test is currently in progress ({attempted}/{total}{" "}
+              attempted).
             </p>
           </div>
         </div>
 
         <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 leading-relaxed">
-          If you discard, your answers and test progress will not be saved. You can submit your answers now to record your score, or continue testing.
+          If you discard, your answers and test progress will not be saved. You
+          can submit your answers now to record your score, or continue testing.
         </p>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2">
@@ -74,4 +76,3 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
 };
 
 export default ExitConfirmModal;
-

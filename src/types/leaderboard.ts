@@ -1,11 +1,19 @@
-import { SubjectName, GradeLevel } from './question';
+import { SubjectName, GradeLevel } from "./question";
 
 export interface Badge {
   id: string;
   name: string;
   description: string;
-  icon: 'trophy' | 'target' | 'flame' | 'zap' | 'award' | 'star' | 'book' | 'cpu';
-  category: 'accuracy' | 'volume' | 'streak' | 'subject';
+  icon:
+    | "trophy"
+    | "target"
+    | "flame"
+    | "zap"
+    | "award"
+    | "star"
+    | "book"
+    | "cpu";
+  category: "accuracy" | "volume" | "streak" | "subject";
   unlocked: boolean;
   unlockedAt?: string;
   progress: number; // 0 to 100
@@ -53,5 +61,5 @@ export interface StudentProfile {
   joinDate: string;
 }
 
-export type LeaderboardScope = 'students' | 'schools';
-export type TimeframeFilter = 'all-time' | 'weekly';
+export type LeaderboardScope = "students" | "schools";
+export type TimeframeFilter = "all-time" | "weekly";

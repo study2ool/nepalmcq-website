@@ -1,6 +1,6 @@
-import React from 'react';
-import { School, Users, Target, Trophy, Award } from 'lucide-react';
-import { SchoolStanding } from '../../types/leaderboard';
+import React from "react";
+import { School, Users, Target, Trophy, Award } from "lucide-react";
+import { SchoolStanding } from "../../types/leaderboard";
 
 interface SchoolLeaderboardTableProps {
   schools: SchoolStanding[];
@@ -24,7 +24,9 @@ export const SchoolLeaderboardTable: React.FC<SchoolLeaderboardTableProps> = ({
             Nepal Secondary School &amp; College Standings
           </h3>
           <p className="text-xs sm:text-sm text-indigo-200/90 leading-relaxed">
-            Represent your college! Every practice test and full examination you complete earns points for your school's national leaderboard standing.
+            Represent your college! Every practice test and full examination you
+            complete earns points for your school's national leaderboard
+            standing.
           </p>
         </div>
       </div>
@@ -55,7 +57,8 @@ export const SchoolLeaderboardTable: React.FC<SchoolLeaderboardTableProps> = ({
                           No college standings logged yet
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
-                          Complete quiz attempts to score the first XP points and put your institution on the national leaderboard!
+                          Complete quiz attempts to score the first XP points
+                          and put your institution on the national leaderboard!
                         </p>
                       </div>
                     </div>
@@ -63,93 +66,95 @@ export const SchoolLeaderboardTable: React.FC<SchoolLeaderboardTableProps> = ({
                 </tr>
               ) : (
                 schools.map((school, idx) => {
-                const rank = idx + 1;
-                const isUserSchool =
-                  userSchoolName &&
-                  school.name.toLowerCase().trim() === userSchoolName.toLowerCase().trim();
+                  const rank = idx + 1;
+                  const isUserSchool =
+                    userSchoolName &&
+                    school.name.toLowerCase().trim() ===
+                      userSchoolName.toLowerCase().trim();
 
-                return (
-                  <tr
-                    key={school.id}
-                    className={`transition-colors ${
-                      isUserSchool
-                        ? 'bg-indigo-50/70 dark:bg-indigo-950/30 font-medium'
-                        : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40'
-                    }`}
-                  >
-                    {/* Rank */}
-                    <td className="py-4 px-4 sm:px-6 text-center font-mono">
-                      {rank === 1 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 font-extrabold text-sm">
-                          1
-                        </span>
-                      ) : rank === 2 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-extrabold text-sm">
-                          2
-                        </span>
-                      ) : rank === 3 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-900/10 dark:bg-amber-950/40 text-amber-800 dark:text-amber-500 font-extrabold text-sm">
-                          3
-                        </span>
-                      ) : (
-                        <span className="font-semibold text-slate-500 dark:text-slate-400">
-                          #{rank}
-                        </span>
-                      )}
-                    </td>
-
-                    {/* School Name & City */}
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0">
-                          <School className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-900 dark:text-white truncate">
-                              {school.name}
-                            </span>
-                            {isUserSchool && (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white shrink-0">
-                                Your School
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
-                            {school.city}
+                  return (
+                    <tr
+                      key={school.id}
+                      className={`transition-colors ${
+                        isUserSchool
+                          ? "bg-indigo-50/70 dark:bg-indigo-950/30 font-medium"
+                          : "hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
+                      }`}
+                    >
+                      {/* Rank */}
+                      <td className="py-4 px-4 sm:px-6 text-center font-mono">
+                        {rank === 1 ? (
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 font-extrabold text-sm">
+                            1
                           </span>
+                        ) : rank === 2 ? (
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-extrabold text-sm">
+                            2
+                          </span>
+                        ) : rank === 3 ? (
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-900/10 dark:bg-amber-950/40 text-amber-800 dark:text-amber-500 font-extrabold text-sm">
+                            3
+                          </span>
+                        ) : (
+                          <span className="font-semibold text-slate-500 dark:text-slate-400">
+                            #{rank}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* School Name & City */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0">
+                            <School className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-slate-900 dark:text-white truncate">
+                                {school.name}
+                              </span>
+                              {isUserSchool && (
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white shrink-0">
+                                  Your School
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
+                              {school.city}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Student Count */}
-                    <td className="py-4 px-4 text-center font-mono text-slate-600 dark:text-slate-300">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{school.studentCount}</span>
-                      </div>
-                    </td>
+                      {/* Student Count */}
+                      <td className="py-4 px-4 text-center font-mono text-slate-600 dark:text-slate-300">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Users className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{school.studentCount}</span>
+                        </div>
+                      </td>
 
-                    {/* Leading Subject */}
-                    <td className="py-4 px-4 text-slate-600 dark:text-slate-300 font-medium">
-                      {school.topSubject}
-                    </td>
+                      {/* Leading Subject */}
+                      <td className="py-4 px-4 text-slate-600 dark:text-slate-300 font-medium">
+                        {school.topSubject}
+                      </td>
 
-                    {/* Avg Accuracy */}
-                    <td className="py-4 px-4 text-center font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                      {school.averageAccuracy}%
-                    </td>
+                      {/* Avg Accuracy */}
+                      <td className="py-4 px-4 text-center font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        {school.averageAccuracy}%
+                      </td>
 
-                    {/* Total Community XP */}
-                    <td className="py-4 px-4 sm:px-6 text-right font-mono font-bold text-slate-900 dark:text-white text-sm">
-                      {school.totalXp.toLocaleString()}{' '}
-                      <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
-                        XP
-                      </span>
-                    </td>
-                  </tr>
-                );
-              }))}
+                      {/* Total Community XP */}
+                      <td className="py-4 px-4 sm:px-6 text-right font-mono font-bold text-slate-900 dark:text-white text-sm">
+                        {school.totalXp.toLocaleString()}{" "}
+                        <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+                          XP
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

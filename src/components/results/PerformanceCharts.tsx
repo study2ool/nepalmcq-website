@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   PieChart,
   Pie,
@@ -11,19 +11,25 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
-} from 'recharts';
-import { QuizResult } from '../../types/results';
+} from "recharts";
+import { QuizResult } from "../../types/results";
 
 interface PerformanceChartsProps {
   result: QuizResult;
 }
 
-export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) => {
+export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({
+  result,
+}) => {
   // 1. Donut data
   const pieData = [
-    { name: 'Correct', value: result.correctAnswers, color: '#10B981' },
-    { name: 'Incorrect', value: result.incorrectAnswers, color: '#F43F5E' },
-    { name: 'Unattempted', value: result.unattemptedQuestions, color: '#94A3B8' },
+    { name: "Correct", value: result.correctAnswers, color: "#10B981" },
+    { name: "Incorrect", value: result.incorrectAnswers, color: "#F43F5E" },
+    {
+      name: "Unattempted",
+      value: result.unattemptedQuestions,
+      color: "#94A3B8",
+    },
   ].filter((item) => item.value > 0);
 
   // 2. Subject breakdown data for Bar Chart
@@ -64,17 +70,21 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0F172A',
-                  borderColor: '#1E293B',
-                  borderRadius: '8px',
-                  color: '#fff',
-                  fontSize: '12px',
+                  backgroundColor: "#0F172A",
+                  borderColor: "#1E293B",
+                  borderRadius: "8px",
+                  color: "#fff",
+                  fontSize: "12px",
                 }}
               />
               <Legend
                 verticalAlign="bottom"
                 height={36}
-                formatter={(value) => <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{value}</span>}
+                formatter={(value) => (
+                  <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    {value}
+                  </span>
+                )}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -84,19 +94,33 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
           <div>
             <span className="text-slate-400 block text-[11px]">Correct</span>
             <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400">
-              {result.correctAnswers} ({Math.round((result.correctAnswers / result.totalQuestions) * 100)}%)
+              {result.correctAnswers} (
+              {Math.round(
+                (result.correctAnswers / result.totalQuestions) * 100,
+              )}
+              %)
             </span>
           </div>
           <div>
             <span className="text-slate-400 block text-[11px]">Incorrect</span>
             <span className="font-bold font-mono text-rose-600 dark:text-rose-400">
-              {result.incorrectAnswers} ({Math.round((result.incorrectAnswers / result.totalQuestions) * 100)}%)
+              {result.incorrectAnswers} (
+              {Math.round(
+                (result.incorrectAnswers / result.totalQuestions) * 100,
+              )}
+              %)
             </span>
           </div>
           <div>
-            <span className="text-slate-400 block text-[11px]">Unattempted</span>
+            <span className="text-slate-400 block text-[11px]">
+              Unattempted
+            </span>
             <span className="font-bold font-mono text-slate-600 dark:text-slate-400">
-              {result.unattemptedQuestions} ({Math.round((result.unattemptedQuestions / result.totalQuestions) * 100)}%)
+              {result.unattemptedQuestions} (
+              {Math.round(
+                (result.unattemptedQuestions / result.totalQuestions) * 100,
+              )}
+              %)
             </span>
           </div>
         </div>
@@ -120,20 +144,24 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
               margin={{ top: 20, right: 20, left: -10, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748B' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#64748B' }} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#64748B" }} />
+              <YAxis tick={{ fontSize: 11, fill: "#64748B" }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#0F172A',
-                  borderColor: '#1E293B',
-                  borderRadius: '8px',
-                  color: '#fff',
-                  fontSize: '12px',
+                  backgroundColor: "#0F172A",
+                  borderColor: "#1E293B",
+                  borderRadius: "8px",
+                  color: "#fff",
+                  fontSize: "12px",
                 }}
               />
               <Legend
                 verticalAlign="bottom"
-                formatter={(value) => <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{value}</span>}
+                formatter={(value) => (
+                  <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    {value}
+                  </span>
+                )}
               />
               <Bar dataKey="Correct" fill="#10B981" radius={[4, 4, 0, 0]} />
               <Bar dataKey="Incorrect" fill="#F43F5E" radius={[4, 4, 0, 0]} />
@@ -146,8 +174,12 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
         <div className="flex flex-wrap items-center justify-around gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-xs">
           {result.subjectBreakdown.map((sb) => (
             <div key={sb.subject} className="flex items-center gap-1.5">
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{sb.subject}:</span>
-              <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">{sb.accuracy}%</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
+                {sb.subject}:
+              </span>
+              <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">
+                {sb.accuracy}%
+              </span>
             </div>
           ))}
         </div>
@@ -160,7 +192,8 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
             Topic-Wise Mastery
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-            Granular breakdown to pinpoint syllabus chapters requiring additional practice
+            Granular breakdown to pinpoint syllabus chapters requiring
+            additional practice
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -179,15 +212,17 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
                       <span className="font-semibold text-slate-800 dark:text-slate-200">
                         {topicItem.topic}
                       </span>
-                      <span className="text-slate-400 text-[11px] ml-2">({topicItem.subject})</span>
+                      <span className="text-slate-400 text-[11px] ml-2">
+                        ({topicItem.subject})
+                      </span>
                     </div>
                     <span
                       className={`font-mono font-bold ${
                         isStrong
-                          ? 'text-emerald-600 dark:text-emerald-400'
+                          ? "text-emerald-600 dark:text-emerald-400"
                           : isNeedsWork
-                          ? 'text-rose-600 dark:text-rose-400'
-                          : 'text-amber-600 dark:text-amber-400'
+                            ? "text-rose-600 dark:text-rose-400"
+                            : "text-amber-600 dark:text-amber-400"
                       }`}
                     >
                       {accuracy}% ({topicItem.correct}/{topicItem.total})
@@ -198,10 +233,10 @@ export const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ result }) 
                     <div
                       className={`h-full rounded-full transition-all ${
                         isStrong
-                          ? 'bg-emerald-500'
+                          ? "bg-emerald-500"
                           : isNeedsWork
-                          ? 'bg-rose-500'
-                          : 'bg-amber-500'
+                            ? "bg-rose-500"
+                            : "bg-amber-500"
                       }`}
                       style={{ width: `${accuracy}%` }}
                     />

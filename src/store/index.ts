@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import {
   apiSlice,
   authReducer,
@@ -12,7 +12,7 @@ import {
   resultsReducer,
   leaderboardReducer,
   questionReactionReducer,
-} from './api';
+} from "./api";
 
 export const store = configureStore({
   reducer: {
