@@ -269,7 +269,7 @@ export const ExamDialog: React.FC = () => {
       role="dialog"
       aria-modal="true"
       aria-label="Computer-Based Examination Session"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-xs sm:p-3 md:p-5 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 backdrop-blur-xs sm:p-3 md:p-5 animate-in fade-in duration-200"
     >
       {/* Dialog Frame Container */}
       <div className="relative w-full h-full max-w-7xl flex flex-col bg-slate-50 dark:bg-slate-950 sm:rounded-2xl shadow-2xl border-0 sm:border border-slate-200/90 dark:border-slate-800/90 overflow-hidden">
@@ -347,7 +347,7 @@ export const ExamDialog: React.FC = () => {
 
         {/* Mobile Question Palette Drawer */}
         {isPaletteDrawerOpen && (
-          <div className="fixed inset-0 z-50 flex justify-end lg:hidden bg-slate-950/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-[110] flex justify-end lg:hidden bg-slate-950/60 backdrop-blur-xs">
             <div className="w-full max-w-sm bg-white dark:bg-slate-900 h-full p-5 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-200">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">

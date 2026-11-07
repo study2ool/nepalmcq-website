@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { closeAuthModal } from '../../store/api/authApi';
 import { GoogleSignInButton } from './GoogleSignInButton';
@@ -12,7 +13,7 @@ export const AuthModal: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
       role="dialog"
       aria-modal="true"
     >
@@ -70,8 +71,24 @@ export const AuthModal: React.FC = () => {
         </div>
 
         {/* Footer note */}
-        <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy.
+        <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-6 leading-relaxed">
+          By signing in, you agree to our{' '}
+          <Link
+            to="/terms"
+            onClick={() => dispatch(closeAuthModal())}
+            className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+          >
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link
+            to="/privacy"
+            onClick={() => dispatch(closeAuthModal())}
+            className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+          >
+            Privacy Policy
+          </Link>
+          .
         </p>
       </div>
     </div>

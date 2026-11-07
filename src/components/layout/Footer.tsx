@@ -210,17 +210,19 @@ export const Footer: React.FC = () => {
               Contact Support
             </Link>
             <span className="text-slate-300 dark:text-slate-700">·</span>
-            <span className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
+            <Link
+              to="/privacy"
+              className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
               Privacy Policy
-            </span>
+            </Link>
             <span className="text-slate-300 dark:text-slate-700">·</span>
-            <span className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
+            <Link
+              to="/terms"
+              className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
               Terms of Service
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">·</span>
-            <span className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
-              Honor Code
-            </span>
+            </Link>
           </div>
         </div>
       </div>

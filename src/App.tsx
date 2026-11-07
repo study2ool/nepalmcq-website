@@ -16,6 +16,8 @@ const History = lazy(() => import('./pages/History'));
 const Bookmarks = lazy(() => import('./pages/Bookmarks'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Contact = lazy(() => import('./pages/Contact'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -56,6 +58,10 @@ export default function App() {
                 <Route path="saved" element={<Bookmarks />} />
                 <Route path="bookmarks" element={<Navigate to="/saved" replace />} />
                 <Route path="contact" element={<Contact />} />
+                <Route path="privacy" element={<PrivacyPolicy />} />
+                <Route path="privacy-policy" element={<Navigate to="/privacy" replace />} />
+                <Route path="terms" element={<TermsOfService />} />
+                <Route path="terms-of-service" element={<Navigate to="/terms" replace />} />
                 <Route path="auth/callback" element={<AuthCallback />} />
                 <Route
                   path="admin"
